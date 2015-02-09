@@ -2,7 +2,7 @@
 
 A single class framework in Swift to read/write & parse the JSON Format.
 
-Just add the SwifterJSON file to your project.
+Just add the SwifterJSON.swift file to your project, this is the only file you need. You can find it in the "SwifterJSON" directory.
 
 A full xcode project can also be dowloaded which includes the tests.
 

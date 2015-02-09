@@ -11,7 +11,12 @@
 		865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B0E1A88F2E100411EDA /* ViewController.swift */; };
 		865B7B111A88F2E100411EDA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 865B7B101A88F2E100411EDA /* Images.xcassets */; };
 		865B7B141A88F2E100411EDA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865B7B121A88F2E100411EDA /* Main.storyboard */; };
-		865B7B201A88F2E100411EDA /* SwifterJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B1F1A88F2E100411EDA /* SwifterJSONTests.swift */; };
+		865B7B2A1A88F2F400411EDA /* SwifterJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B291A88F2F400411EDA /* SwifterJSON.swift */; };
+		865B7B2B1A88F2F400411EDA /* SwifterJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B291A88F2F400411EDA /* SwifterJSON.swift */; };
+		865B7B311A88F30C00411EDA /* SwifterJSONInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B2C1A88F30C00411EDA /* SwifterJSONInitTests.swift */; };
+		865B7B331A88F30C00411EDA /* SwifterJSONInterfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B2D1A88F30C00411EDA /* SwifterJSONInterfaceTests.swift */; };
+		865B7B351A88F30C00411EDA /* ParserBlackBoxSuccessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B2E1A88F30C00411EDA /* ParserBlackBoxSuccessTests.swift */; };
+		865B7B371A88F30C00411EDA /* ParserErrorMessageWhiteBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B2F1A88F30C00411EDA /* ParserErrorMessageWhiteBoxTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,7 +38,11 @@
 		865B7B131A88F2E100411EDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		865B7B191A88F2E100411EDA /* SwifterJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwifterJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		865B7B1E1A88F2E100411EDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		865B7B1F1A88F2E100411EDA /* SwifterJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwifterJSONTests.swift; sourceTree = "<group>"; };
+		865B7B291A88F2F400411EDA /* SwifterJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwifterJSON.swift; sourceTree = "<group>"; };
+		865B7B2C1A88F30C00411EDA /* SwifterJSONInitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwifterJSONInitTests.swift; sourceTree = "<group>"; };
+		865B7B2D1A88F30C00411EDA /* SwifterJSONInterfaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwifterJSONInterfaceTests.swift; sourceTree = "<group>"; };
+		865B7B2E1A88F30C00411EDA /* ParserBlackBoxSuccessTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserBlackBoxSuccessTests.swift; sourceTree = "<group>"; };
+		865B7B2F1A88F30C00411EDA /* ParserErrorMessageWhiteBoxTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserErrorMessageWhiteBoxTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +86,7 @@
 			children = (
 				865B7B0C1A88F2E100411EDA /* AppDelegate.swift */,
 				865B7B0E1A88F2E100411EDA /* ViewController.swift */,
+				865B7B291A88F2F400411EDA /* SwifterJSON.swift */,
 				865B7B101A88F2E100411EDA /* Images.xcassets */,
 				865B7B121A88F2E100411EDA /* Main.storyboard */,
 				865B7B0A1A88F2E100411EDA /* Supporting Files */,
@@ -95,7 +105,10 @@
 		865B7B1C1A88F2E100411EDA /* SwifterJSONTests */ = {
 			isa = PBXGroup;
 			children = (
-				865B7B1F1A88F2E100411EDA /* SwifterJSONTests.swift */,
+				865B7B2C1A88F30C00411EDA /* SwifterJSONInitTests.swift */,
+				865B7B2D1A88F30C00411EDA /* SwifterJSONInterfaceTests.swift */,
+				865B7B2E1A88F30C00411EDA /* ParserBlackBoxSuccessTests.swift */,
+				865B7B2F1A88F30C00411EDA /* ParserErrorMessageWhiteBoxTests.swift */,
 				865B7B1D1A88F2E100411EDA /* Supporting Files */,
 			);
 			path = SwifterJSONTests;
@@ -208,6 +221,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				865B7B2A1A88F2F400411EDA /* SwifterJSON.swift in Sources */,
 				865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */,
 				865B7B0D1A88F2E100411EDA /* AppDelegate.swift in Sources */,
 			);
@@ -217,7 +231,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				865B7B201A88F2E100411EDA /* SwifterJSONTests.swift in Sources */,
+				865B7B351A88F30C00411EDA /* ParserBlackBoxSuccessTests.swift in Sources */,
+				865B7B311A88F30C00411EDA /* SwifterJSONInitTests.swift in Sources */,
+				865B7B2B1A88F2F400411EDA /* SwifterJSON.swift in Sources */,
+				865B7B371A88F30C00411EDA /* ParserErrorMessageWhiteBoxTests.swift in Sources */,
+				865B7B331A88F30C00411EDA /* SwifterJSONInterfaceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

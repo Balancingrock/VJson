@@ -8,7 +8,7 @@ A full xcode project can also be dowloaded which includes the tests.
 
 Example usage (Full example, you can use the code below directly)
 
-
+<pre>
 // Create a string with JSON code
 
 let top = SwifterJSON.createJSONHierarchy()
@@ -27,6 +27,7 @@ if let top = topOrNil {
 } else {
   println(errorOrNil!)
 }
-
+</pre>
 See the SwifterJSON header file for more on how to start using this framework.
-Warning: Release 0.9 is not yet real-world tested!
+
+Warning: Release 0.9 is not yet real-world tested! But it does pass the unit tests.

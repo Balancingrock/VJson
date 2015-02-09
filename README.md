@@ -1,0 +1,32 @@
+# SwifterJSON
+
+A single class framework in Swift to read/write & parse the JSON Format.
+
+Just add the SwifterJSON file to your project.
+
+A full xcode project can also be dowloaded which includes the tests.
+
+Example usage (Full example, you can use the code below directly)
+
+
+// Create a string with JSON code
+
+let top = SwifterJSON.createJSONHierarchy()
+top["books"][0]["title"].stringValue = "THHGTTG"
+let myJsonString = top.description()
+
+// Use the above generated string to read JSON code
+
+let (topOrNil, errorOrNil) = SwifterJSON.createJsonHierarchyFromString(myJsonString)
+if let top = topOrNil {
+    if let title = top["books"][0]["title"].stringValue {
+       println("The title of the first book is: " + title)
+    } else {
+       println("The title of the first book in myJsonString was not found")
+    }
+} else {
+  println(errorOrNil!)
+}
+
+See the SwifterJSON header file for more on how to start using this framework.
+Warning: Release 0.9 is not yet real-world tested!

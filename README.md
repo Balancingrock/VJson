@@ -28,6 +28,6 @@ if let top = topOrNil {
   println(errorOrNil!)
 }
 </pre>
-See the SwifterJSON header file for more on how to start using this framework.
+See the header of the SwifterJSON file for more on how to start using this framework.
 
 Warning: Release 0.9 is not yet real-world tested! But it does pass the unit tests.

@@ -45,7 +45,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (top, error) = JSON.createJsonHierarchyFromString(source)
+        let (top, error) = JSON.createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -96,7 +96,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJsonHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -151,7 +151,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJsonHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -201,7 +201,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJsonHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -246,7 +246,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJsonHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -289,7 +289,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJsonHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -315,7 +315,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         let source = "{\"key\":[1,2,3]}"
         
-        let (topOrNil, errorOrNil) = JSON.createJsonHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
 
         
         // Standard nil/non-nil tests
@@ -355,7 +355,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         let source = "{\"key\":[1,{\"key\":[]},3]}"
         
-        let (topOrNil, errorOrNil) = JSON.createJsonHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests

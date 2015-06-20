@@ -61,7 +61,7 @@ class ParserErrorMessageWhiteBoxTests: XCTestCase {
         ]
         
         for testCase in testCases {
-            let (top, error) = JSON.createJsonHierarchyFromString(testCase[TEST_STRING])
+            let (top, error) = JSON.createJSONHierarchyFromString(testCase[TEST_STRING])
             XCTAssertNil(top, "Expected nil")
             XCTAssertNotNil(error, "Expected an error message, found nil")
             XCTAssertEqual(error!, testCase[EXPECTED_ERROR], "Expected '\(testCase[EXPECTED_ERROR])', found '\(error!)'")

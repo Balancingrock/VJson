@@ -21,7 +21,6 @@ class SwifterJSONInitTests: XCTestCase {
         super.tearDown()
     }
     
-    
     func testInitNull() {
         
         /*

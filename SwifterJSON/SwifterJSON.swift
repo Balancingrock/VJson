@@ -3,7 +3,7 @@
 //  File:       SwifterJSON.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.0
+//  Version:    0.9.1
 //
 //  Author:     Marinus van der Lugt
 //  Website:    http://www.balancingrock.nl/swifterjson
@@ -120,6 +120,17 @@
 // one of the possible JSON items, like STRING, NULL, NUMBER, BOOL and ARRAY.
 //
 // Apple uses key/value pairs, but JSON uses name/value pairs.
+//
+// =====================================================================================================================
+//
+// History
+//
+// 0.9.1 Moved the private definitions inside the class to avoid name collisions
+//       Replaced type extensions with static class methods
+//       Made pseudo 'static" definitions (Swift 1.0) to real class static definitions (Swift 1.2)
+//       Changed logging SOURCE from SwiftON to SwifterJSON
+//       Changed to all-caps writing of JSON for public interfaces
+// 0.9.0 First public release
 //
 // =====================================================================================================================
 
@@ -745,7 +756,7 @@ class SwifterJSON : Printable, SequenceType {
     
     */
     
-    class func createJsonHierarchyFromString(string: String) -> (SwifterJSON?, String?) {
+    class func createJSONHierarchyFromString(string: String) -> (SwifterJSON?, String?) {
         let newObject = createObject()
         newObject.parse(string)
         if newObject.parseError != nil { return (nil, newObject.parseError) }
@@ -763,7 +774,7 @@ class SwifterJSON : Printable, SequenceType {
     
     */
     
-    class func createJsonHierarchyFromFile(path: String) -> (SwifterJSON?, String?) {
+    class func createJSONHierarchyFromFile(path: String) -> (SwifterJSON?, String?) {
         
         
         // Check if the file exists, and that it is not a directory
@@ -782,7 +793,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // And deserialize the string
         
-        return createJsonHierarchyFromString(content!)
+        return createJSONHierarchyFromString(content!)
     }
     
 
@@ -796,7 +807,7 @@ class SwifterJSON : Printable, SequenceType {
     
     */
     
-    func writeJsonHierarchyToFile(path: String) -> (String?) {
+    func writeJSONHierarchyToFile(path: String) -> (String?) {
 
         
         // If there is a file, make sure it can be removed
@@ -1761,6 +1772,11 @@ class SwifterJSON : Printable, SequenceType {
         readingString = false
         
         
+        // TODO: REMOVE BEFORE PUBLISHING
+        
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parse", message: "Source = " + source)
+        
+        
         // Start the parser at this mode
         
         var next = parseFunctionForSameChar(waitForTopLevelObject)
@@ -1782,7 +1798,7 @@ class SwifterJSON : Printable, SequenceType {
             
             // If this character is not part of a string and it is skippable, skip it
             
-            if !readingString && char.isSkippable() { continue }
+            if !readingString && SwifterJSON.charIsSkippable(char) { continue }
             
             
             // Keep on parsing this character until it is consumed, then progress to the next character
@@ -1809,7 +1825,7 @@ class SwifterJSON : Printable, SequenceType {
             
             if activeObject == nil {
                 parseError = "No JSON code found, missing opening brace."
-                log.atLevelDebug(id: 0, source: SOURCE + ".parse", message: parseError!)
+                log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parse", message: parseError!)
                 return
             }
             
@@ -1818,7 +1834,7 @@ class SwifterJSON : Printable, SequenceType {
             
             if !endOfJsonBraceFound {
                 parseError = "Incomplete JSON code, missing ending brace."
-                log.atLevelDebug(id: 0, source: SOURCE + ".parse", message: parseError!)
+                log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parse", message: parseError!)
                 return
             }
         }
@@ -1832,7 +1848,7 @@ class SwifterJSON : Printable, SequenceType {
         // Log the duration
         
         let message = "JSON parser completed in \(parseDuration * 1000) mSec, JSON parsing " + (activeObject != nil ? "was successful" : "failed")
-        log.atLevelInfo(id: 0, source: SOURCE + ".parse", message: message)
+        log.atLevelInfo(id: 0, source: SwifterJSON.SOURCE + ".parse", message: message)
         
         
         return
@@ -1847,7 +1863,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check if the top level object has started
         
-        if char == OBJECT_START {
+        if char == SwifterJSON.OBJECT_START {
             
             
             // Self is the top level object
@@ -1862,7 +1878,7 @@ class SwifterJSON : Printable, SequenceType {
         // Any other character is an error
         
         parseError = "Expected '{', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".parseWaitForTopLevelObject", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parseWaitForTopLevelObject", message: parseError!)
         
         return stopParsing()
     }
@@ -1875,7 +1891,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for name start
         
-        if char == NAME_STRING_START {
+        if char == SwifterJSON.NAME_STRING_START {
             name = ""
             readingString = true
             return parseFunctionForNextChar(waitForNameEnd)
@@ -1884,13 +1900,13 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for end of object
         
-        if char == OBJECT_END { return objectEndFound() }
+        if char == SwifterJSON.OBJECT_END { return objectEndFound() }
             
 
         // Anything else is an error
         
         parseError = "Expected '}' or '\"', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".waitForNameOrObjectEnd", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForNameOrObjectEnd", message: parseError!)
         
         return stopParsing()
     }
@@ -1903,7 +1919,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for start of name string
         
-        if char == NAME_STRING_START {
+        if char == SwifterJSON.NAME_STRING_START {
             name = ""
             readingString = true
             return parseFunctionForNextChar(waitForNameEnd)
@@ -1913,7 +1929,7 @@ class SwifterJSON : Printable, SequenceType {
         // Anything else is an error
         
         parseError = "Expected a name string to start '\"', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".waitForName", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForName", message: parseError!)
         
         return stopParsing()
     }
@@ -1926,7 +1942,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check if an escape sequence started
         
-        if char == ESCAPE_SEQUENCE_START {
+        if char == SwifterJSON.ESCAPE_SEQUENCE_START {
             name.append(char)
             return parseFunctionForNextChar(nameEscapeSequence)
         }
@@ -1934,7 +1950,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check if the the name ended
         
-        if char == NAME_STRING_END {
+        if char == SwifterJSON.NAME_STRING_END {
             readingString = false
             return parseFunctionForNextChar(waitForColon)
         }
@@ -1955,7 +1971,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Is it a dual character escape sequence?
         
-        if char.isSecondCharOfDoubleCharEscapeSequence() {
+        if SwifterJSON.charIsSecondCharOfDoubleCharEscapeSequence(char) {
             name.append(char)
             return parseFunctionForNextChar(waitForNameEnd)
         }
@@ -1963,7 +1979,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Does a hex string follow?
         
-        if char == HEX_STRING_ESCAPE_SEQUENCE {
+        if char == SwifterJSON.HEX_STRING_ESCAPE_SEQUENCE {
             name.append(char)
             return parseFunctionForNextChar(nameHexDigit1)
         }
@@ -1972,7 +1988,7 @@ class SwifterJSON : Printable, SequenceType {
         // Anything else is an error
         
         parseError = "Expecting an escaped character, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".nameEscapeSequence", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".nameEscapeSequence", message: parseError!)
         
         return stopParsing()
     }
@@ -1982,7 +1998,7 @@ class SwifterJSON : Printable, SequenceType {
     
     private func nameHexDigit1(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             name.append(char)
             return parseFunctionForNextChar(nameHexDigit2)
         }
@@ -1991,7 +2007,7 @@ class SwifterJSON : Printable, SequenceType {
     }
     private func nameHexDigit2(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             name.append(char)
             return parseFunctionForNextChar(nameHexDigit3)
         }
@@ -2000,7 +2016,7 @@ class SwifterJSON : Printable, SequenceType {
     }
     private func nameHexDigit3(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             name.append(char)
             return parseFunctionForNextChar(nameHexDigit4)
         }
@@ -2009,7 +2025,7 @@ class SwifterJSON : Printable, SequenceType {
     }
     private func nameHexDigit4(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             name.append(char)
             return parseFunctionForNextChar(waitForNameEnd)
         }
@@ -2075,16 +2091,16 @@ class SwifterJSON : Printable, SequenceType {
         
         // After a comma a new name/value pair should follow
         
-        if char == COMMA { return parseFunctionForNextChar(waitForName) }
+        if char == SwifterJSON.COMMA { return parseFunctionForNextChar(waitForName) }
         
         
         // Not a comma, then this must be an object end
         // To enhance the error message, handle the error here, but handle the end of object in the dedicated parsing function
         
-        if char == OBJECT_END { return objectEndFound() }
+        if char == SwifterJSON.OBJECT_END { return objectEndFound() }
         
         parseError = "Expected a comma ',' or object end '}', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".waitForCommaOrObjectEnd", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForCommaOrObjectEnd", message: parseError!)
         
         return stopParsing()
     }
@@ -2097,16 +2113,16 @@ class SwifterJSON : Printable, SequenceType {
         
         // After a comma a new value should follow
         
-        if char == COMMA { return parseFunctionForNextChar(waitForValue) }
+        if char == SwifterJSON.COMMA { return parseFunctionForNextChar(waitForValue) }
         
         
         // Not a comma, then this must be an array end
         // To enhance the error message, handle an error here, but handle the end of array in the dedicated parsing function
         
-        if char == ARRAY_END { return arrayEndFound() }
+        if char == SwifterJSON.ARRAY_END { return arrayEndFound() }
         
         parseError = "Expected a comma ',' or object end ']', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".waitForCommaOrArrayEnd", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForCommaOrArrayEnd", message: parseError!)
 
         return stopParsing()
     }
@@ -2119,13 +2135,13 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check if this is the colon
         
-        if char == COLON { return parseFunctionForNextChar(waitForValue) }
+        if char == SwifterJSON.COLON { return parseFunctionForNextChar(waitForValue) }
         
         
         // The character is not expected
         
         parseError = "Expected a colon ':', parsing stopped at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".waitForColon", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForColon", message: parseError!)
         
         return stopParsing()
     }
@@ -2136,7 +2152,7 @@ class SwifterJSON : Printable, SequenceType {
     private func afterTopLevelObjectEnd(char: Character) -> Next {
     
         parseError = "Character occured after top level object end, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".afterTopLevelObjectEnd", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".afterTopLevelObjectEnd", message: parseError!)
 
         return stopParsing()
     }
@@ -2149,23 +2165,23 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for the end of an array
         
-        if char == ARRAY_END { return arrayEndFound() }
+        if char == SwifterJSON.ARRAY_END { return arrayEndFound() }
         
         
         // Then it must be a value, handle the value in the waitForValue function, but do the error message here
         
-        if char == VALUE_STRING_START { return parseFunctionForSameChar(waitForValue) }
-        if char == MINUS_SIGN         { return parseFunctionForSameChar(waitForValue) }
-        if char == "0"                { return parseFunctionForSameChar(waitForValue) }
-        if char.isNumber()            { return parseFunctionForSameChar(waitForValue) }
-        if char == OBJECT_START       { return parseFunctionForSameChar(waitForValue) }
-        if char == ARRAY_START        { return parseFunctionForSameChar(waitForValue) }
-        if char == "t" || char == "T" { return parseFunctionForSameChar(waitForValue) }
-        if char == "f" || char == "F" { return parseFunctionForSameChar(waitForValue) }
-        if char == "n" || char == "N" { return parseFunctionForSameChar(waitForValue) }
+        if char == SwifterJSON.VALUE_STRING_START  { return parseFunctionForSameChar(waitForValue) }
+        if char == SwifterJSON.MINUS_SIGN          { return parseFunctionForSameChar(waitForValue) }
+        if char == "0"                             { return parseFunctionForSameChar(waitForValue) }
+        if SwifterJSON.charIsNumber(char)          { return parseFunctionForSameChar(waitForValue) }
+        if char == SwifterJSON.OBJECT_START        { return parseFunctionForSameChar(waitForValue) }
+        if char == SwifterJSON.ARRAY_START         { return parseFunctionForSameChar(waitForValue) }
+        if char == "t" || char == "T"              { return parseFunctionForSameChar(waitForValue) }
+        if char == "f" || char == "F"              { return parseFunctionForSameChar(waitForValue) }
+        if char == "n" || char == "N"              { return parseFunctionForSameChar(waitForValue) }
         
         parseError = "Expected the start of a value or the closing brace of an empty array, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".waitForValueOrArrayEnd", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForValueOrArrayEnd", message: parseError!)
         
         return stopParsing()
     }
@@ -2178,7 +2194,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for a string start
         
-        if char == VALUE_STRING_START {
+        if char == SwifterJSON.VALUE_STRING_START {
             value = ""
             readingString = true
             return parseFunctionForNextChar(waitForValueStringEnd) // Note: may be an empty string
@@ -2187,7 +2203,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for the start of a number value
         
-        if char == MINUS_SIGN {
+        if char == SwifterJSON.MINUS_SIGN {
             value = ""
             readingString = true
             value.append(char)
@@ -2198,7 +2214,7 @@ class SwifterJSON : Printable, SequenceType {
             value.append(char)
             return parseFunctionForNextChar(valueNumberAfterFirstDigitSeries)
         }
-        if char.isNumber() {
+        if SwifterJSON.charIsNumber(char) {
             value = ""
             value.append(char)
             return parseFunctionForNextChar(valueNumberFirstDigitSeries)
@@ -2207,7 +2223,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for the start of a new object
         
-        if char == OBJECT_START {
+        if char == SwifterJSON.OBJECT_START {
             
             
             // Add a new object to the active object, then switch the active object to the new object
@@ -2226,7 +2242,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check for the start of an array
         
-        if char == ARRAY_START {
+        if char == SwifterJSON.ARRAY_START {
             
             
             // Create a new array and add it to the active object, switch the active array to the new array
@@ -2260,7 +2276,7 @@ class SwifterJSON : Printable, SequenceType {
         // Illegal start of value
         
         parseError = "Expected the start of a value, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".waitForValue", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForValue", message: parseError!)
         
         return stopParsing()
     }
@@ -2273,7 +2289,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Check if an escape sequence started
         
-        if char == ESCAPE_SEQUENCE_START {
+        if char == SwifterJSON.ESCAPE_SEQUENCE_START {
             value.append(char)
             return parseFunctionForNextChar(valueStringEscapeSequence)
         }
@@ -2281,7 +2297,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // If this is the end of the string, then add the read value to either object or array
         
-        if char == VALUE_STRING_END {
+        if char == SwifterJSON.VALUE_STRING_END {
             
             readingString = false
             
@@ -2327,7 +2343,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Is it a dual character escape sequence?
         
-        if char.isSecondCharOfDoubleCharEscapeSequence() {
+        if SwifterJSON.charIsSecondCharOfDoubleCharEscapeSequence(char) {
             value.append(char)
             return parseFunctionForNextChar(waitForValueStringEnd)
         }
@@ -2335,7 +2351,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Does a hex string follow?
         
-        if char == HEX_STRING_ESCAPE_SEQUENCE {
+        if char == SwifterJSON.HEX_STRING_ESCAPE_SEQUENCE {
             value.append(char)
             return parseFunctionForNextChar(valueStringHexDigit1)
         }
@@ -2344,7 +2360,7 @@ class SwifterJSON : Printable, SequenceType {
         // Anything else is an error
         
         parseError = "Expected an escaped character, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".valueStringEscapeSequence", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueStringEscapeSequence", message: parseError!)
         
         return stopParsing()
     }
@@ -2354,7 +2370,7 @@ class SwifterJSON : Printable, SequenceType {
     
     private func valueStringHexDigit1(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             value.append(char)
             return parseFunctionForNextChar(valueStringHexDigit2)
         }
@@ -2363,7 +2379,7 @@ class SwifterJSON : Printable, SequenceType {
     }
     private func valueStringHexDigit2(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             value.append(char)
             return parseFunctionForNextChar(valueStringHexDigit3)
         }
@@ -2372,7 +2388,7 @@ class SwifterJSON : Printable, SequenceType {
     }
     private func valueStringHexDigit3(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             value.append(char)
             return parseFunctionForNextChar(valueStringHexDigit4)
         }
@@ -2381,7 +2397,7 @@ class SwifterJSON : Printable, SequenceType {
     }
     private func valueStringHexDigit4(char: Character) -> Next {
         
-        if char.isHexadecimalDigit() {
+        if SwifterJSON.charIsHexadecimalDigit(char) {
             value.append(char)
             return parseFunctionForNextChar(waitForValueStringEnd)
         }
@@ -2405,7 +2421,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // If the first character is not a zero, but another number, then the first digit series is ongoing
         
-        if char.isNumber() {
+        if SwifterJSON.charIsNumber(char) {
             value.append(char)
             return parseFunctionForNextChar(valueNumberFirstDigitSeries)
         }
@@ -2414,7 +2430,7 @@ class SwifterJSON : Printable, SequenceType {
         // This is an error
         
         parseError = "Expected a number, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".valueNumberAfterSign", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberAfterSign", message: parseError!)
         
         return stopParsing()
     }
@@ -2427,7 +2443,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Continue the first digit series if it is a number
         
-        if char.isNumber() {
+        if SwifterJSON.charIsNumber(char) {
             value.append(char)
             return parseFunctionForNextChar(valueNumberFirstDigitSeries)
         }
@@ -2476,7 +2492,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // There must at least be one fraction digit (after a period)
         
-        if char.isNumber() {
+        if SwifterJSON.charIsNumber(char) {
             value.append(char)
             return parseFunctionForNextChar(valueNumberFractionContinue)
         }
@@ -2485,7 +2501,7 @@ class SwifterJSON : Printable, SequenceType {
         // Anything else is an error
         
         parseError = "Expected a number, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".valueNumberFractionStart", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberFractionStart", message: parseError!)
         
         return stopParsing()
     }
@@ -2498,7 +2514,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // If it is a number, then its part of the fraction
         
-        if char.isNumber() {
+        if SwifterJSON.charIsNumber(char) {
             value.append(char)
             return parseFunctionForNextChar(valueNumberFractionContinue)
         }
@@ -2525,7 +2541,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Anything else means the exponent is not present, but this is still a double value
         
-        let obj = SwifterJSON(value.toDouble()!)
+        let obj = SwifterJSON(SwifterJSON.toDouble(value)!)
         obj.parseParent = activeObject
         
         return addValueToParent(obj)
@@ -2547,7 +2563,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Any number is OK
         
-        if char.isNumber() {
+        if SwifterJSON.charIsNumber(char) {
             value.append(char)
             return parseFunctionForNextChar(valueNumberExponentDigits)
         }
@@ -2556,7 +2572,7 @@ class SwifterJSON : Printable, SequenceType {
         // Anything else is an error
         
         parseError = "Expected start of exponent, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".valueNumberStartExponent", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberStartExponent", message: parseError!)
         
         return stopParsing()
     }
@@ -2568,13 +2584,13 @@ class SwifterJSON : Printable, SequenceType {
         
         // Only numbers may be added
         
-        if char.isNumber() { return parseFunctionForSameChar(valueNumberExponentDigits) }
+        if SwifterJSON.charIsNumber(char) { return parseFunctionForSameChar(valueNumberExponentDigits) }
         
         
         //  In an exponent there must be at least one number.
         
         parseError = "Expected a number, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + ".valueNumberStartExponentDigits", message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberStartExponentDigits", message: parseError!)
         
         return stopParsing()
     }
@@ -2587,7 +2603,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Only numbers may be added
         
-        if char.isNumber() {
+        if SwifterJSON.charIsNumber(char) {
             value.append(char)
             return parseFunctionForNextChar(valueNumberExponentDigits)
         }
@@ -2595,7 +2611,7 @@ class SwifterJSON : Printable, SequenceType {
         
         // Anything else is the end of the number, add it to the active object
         
-        let obj = SwifterJSON(value.toDouble()!)
+        let obj = SwifterJSON(SwifterJSON.toDouble(value)!)
         obj.parseParent = activeObject
         
         return addValueToParent(obj)
@@ -2695,7 +2711,7 @@ class SwifterJSON : Printable, SequenceType {
     
     private func dummy(char: Character) -> Next {
         let message = "Dummy JSON parsing function called, this should not happen, " + charLocation.description()
-        log.atLevelError(id: 0, source: SOURCE + ".dummy", message: message)
+        log.atLevelError(id: 0, source: SwifterJSON.SOURCE + ".dummy", message: message)
         return Next(parseStep: dummyNoLog, charIsConsumed: true)
     }
     private func dummyNoLog(char: Character) -> Next {
@@ -2707,7 +2723,7 @@ class SwifterJSON : Printable, SequenceType {
     
     private func hexDigitsError(location: String) -> Next {
         parseError = "Expected a hexadecimal digit, parsing aborted at " + charLocation.description()
-        log.atLevelError(id: 0, source: SOURCE + "." + location, message: parseError!)
+        log.atLevelError(id: 0, source: SwifterJSON.SOURCE + "." + location, message: parseError!)
         return stopParsing()
     }
     
@@ -2716,7 +2732,7 @@ class SwifterJSON : Printable, SequenceType {
     
     private func booleanTrueError(forCharacter e: Character, inFunction: String) -> Next {
         parseError = "Expected '\(e)' of boolean true, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + "." + inFunction, message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
         return stopParsing()
     }
     
@@ -2725,7 +2741,7 @@ class SwifterJSON : Printable, SequenceType {
     
     private func booleanFalseError(forCharacter e: Character, inFunction: String) -> Next {
         parseError = "Expected '\(e)' of boolean false, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + "." + inFunction, message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
         return stopParsing()
     }
     
@@ -2734,7 +2750,7 @@ class SwifterJSON : Printable, SequenceType {
     
     private func nullError(forCharacter e: Character, inFunction: String) -> Next {
         parseError = "Expected '\(e)' of null value, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SOURCE + "." + inFunction, message: parseError!)
+        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
         return stopParsing()
     }
 
@@ -2758,109 +2774,102 @@ class SwifterJSON : Printable, SequenceType {
     private func stopParsing() -> Next {
         return Next(parseStep: dummy, charIsConsumed: true)
     }
-}
-
-// MARK: -
-// MARK: Parser related "private class" definitions
-
-// For logging purposes, identifies the source of a logging entry
-
-private let SOURCE = "SwiftON"
-
-// Default leniency, used for all default leniency parameters, not including the subscript operations.
-
-private var defaultLeniency = true
-
-
-// A few definitions that make the code more readable
-
-private let NAME_STRING_START: Character = "\""
-private let NAME_STRING_END: Character = "\""
-private let VALUE_STRING_START: Character = "\""
-private let VALUE_STRING_END: Character = "\""
-private let OBJECT_START: Character = "{"
-private let OBJECT_END: Character = "}"
-private let ARRAY_START: Character = "["
-private let ARRAY_END: Character = "]"
-private let COMMA: Character = ","
-private let PLUS_SIGN: Character = "+"
-private let MINUS_SIGN: Character = "-"
-private let ESCAPE_SEQUENCE_START: Character = "\\"
-private let HEX_STRING_ESCAPE_SEQUENCE: Character = "u"
-private let COLON: Character = ":"
-
-
-// Keep track of the line and character position within a line
-
-private struct Location {
-    var inLine = 1
-    var atCharacter = 0
-    mutating func nextLine() {
-        inLine += 1
-        atCharacter = 0
-    }
-    mutating func nextCharacter() {
-        atCharacter += 1
-    }
-    func description() -> String {
-        return "line = \(inLine), character = \(atCharacter)"
-    }
-}
-
-
-// Signature of the parsing functions with helper functions to make the code more readable
-
-private typealias parseFunction = (Character) -> Next
-private struct Next {
-    let parseStep: parseFunction
-    let charIsConsumed: Bool
-}
-
-
-// Extensions on standard types
-
-private extension Character {
     
-    func isSkippable() -> Bool {
-        switch self {
+
+    // For logging purposes, identifies the source of a logging entry
+
+    private static let SOURCE = "SwifterJSON"
+    
+    
+    // Default leniency, used for all default leniency parameters, not including the subscript operations.
+    
+    private static var defaultLeniency = true
+    
+    
+    // A few definitions that make the code more readable
+    
+    private static let NAME_STRING_START: Character = "\""
+    private static let NAME_STRING_END: Character = "\""
+    private static let VALUE_STRING_START: Character = "\""
+    private static let VALUE_STRING_END: Character = "\""
+    private static let OBJECT_START: Character = "{"
+    private static let OBJECT_END: Character = "}"
+    private static let ARRAY_START: Character = "["
+    private static let ARRAY_END: Character = "]"
+    private static let COMMA: Character = ","
+    private static let PLUS_SIGN: Character = "+"
+    private static let MINUS_SIGN: Character = "-"
+    private static let ESCAPE_SEQUENCE_START: Character = "\\"
+    private static let HEX_STRING_ESCAPE_SEQUENCE: Character = "u"
+    private static let COLON: Character = ":"
+    
+    
+    // Keep track of the line and character position within a line
+    
+    private struct Location {
+        var inLine = 1
+        var atCharacter = 0
+        mutating func nextLine() {
+            inLine += 1
+            atCharacter = 0
+        }
+        mutating func nextCharacter() {
+            atCharacter += 1
+        }
+        func description() -> String {
+            return "line = \(inLine), character = \(atCharacter)"
+        }
+    }
+
+    
+    // Signature of the parsing functions with helper functions to make the code more readable
+    
+    private typealias parseFunction = (Character) -> Next
+    private struct Next {
+        let parseStep: parseFunction
+        let charIsConsumed: Bool
+    }
+    
+    
+    // Helper functions to determine the class of character
+    
+    private static func charIsSkippable(char: Character) -> Bool {
+        switch char {
         case " ", "\t", "\r", "\n": return true
         default: return false
         }
     }
     
-    func isNumber() -> Bool {
-        switch self {
+    private static func charIsNumber(char: Character) -> Bool {
+        switch char {
         case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9": return true
         default: return false
         }
     }
     
-    func isHexadecimalDigit() -> Bool {
-        if self.isNumber() { return true }
-        switch self {
+    private static func charIsHexadecimalDigit(char: Character) -> Bool {
+        if charIsNumber(char) { return true }
+        switch char {
         case "a", "A", "b", "B", "c", "C", "d", "D", "e", "E", "f", "F": return true
         default: return false
         }
     }
     
-    func isSecondCharOfDoubleCharEscapeSequence() -> Bool {
-        switch self {
+    private static func charIsSecondCharOfDoubleCharEscapeSequence(char: Character) -> Bool {
+        switch char {
         case "\"", "\\", "/", "b", "f", "n", "r", "t": return true
         default: return false
         }
     }
-}
 
-
-private var formatter: NSNumberFormatter?
-
-private extension String {
-    func toDouble() -> Double? {
-        if formatter == nil {
-            formatter = NSNumberFormatter()
-            formatter!.decimalSeparator = "."
+    private static var formatter: NSNumberFormatter?
+    
+    private static func toDouble(str: String) -> Double? {
+        if SwifterJSON.formatter == nil {
+            SwifterJSON.formatter = NSNumberFormatter()
+            SwifterJSON.formatter!.decimalSeparator = "."
         }
-        return formatter!.numberFromString(self)!.doubleValue
+        return SwifterJSON.formatter!.numberFromString(str)!.doubleValue
     }
 }
 

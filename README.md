@@ -17,7 +17,7 @@ let myJsonString = top.description()
 
 // Use the above generated string to read JSON code
 
-let (topOrNil, errorOrNil) = SwifterJSON.createJsonHierarchyFromString(myJsonString)
+let (topOrNil, errorOrNil) = SwifterJSON.createJSONHierarchyFromString(myJsonString)
 if let top = topOrNil {
     if let title = top["books"][0]["title"].stringValue {
        println("The title of the first book is: " + title)
@@ -30,4 +30,13 @@ if let top = topOrNil {
 </pre>
 See the header of the SwifterJSON file for more on how to start using this framework.
 
-Warning: Release 0.9 is not yet real-world tested! But it does pass the unit tests.
+History:
+
+Release 0.9.1 is used in a shipping application, changes against previous release:
+- Moved the private definitions inside the class to avoid name collisions
+- Replaced type extensions with static class methods
+- Made pseudo 'static" definitions (Swift 1.0) to real class static definitions (Swift 1.2)
+- Changed logging SOURCE from SwiftON to SwifterJSON
+- Changed to all-caps writing of JSON for public interfaces
+
+Release 0.9.0 is not yet real-world tested! But it does pass the unit tests.

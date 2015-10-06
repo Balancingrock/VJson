@@ -32,6 +32,14 @@ See the header of the SwifterJSON file for more on how to start using this frame
 
 History:
 
+Release 0.9.4
+- Updated to Swift 2.0 syntax
+
+Release 0.9.3, changes against 0.9.2
+- Removed the method "values"
+- Added var dictionary to retrieve and set the Dictionary<String, SwifterJSON> from a json OBJECT.
+- Added var array to retrieve and set the Array<SwifterJSON> from a json ARRAY.
+
 Release 0.9.2, changes against 0.9.1
 - Fixed a bug that caused the 'writeJSONHierarchyToFile' to fail when the file already existed
 - Added convenience initialiser to accept Array<SwifterJSON>

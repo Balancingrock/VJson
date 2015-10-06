@@ -32,13 +32,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON NULL
         
-        var json = JSON()
+        let json = JSON()
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "null"
+        let result = json.description
+        let expectedResult = "null"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -85,13 +85,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON STRING
         
-        var json = JSON("string")
+        let json = JSON("string")
         
         
         // Test the description
 
-        var result = json.description
-        var expectedResult = "\"string\""
+        let result = json.description
+        let expectedResult = "\"string\""
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -138,13 +138,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON NUMBER (from int)
 
-        var json = JSON(12)
+        let json = JSON(12)
         
         
         // Test the description
 
-        var result = json.description
-        var expectedResult = "12"
+        let result = json.description
+        let expectedResult = "12"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -192,13 +192,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON NUMBER (from double)
         
-        var json = JSON(12.0)
+        let json = JSON(12.0)
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "12.0"
+        let result = json.description
+        let expectedResult = "12.0"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -245,13 +245,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON NUMBER (from NSNumber)
         
-        var json = JSON(NSNumber(double: 12.0))
+        let json = JSON(NSNumber(double: 12.0))
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "12"
+        let result = json.description
+        let expectedResult = "12"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -298,13 +298,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON BOOL
         
-        var json = JSON(false)
+        let json = JSON(false)
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "false"
+        let result = json.description
+        let expectedResult = "false"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -350,13 +350,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON hierarchy
         
-        var json = JSON.createJSONHierarchy()
+        let json = JSON.createJSONHierarchy()
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "{}"
+        let result = json.description
+        let expectedResult = "{}"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -400,13 +400,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON ARRAY
         
-        var json = JSON.createArray()
+        let json = JSON.createArray()
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "[]"
+        let result = json.description
+        let expectedResult = "[]"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -449,13 +449,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON ARRAY
         
-        var json = JSON(["one","two"])
+        let json = JSON(["one","two"])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "[\"one\",\"two\"]"
+        let result = json.description
+        let expectedResult = "[\"one\",\"two\"]"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -503,13 +503,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON ARRAY
         
-        var json = JSON([1, 2])
+        let json = JSON([1, 2])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "[1,2]"
+        let result = json.description
+        let expectedResult = "[1,2]"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -557,13 +557,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON ARRAY
         
-        var json = JSON([1.1, 2.2])
+        let json = JSON([1.1, 2.2])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "[1.1,2.2]"
+        let result = json.description
+        let expectedResult = "[1.1,2.2]"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -611,13 +611,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON ARRAY
         
-        var json = JSON([NSNumber(double: 1.1), NSNumber(double: 2.2)])
+        let json = JSON([NSNumber(double: 1.1), NSNumber(double: 2.2)])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "[1.1,2.2]"
+        let result = json.description
+        let expectedResult = "[1.1,2.2]"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -665,13 +665,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON ARRAY
         
-        var json = JSON([true, false])
+        let json = JSON([true, false])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "[true,false]"
+        let result = json.description
+        let expectedResult = "[true,false]"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -721,13 +721,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON OBJECT
         
-        var json = JSON(["n1":"val1", "n2":"val2"])
+        let json = JSON(["n1":"val1", "n2":"val2"])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "{\"n1\":\"val1\",\"n2\":\"val2\"}"
+        let result = json.description
+        let expectedResult = "{\"n1\":\"val1\",\"n2\":\"val2\"}"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -780,13 +780,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON OBJECT
         
-        var json = JSON(["n1":1, "n2":2])
+        let json = JSON(["n1":1, "n2":2])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "{\"n1\":1,\"n2\":2}"
+        let result = json.description
+        let expectedResult = "{\"n1\":1,\"n2\":2}"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -839,13 +839,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON OBJECT
         
-        var json = JSON(["n1":1.1, "n2":2.2])
+        let json = JSON(["n1":1.1, "n2":2.2])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "{\"n1\":1.1,\"n2\":2.2}"
+        let result = json.description
+        let expectedResult = "{\"n1\":1.1,\"n2\":2.2}"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -898,13 +898,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON OBJECT
         
-        var json = JSON(["n1": NSNumber(double: 1.1), "n2": NSNumber(double: 2.2)])
+        let json = JSON(["n1": NSNumber(double: 1.1), "n2": NSNumber(double: 2.2)])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "{\"n1\":1.1,\"n2\":2.2}"
+        let result = json.description
+        let expectedResult = "{\"n1\":1.1,\"n2\":2.2}"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         
@@ -957,13 +957,13 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Create the JSON OBJECT
         
-        var json = JSON(["n1": true, "n2": false])
+        let json = JSON(["n1": true, "n2": false])
         
         
         // Test the description
         
-        var result = json.description
-        var expectedResult = "{\"n1\":true,\"n2\":false}"
+        let result = json.description
+        let expectedResult = "{\"n1\":true,\"n2\":false}"
         XCTAssertEqual(result, expectedResult, "Description error")
         
         

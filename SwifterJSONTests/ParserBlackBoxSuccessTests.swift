@@ -167,7 +167,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
             XCTAssertEqual(top.count, 12, "Expected 12 pairs, found \(top.count)")
             for (key, expectedValue) in sourceDict {
                 if let value = top[key].intValue {
-                    XCTAssertEqual(value, expectedValue.toInt()!, "Expected '\(value)', found '\(expectedValue)'")
+                    XCTAssertEqual(value, Int(expectedValue), "Expected '\(value)', found '\(expectedValue)'")
                 } else {
                     XCTFail("Key/Value pair not found for key \(key)")
                 }
@@ -303,10 +303,10 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         if let top = topOrNil {
             
             XCTAssertEqual(top.count, 1, "Expected 1 pair, found \(top.count)")
-            if let value = top["k01"].nullValue {
+            if let _ = top["k01"].nullValue {
                 XCTAssertTrue(top["k01"].isNull(), "Expected null value")
             } else {
-                XCTFail("Key/Value pair not found for key \(key)")
+                XCTFail("Key/Value pair not found for key k01")
             }
         }
     }

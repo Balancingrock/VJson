@@ -3,7 +3,7 @@
 //  File:       SwifterJSON.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.2
+//  Version:    0.9.4
 //
 //  Author:     Marinus van der Lugt
 //  Website:    http://www.balancingrock.nl/swifterjson
@@ -134,6 +134,10 @@
 //
 // History
 //
+// 0.9.4 Changed to swift 2.0 syntax
+// 0.9.3 Added var dictionary to retrieve and set the Dictionary<String, SwifterJSON> from a json OBJECT.
+//       Added var array to retrieve and set the Array<SwifterJSON> from a json ARRAY.
+//       Removed method 'values'
 // 0.9.2 Fixed a bug that caused the 'writeJSONHierarchyToFile' to fail when the file already existed
 //       Added convenience initialiser to accept Array<SwifterJSON>
 //       Added convenience initialiser to accept Dictionary<String, SwifterJSON>
@@ -267,7 +271,7 @@ func != (left: SwifterJSON, right: SwifterJSON) -> Bool {
 
 /// This defines the SwifterJSON class, a manager and container to generate, parse and maintain values in the JSON format.
 
-final class SwifterJSON : Printable, SequenceType, Equatable {
+final class SwifterJSON : CustomStringConvertible, SequenceType, Equatable {
     
     
     /// Defines all possible types of a JSON item.
@@ -359,7 +363,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             arrayItem!.append(value)
         }
     }
-    
+
     convenience init(_ values: Dictionary<String, String>) {
         self.init(type: ItemType.OBJECT)
         objectItem = [:]
@@ -407,7 +411,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             objectItem!.updateValue(value, forKey: name)
         }
     }
-    
+
     
     /// Creates a new SwifterJSON object containing an empty JSON OBJECT item, this can be used as the top level object for a JSON hierarchy.
     
@@ -416,7 +420,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         newObject.objectItem = [:]
         return newObject
     }
-    
+
     
     /// Creates a new SwifterJSON object containing an empty JSON OBJECT item, this can be used as the top level object for a JSON hierarchy.
     
@@ -430,7 +434,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         newObject.arrayItem = []
         return newObject
     }
-    
+
     
     /**
     
@@ -443,7 +447,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     */
     
     func updateValue(value: SwifterJSON, forName name: String) {
-        
+
         
         // Change the type if necessary
         
@@ -454,7 +458,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         objectItem!.updateValue(value, forKey: name)
     }
-    
+
     func updateValue(value: String, forName name: String) { updateValue(SwifterJSON(value), forName:name) }
     
     func updateValue(value: Int, forName name: String) { updateValue(SwifterJSON(value), forName:name) }
@@ -464,7 +468,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     func updateValue(value: NSNumber, forName name: String) { updateValue(SwifterJSON(value.doubleValue), forName:name) }
     
     func updateValue(value: Bool, forName name: String) { updateValue(SwifterJSON(value), forName:name) }
-    
+
     func updateValueNull(forName name: String) { updateValue(SwifterJSON(), forName:name) }
     
     func updateValues(values: Dictionary<String, String>) {
@@ -531,24 +535,24 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         if itemType != ItemType.ARRAY { self.changeToArrayType() }
         
-        
+
         // Append the value object
         
         arrayItem!.append(value)
     }
     
     func append(value: String) { append(SwifterJSON(value)) }
-    
+
     func append(value: Int) { append(SwifterJSON(value)) }
-    
+
     func append(value: Double) { append(SwifterJSON(value)) }
-    
+
     func append(value: NSNumber) { append(SwifterJSON(value.doubleValue)) }
-    
+
     func append(value: Bool) { append(SwifterJSON(value)) }
-    
+
     func appendNull() { append(SwifterJSON()) }
-    
+
     func append(values: Array<SwifterJSON>) {
         for value in values {
             self.append(value)
@@ -584,7 +588,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             self.append(SwifterJSON(value))
         }
     }
-    
+
     
     /**
     
@@ -622,7 +626,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         if itemType != ItemType.ARRAY { return nil }
         
         if index >= arrayItem!.count { return nil }
-        
+
         let deletedItem = arrayItem!.removeAtIndex(index)
         
         if index < arrayItem!.count {
@@ -718,7 +722,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
                 
             } else if itemType == ItemType.ARRAY {
                 
-                for (index, value) in enumerate(arrayItem!) {
+                for (index, value) in arrayItem!.enumerate() {
                     if value === object! {
                         arrayItem!.removeAtIndex(index)
                         totalRemoved++
@@ -749,7 +753,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
                 }
             }
         }
-        
+
         return totalRemoved
     }
     
@@ -817,17 +821,20 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         // Read the file into a string
         
-        var error: NSError?
-        let content = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: &error)
-        if let message = error?.localizedDescription { return (nil, message) }
+        let content: String
+        do {
+            content = try String(contentsOfFile: path, encoding: NSUTF8StringEncoding)
+        } catch let error as NSError {
+            return (nil, error.localizedDescription)
+        }
         
         
         // And deserialize the string
         
-        return createJSONHierarchyFromString(content!)
+        return createJSONHierarchyFromString(content)
     }
     
-    
+
     /**
     
     Writes the current contents of the JSON hierarchy to a file at the given path in UTF8 string encoding. Any existing file will be overwritten. Make sure that you have the proper sandbox rights to write at the given path. Note that this function can only be invoked on JSON OBJECT types. But it does not need to be the top level JSON OBJECT.
@@ -839,7 +846,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     */
     
     func writeJSONHierarchyToFile(path: String) -> (String?) {
-        
+
         
         // If there is a file, make sure it can be removed
         
@@ -854,15 +861,11 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         let str = self.description
         
-        var error: NSError?
-        let success = str.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
-        
-        if success { return nil }
-        
-        if let message = error?.localizedDescription {
-            return message
-        } else {
-            return "Unknown error occured when writing to \(path)"
+        do {
+            try str.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding)
+            return nil
+        } catch let error as NSError {
+            return error.localizedDescription
         }
     }
     
@@ -877,7 +880,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     var stringValue: String? {
         
         set {
-            
+
             // Remove old data
             
             self.stringItem = nil
@@ -886,8 +889,8 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             self.doubleItem = nil
             self.arrayItem = nil
             self.objectItem = nil
-            
-            
+                
+                
             // Set the new type and value
             
             if newValue == nil {
@@ -903,7 +906,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             return itemType == .STRING ? self.stringItem : nil
         }
     }
-    
+
     
     /// The int value is used, and can be retrieved, for the ItemType NUMBER, but only if the NUMBER was constructed as an Int. If the NUMBER was constructed as a Double, the intValue will return nil. The rawValue will be updated to "Int.description". If 'nil' is assigned, the resulting ItemType of this SwifterJSON will be NULL.
     
@@ -941,7 +944,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     
     /// The double value is used, and can be retrieved, for the ItemType NUMBER. It can be retrieved for NUMBER's that are constructed as a double or as an int. The stringValue will be updated to "Double.description". If 'nil' is assigned, the resulting ItemType of this SwifterJSON will be NULL.
-    
+
     var doubleValue: Double? {
         
         set {
@@ -975,7 +978,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     
     /// The bool value is used, and can be retrieved, for the ItemType BOOL. The stringValue will be updated to either "true" or "false" de pending on the new value. If 'nil' is assigned, the resulting ItemType of this SwifterJSON will be NULL.
-    
+
     var boolValue: Bool? {
         
         set {
@@ -1036,6 +1039,84 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     }
     
     
+    /// The item can be set and retrieved for ItemType ARRAY. If 'nil' is assigned, the resulting ItemType of this SwifterJSON will be NULL.
+    
+    var array: Array<SwifterJSON>? {
+        
+        set {
+            
+            // Remove old data
+            
+            self.stringItem = nil
+            self.intItem = nil
+            self.boolItem = nil
+            self.doubleItem = nil
+            self.arrayItem = nil
+            self.objectItem = nil
+            
+            
+            // Set the new type and value
+            
+            if newValue == nil {
+                self.itemType = ItemType.NULL
+                self.stringItem = "null"
+            } else {
+                self.itemType = ItemType.ARRAY
+                self.array = newValue
+            }
+        }
+        
+        get {
+            
+            // First remove empty objects
+            
+            removeEmptySubscriptObjects()
+
+            
+            return self.array
+        }
+    }
+
+    
+    /// The item can be set and retrieved for ItemType OBJECT. If 'nil' is assigned, the resulting ItemType of this SwifterJSON will be NULL.
+    
+    var dictionary: Dictionary<String, SwifterJSON>? {
+        
+        set {
+            
+            // Remove old data
+            
+            self.stringItem = nil
+            self.intItem = nil
+            self.boolItem = nil
+            self.doubleItem = nil
+            self.arrayItem = nil
+            self.objectItem = nil
+            
+            
+            // Set the new type and value
+            
+            if newValue == nil {
+                self.itemType = ItemType.NULL
+                self.stringItem = "null"
+            } else {
+                self.itemType = ItemType.OBJECT
+                self.objectItem = newValue
+            }
+        }
+        
+        get {
+            
+            // First remove empty objects
+            
+            removeEmptySubscriptObjects()
+
+            
+            return self.objectItem
+        }
+    }
+    
+    
     /// Returns 'true' if the SwifterJSON object is a JSON NULL
     
     func isNull() -> Bool { return itemType == ItemType.NULL }
@@ -1049,17 +1130,17 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     /// Returns 'true' if the SwifterJSON object is a JSON OBJECT
     
     func isObject() -> Bool { return itemType == ItemType.OBJECT }
-    
+
     
     /// Returns 'true' if the SwifterJSON object is a JSON STRING
     
     func isString() -> Bool { return itemType == ItemType.STRING }
-    
-    
+
+
     /// Returns 'true' if the SwifterJSON object is a JSON NUMBER
     
     func isNumber() -> Bool { return itemType == ItemType.NUMBER }
-    
+
     
     /// Returns 'true' if the SwifterJSON object is a JSON BOOL
     
@@ -1073,7 +1154,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     :param: path The array with strings designating an object in the JSON hierarchy. For name/value pair, include the name, for values in an array include the index as a String.
     
     :returns: The requested object or nil if it does not exist. Also returns nil if this function is called on a type that does not contain JSON objects. If a string has to be converted into an array index and the conversion fails, this function will also return a nil.
-    
+
     */
     
     func objectAtPath(path: Array<String>) -> SwifterJSON? {
@@ -1131,7 +1212,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     :param: existsAtPath The array with strings designating an object in the JSON hierarchy. For name/value pair, include the name, for values in an array include the index as a String.
     
     :returns: True if there is an object of the requested type at the specified location. False otherwise.
-    
+
     */
     
     func itemOfType(type: ItemType, existsAtPath path: Array<String>) -> Bool {
@@ -1141,9 +1222,9 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         return false
     }
     
-    
+
     /// Convenience function that maps to 'objectOfType(type: ItemType, existsAtPath path: Array<String>) -> Bool'
-    
+
     func itemOfType(type: ItemType, existsAtPath path: String...) -> Bool {
         return itemOfType(type, existsAtPath: path)
     }
@@ -1154,7 +1235,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     subscript(index: Int) -> SwifterJSON {
         
         set {
-            
+
             
             // Ensure that this is an ARRAY object
             
@@ -1164,8 +1245,8 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             // Ensure that enough elements are present in the array
             
             if index >= self.arrayItem!.count {
-                for i in self.arrayItem!.count ... index {
-                    var newObject = SwifterJSON()
+                for _ in self.arrayItem!.count ... index {
+                    let newObject = SwifterJSON()
                     newObject.createdBySubscript = true
                     self.arrayItem?.append(newObject)
                 }
@@ -1188,8 +1269,8 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             // Ensure that enough elements are present in the array
             
             if index >= self.arrayItem!.count {
-                for i in self.arrayItem!.count ... index {
-                    var newObject = SwifterJSON()
+                for _ in self.arrayItem!.count ... index {
+                    let newObject = SwifterJSON()
                     newObject.createdBySubscript = true
                     self.arrayItem?.append(newObject)
                 }
@@ -1202,7 +1283,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         }
     }
     
-    
+
     // Subscript getter/setter for a JSON OBJECT type.
     
     subscript(key: String) -> SwifterJSON {
@@ -1222,9 +1303,9 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         get {
             
-            
+
             // Ensure that this is an OBJECT type
-            
+
             if itemType != ItemType.OBJECT { changeToObjectType() }
             
             
@@ -1235,8 +1316,8 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             // If the request value does not exist, create it
             // This allows object creation for 'object["key1"]["key2"]["key3"] = SwifterJSON(12)' constructs.
-            
-            var newObject = SwifterJSON()
+
+            let newObject = SwifterJSON()
             newObject.createdBySubscript = true
             objectItem?.updateValue(newObject, forKey: key)
             
@@ -1244,7 +1325,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         }
     }
     
-    
+
     /**
     
     Returns the number of JSON objects in this SwifterJSON object, excluding the elements in the child objects.
@@ -1287,16 +1368,16 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         if itemType != ItemType.OBJECT { return nil }
         
-        
+
         // Remove the empty objects
         
         removeEmptySubscriptObjects()
-        
+
         
         // Build the array
         
         var arr = [String]()
-        for (key, value) in objectItem! {
+        for (key, _) in objectItem! {
             arr.append(key)
         }
         
@@ -1312,7 +1393,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     Return an unsorted array with all the values from this object.
     
     :returns: An array containing all the values that are present in this object. Returns [self] if the JSON item is not of the type OBJECT or ARRAY.
-    
+
     */
     
     func values() -> Array<SwifterJSON>? {
@@ -1331,7 +1412,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             // Build the array
             
             var arr = [SwifterJSON]()
-            for (key, value) in objectItem! { arr.append(value) }
+            for (_, value) in objectItem! { arr.append(value) }
             
             if arr.count == 0 {
                 if createdBySubscript { return nil }
@@ -1348,7 +1429,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             // First remove empty objects
             
             removeEmptySubscriptObjects()
-            
+
             
             if arrayItem!.count == 0 {
                 if createdBySubscript { return nil }
@@ -1411,7 +1492,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         return str
     }
-    
+
     
     // The sequence protocol
     
@@ -1423,7 +1504,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             self.source = source
         }
         mutating func next() -> Element? {              // The GeneratorType protocol
-            if var values = source.values() {           // Only when the source has values to deliver
+            if let values = source.values() {           // Only when the source has values to deliver
                 OUTER: for i in values {                // Find a value that has not been sent already
                     for s in sent {                     // Check if the value has not been sent already
                         if i === s { continue OUTER }   // If it was sent, then try the next value
@@ -1454,7 +1535,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     private var itemType: ItemType
     
-    
+
     // Prevent the creation of types that have no defined content
     
     private init(type: ItemType) {
@@ -1518,15 +1599,15 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             if arrayItem!.count > 0 {
                 
-                for index in reverse(0 ..< arrayItem!.count) {
+                for index in (0 ..< arrayItem!.count).reverse() {
                     
                     let value = arrayItem![index]
-                    
-                    
+                
+
                     // Make sure that this value has all its subscript generated values removed
                     
                     removeEmptySubscriptsObjectsFromValue(value)
-                    
+
                     
                     // If this value is created by subscript, then check if it has content
                     
@@ -1615,7 +1696,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             // Read the path component as an Int, to be used as an index into the array
             
-            let index = path[0].toInt()
+            let index = Int(path[0])
             
             
             // Continue only if an index could be read, if not, the path is in error
@@ -1661,7 +1742,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         return nil // This item is neither an OBJECT or ARRAY
     }
-    
+
     
     // The real data stores
     
@@ -1680,17 +1761,17 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         
         // Remove old data
-        
+            
         self.stringItem = nil
         self.intItem = nil
         self.boolItem = nil
         self.doubleItem = nil
         self.arrayItem = nil
         self.objectItem = nil
-        
-        
+            
+            
         // Set the new type and value
-        
+            
         self.itemType = ItemType.ARRAY
         self.arrayItem = []
     }
@@ -1700,7 +1781,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     private func changeToObjectType() {
         
-        
+    
         // Remove old data
         
         self.stringItem = nil
@@ -1709,10 +1790,10 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         self.doubleItem = nil
         self.arrayItem = nil
         self.objectItem = nil
-        
-        
+            
+    
         // Set new data
-        
+            
         self.itemType = ItemType.OBJECT
         self.objectItem = [:]
     }
@@ -1728,12 +1809,12 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     // This variable will contain a clear text error message if createFromXXXX factories experienced a parsing error.
     
     private var parseError: String?
-    
+
     
     // Keeps track of the hierarchy during parsing. It is initialized when a new top level object is created in waitForTopLevelObject.
     
     private var activeObject: SwifterJSON?
-    
+
     
     // The location of the character currently beiing parsed, only used for error information
     
@@ -1748,7 +1829,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     // Buffer to accumulate a value string
     
     private var value = ""
-    
+
     
     // Flag to indicate if a string is beiing read or not
     
@@ -1793,6 +1874,11 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         readingString = false
         
         
+        // TODO: REMOVE BEFORE PUBLISHING
+        
+        // log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parse", message: "Source = " + source)
+        
+        
         // Start the parser in this mode
         
         var next = parseFunctionForSameChar(waitForTopLevelObject)
@@ -1800,7 +1886,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         // Iterate over all characters in the source
         
-        for char in source {
+        for char in source.characters {
             
             
             // Count the number of lines and the character position in the line that we are processing (used in error messages)
@@ -1818,7 +1904,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             
             // Keep on parsing this character until it is consumed, then progress to the next character
-            
+
             var charProcessed = false
             while !charProcessed {
                 next = next.parseStep(char)
@@ -1836,12 +1922,12 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         if parseError == nil {
             
-            
+        
             // Check if the start-of-JSON "{" marker was found
             
             if activeObject == nil {
                 parseError = "No JSON code found, missing opening brace '{'."
-                log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parse", message: parseError!)
+                log.atLevelDebug(source: SwifterJSON.SOURCE + ".parse", message: parseError!)
                 return
             }
             
@@ -1850,7 +1936,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             if !endOfJsonBraceFound {
                 parseError = "Incomplete JSON code, missing ending brace '}'."
-                log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parse", message: parseError!)
+                log.atLevelDebug(source: SwifterJSON.SOURCE + ".parse", message: parseError!)
                 return
             }
         }
@@ -1864,13 +1950,13 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // Log the duration
         
         let message = "JSON parser completed in \(parseDuration * 1000) mSec, JSON parsing " + (activeObject != nil ? "was successful" : "failed")
-        log.atLevelInfo(id: 0, source: SwifterJSON.SOURCE + ".parse", message: message)
+        log.atLevelInfo(source: SwifterJSON.SOURCE + ".parse", message: message)
         
         
         return
     }
     
-    
+
     
     /// Wait for the top level JSON object to start.
     
@@ -1889,17 +1975,17 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             return parseFunctionForNextChar(waitForNameOrObjectEnd)
         }
-        
+
         
         // Any other character is an error
         
         parseError = "Expected '{', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".parseWaitForTopLevelObject", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".parseWaitForTopLevelObject", message: parseError!)
         
         return stopParsing()
     }
     
-    
+
     /// An OBJECT start has been read.
     
     private func waitForNameOrObjectEnd(char: Character) -> Next {
@@ -1912,17 +1998,17 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             readingString = true
             return parseFunctionForNextChar(waitForNameEnd)
         }
-        
+
         
         // Check for end of object
         
         if char == SwifterJSON.OBJECT_END { return objectEndFound() }
-        
-        
+            
+
         // Anything else is an error
         
         parseError = "Expected '}' or '\"', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForNameOrObjectEnd", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".waitForNameOrObjectEnd", message: parseError!)
         
         return stopParsing()
     }
@@ -1931,7 +2017,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     /// Wait for a name
     
     private func waitForName(char: Character) -> Next {
-        
+
         
         // Check for start of name string
         
@@ -1940,12 +2026,12 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             readingString = true
             return parseFunctionForNextChar(waitForNameEnd)
         }
-        
+            
         
         // Anything else is an error
         
         parseError = "Expected a name string to start '\"', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForName", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".waitForName", message: parseError!)
         
         return stopParsing()
     }
@@ -2004,7 +2090,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // Anything else is an error
         
         parseError = "Expecting an escaped character, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".nameEscapeSequence", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".nameEscapeSequence", message: parseError!)
         
         return stopParsing()
     }
@@ -2048,20 +2134,20 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         return hexDigitsError("nameHexDigit4")
     }
-    
+
     
     /// Wait for object end
     
     private func objectEndFound() -> Next {
-        
-        
+
+            
         // Object end, if this is the top level object, then nothing should follow
         
         if activeObject!.parseParent == nil {
             endOfJsonBraceFound = true
             return parseFunctionForNextChar(afterTopLevelObjectEnd)
         }
-        
+
         
         // Not the end, go up one object in the SwifterJSON hierarchy
         
@@ -2082,8 +2168,8 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     /// Wait for array end
     
     private func arrayEndFound() -> Next {
-        
-        
+
+            
         // Array end, this cannot be the top level object, go up one object in the SwifterJSON hierarchy
         
         activeObject = activeObject!.parseParent
@@ -2098,12 +2184,12 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         return parseFunctionForNextChar(waitForCommaOrArrayEnd)
     }
-    
+
     
     /// Wait for a comma or the end of the object
     
     private func waitForCommaOrObjectEnd(char: Character) -> Next {
-        
+    
         
         // After a comma a new name/value pair should follow
         
@@ -2116,7 +2202,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         if char == SwifterJSON.OBJECT_END { return objectEndFound() }
         
         parseError = "Expected a comma ',' or object end '}', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForCommaOrObjectEnd", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".waitForCommaOrObjectEnd", message: parseError!)
         
         return stopParsing()
     }
@@ -2138,16 +2224,16 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         if char == SwifterJSON.ARRAY_END { return arrayEndFound() }
         
         parseError = "Expected a comma ',' or object end ']', parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForCommaOrArrayEnd", message: parseError!)
-        
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".waitForCommaOrArrayEnd", message: parseError!)
+
         return stopParsing()
     }
-    
+
     
     /// A name string has been completed.
     
     private func waitForColon(char: Character) -> Next {
-        
+
         
         // Check if this is the colon
         
@@ -2157,7 +2243,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // The character is not expected
         
         parseError = "Expected a colon ':', parsing stopped at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForColon", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".waitForColon", message: parseError!)
         
         return stopParsing()
     }
@@ -2166,18 +2252,18 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     /// When characters occur after the top level object has ended
     
     private func afterTopLevelObjectEnd(char: Character) -> Next {
-        
+    
         parseError = "Character occured after top level object end, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".afterTopLevelObjectEnd", message: parseError!)
-        
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".afterTopLevelObjectEnd", message: parseError!)
+
         return stopParsing()
     }
-    
+
     
     /// An array opening bracket has been found
     
     private func waitForValueOrArrayEnd(char: Character) -> Next {
-        
+    
         
         // Check for the end of an array
         
@@ -2197,7 +2283,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         if char == "n" || char == "N"              { return parseFunctionForSameChar(waitForValue) }
         
         parseError = "Expected the start of a value or the closing brace of an empty array, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForValueOrArrayEnd", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".waitForValueOrArrayEnd", message: parseError!)
         
         return stopParsing()
     }
@@ -2244,9 +2330,9 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             // Add a new object to the active object, then switch the active object to the new object
             
-            var newObject = SwifterJSON.createObject()
+            let newObject = SwifterJSON.createObject()
             newObject.parseParent = activeObject
-            
+
             if activeObject!.itemType == ItemType.ARRAY { activeObject!.arrayItem!.append(newObject) }
             if activeObject!.itemType == ItemType.OBJECT { activeObject!.objectItem!.updateValue(newObject, forKey: name) }
             
@@ -2263,12 +2349,12 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             
             // Create a new array and add it to the active object, switch the active array to the new array
             
-            var newArray = SwifterJSON.createArray()
+            let newArray = SwifterJSON.createArray()
             newArray.parseParent = activeObject
-            
+
             if activeObject!.itemType == ItemType.ARRAY { activeObject!.arrayItem!.append(newArray) }
             if activeObject!.itemType == ItemType.OBJECT { activeObject!.objectItem!.updateValue(newArray, forKey: name) }
-            
+
             activeObject = newArray
             return parseFunctionForNextChar(waitForValueOrArrayEnd)
         }
@@ -2292,11 +2378,11 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // Illegal start of value
         
         parseError = "Expected the start of a value, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".waitForValue", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".waitForValue", message: parseError!)
         
         return stopParsing()
     }
-    
+
     
     ///  A value string has started.
     
@@ -2320,7 +2406,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             let obj = SwifterJSON(value)
             obj.parseParent = activeObject
             
-            var next = addValueToParent(obj)
+            let next = addValueToParent(obj)
             return parseFunctionForNextChar(next.parseStep) // Because the end-of-string character must be discarded
         }
         
@@ -2335,7 +2421,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     /// The value object is ready for insertion in the enclosing object
     
     private func addValueToParent(obj: SwifterJSON) -> Next {
-        
+
         
         // Add the value to the current object, and wait for more or the end of the current object
         
@@ -2350,7 +2436,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             return parseFunctionForSameChar(waitForCommaOrObjectEnd)
         }
     }
-    
+
     
     /// An escape sequence for a string value has started. The escape sequence must be validated.
     
@@ -2376,7 +2462,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // Anything else is an error
         
         parseError = "Expected an escaped character, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueStringEscapeSequence", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".valueStringEscapeSequence", message: parseError!)
         
         return stopParsing()
     }
@@ -2420,12 +2506,12 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         return hexDigitsError("valueStringHexDigit4")
     }
-    
+
     
     /// The sign character of a number was found, process next character.
     
     private func valueNumberAfterSign(char: Character) -> Next {
-        
+
         
         // If it is a zero, then the first digit series has ended
         
@@ -2446,7 +2532,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // This is an error
         
         parseError = "Expected a number, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberAfterSign", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".valueNumberAfterSign", message: parseError!)
         
         return stopParsing()
     }
@@ -2488,7 +2574,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         
         if ((char != "e") && (char != "E")) {
             
-            let obj = SwifterJSON(value.toInt()!)
+            let obj = SwifterJSON(Int(value)!)
             obj.parseParent = activeObject
             
             return addValueToParent(obj)
@@ -2517,7 +2603,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // Anything else is an error
         
         parseError = "Expected a number, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberFractionStart", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".valueNumberFractionStart", message: parseError!)
         
         return stopParsing()
     }
@@ -2588,7 +2674,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         // Anything else is an error
         
         parseError = "Expected start of exponent, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberStartExponent", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".valueNumberStartExponent", message: parseError!)
         
         return stopParsing()
     }
@@ -2606,7 +2692,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         //  In an exponent there must be at least one number.
         
         parseError = "Expected a number, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + ".valueNumberStartExponentDigits", message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + ".valueNumberStartExponentDigits", message: parseError!)
         
         return stopParsing()
     }
@@ -2653,7 +2739,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         if char == "e" || char == "E" {
             let obj = SwifterJSON(true)
             obj.parseParent = activeObject
-            var next = addValueToParent(obj)
+            let next = addValueToParent(obj)
             return parseFunctionForNextChar(next.parseStep) // Because this character must be discarded
         }
         
@@ -2686,9 +2772,9 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         if char == "e" || char == "E" {
             let obj = SwifterJSON(false)
             obj.parseParent = activeObject
-            var next = addValueToParent(obj)
+            let next = addValueToParent(obj)
             return parseFunctionForNextChar(next.parseStep) // Because this character must be discarded
-            
+
         }
         
         return booleanFalseError(forCharacter: "e", inFunction: "valueBooleanFalseChar5")
@@ -2714,32 +2800,32 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         if char == "l" || char == "L" {
             let obj = SwifterJSON()
             obj.parseParent = activeObject
-            var next = addValueToParent(obj)
+            let next = addValueToParent(obj)
             return parseFunctionForNextChar(next.parseStep) // Because this character must be discarded
         }
         
         return nullError(forCharacter: "l", inFunction: "valueNullChar4")
     }
-    
+
     
     // Used when no other usefull function can be returned.
     // Note: None of these two functions should ever be called.
     
     private func dummy(char: Character) -> Next {
         let message = "Dummy JSON parsing function called, this should not happen, " + charLocation.description()
-        log.atLevelError(id: 0, source: SwifterJSON.SOURCE + ".dummy", message: message)
+        log.atLevelError(source: SwifterJSON.SOURCE + ".dummy", message: message)
         return Next(parseStep: dummyNoLog, charIsConsumed: true)
     }
     private func dummyNoLog(char: Character) -> Next {
         return Next(parseStep: dummyNoLog, charIsConsumed: true)
     }
     
-    
+
     // A helper function to generate error information when a not-hex character is encountered in a '\uXXXX' escape sequence.
     
     private func hexDigitsError(location: String) -> Next {
         parseError = "Expected a hexadecimal digit, parsing aborted at " + charLocation.description()
-        log.atLevelError(id: 0, source: SwifterJSON.SOURCE + "." + location, message: parseError!)
+        log.atLevelError(source: SwifterJSON.SOURCE + "." + location, message: parseError!)
         return stopParsing()
     }
     
@@ -2748,7 +2834,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     private func booleanTrueError(forCharacter e: Character, inFunction: String) -> Next {
         parseError = "Expected '\(e)' of boolean true, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
         return stopParsing()
     }
     
@@ -2757,7 +2843,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     private func booleanFalseError(forCharacter e: Character, inFunction: String) -> Next {
         parseError = "Expected '\(e)' of boolean false, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
         return stopParsing()
     }
     
@@ -2766,10 +2852,10 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     private func nullError(forCharacter e: Character, inFunction: String) -> Next {
         parseError = "Expected '\(e)' of null value, parsing aborted at " + charLocation.description()
-        log.atLevelDebug(id: 0, source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
+        log.atLevelDebug(source: SwifterJSON.SOURCE + "." + inFunction, message: parseError!)
         return stopParsing()
     }
-    
+
     
     // A helper to make the code more readable
     
@@ -2786,14 +2872,14 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
     
     
     // A helper to make the code more readable
-    
+
     private func stopParsing() -> Next {
         return Next(parseStep: dummy, charIsConsumed: true)
     }
     
-    
+
     // For logging purposes, identifies the source of a logging entry
-    
+
     private static let SOURCE = "SwifterJSON"
     
     
@@ -2836,9 +2922,9 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
             return "line = \(inLine), character = \(atCharacter)"
         }
     }
+
     
-    
-    // Signature of the parsing functions with helper functions to make the code more readable
+    // Signature of the parsing functions
     
     private typealias parseFunction = (Character) -> Next
     private struct Next {
@@ -2877,7 +2963,7 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
         default: return false
         }
     }
-    
+
     private static var formatter: NSNumberFormatter?
     
     private static func toDouble(str: String) -> Double? {
@@ -2893,9 +2979,9 @@ final class SwifterJSON : Printable, SequenceType, Equatable {
 // TODO: Either provide your own logger and remove the following class, or leave the following class in, or modify the above code
 
 private class Log {
-    func atLevelDebug(#id: Int32, source: String, message: String){}
-    func atLevelInfo(#id: Int32, source: String, message: String){}
-    func atLevelError(#id: Int32, source: String, message: String){}
+    func atLevelDebug(source source: String, message: String){}
+    func atLevelInfo(source source: String, message: String){}
+    func atLevelError(source source: String, message: String){}
 }
 private let log = Log()
 

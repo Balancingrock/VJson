@@ -29,7 +29,7 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         */
         
-        var json = JSON() // Start of wih a JSON NULL content
+        let json = JSON() // Start of wih a JSON NULL content
         
         
         // Show that there is nothing yet
@@ -161,7 +161,7 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         */
 
-        var json = JSON()
+        let json = JSON()
         
         
         // Show that there is nothing yet
@@ -211,7 +211,7 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         */
         
-        var json = JSON()
+        let json = JSON()
         
         
         var del = json.removeItemAtIndex(0)
@@ -220,7 +220,7 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         // Append two values
         
-        var removedItem = SwifterJSON("one")
+        let removedItem = SwifterJSON("one")
         json.append(removedItem)
         json.append(12)
         
@@ -260,13 +260,13 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         */
         
-        var json = JSON()
-        var originalItem1 = JSON("first")
-        var originalItem2 = JSON("second")
-        var originalItem3 = JSON("third")
-        var originalItem4 = JSON("fourth")
-        var replaceItem1 = JSON(1)
-        var replaceItem2 = JSON(2)
+        let json = JSON()
+        let originalItem1 = JSON("first")
+        let originalItem2 = JSON("second")
+        let originalItem3 = JSON("third")
+        let originalItem4 = JSON("fourth")
+        let replaceItem1 = JSON(1)
+        let replaceItem2 = JSON(2)
         
         
         // Show that nothing is replaced on a non-ARRAY
@@ -300,8 +300,8 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         // Replace an existing index
         
-        var removedItem1 = json.replaceItem(replaceItem1, atIndex: 2)
-        var removedItem2 = json.replaceItem(replaceItem2, atIndex: 3)
+        _ = json.replaceItem(replaceItem1, atIndex: 2)
+        _ = json.replaceItem(replaceItem2, atIndex: 3)
         XCTAssert(json[0] === originalItem1, "Array content error")
         XCTAssert(json[1] === originalItem2, "Array content error")
         XCTAssert(json[2] === replaceItem1, "Array content error")
@@ -546,7 +546,7 @@ class SwifterJSONInterfaceTests: XCTestCase {
     
     func testChangeObjectByAssignment() {
         
-        var json = JSON()
+        let json = JSON()
         
         XCTAssertTrue(json.isNull(), "Should be a NULL object")
         

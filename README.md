@@ -32,6 +32,14 @@ See the header of the SwifterJSON file for more on how to start using this frame
 
 History:
 
+Release 0.9.2, changes against 0.9.1
+- Fixed a bug that caused the 'writeJSONHierarchyToFile' to fail when the file already existed
+- Added convenience initialiser to accept Array<SwifterJSON>
+- Added convenience initialiser to accept Dictionary<String, SwifterJSON>
+- Added 'final' to the class definition
+- Re-read all text and comments, updated some of it.
+- Added the Equatable protocol to the SwifterJSON class definition (this was already defacto the case)
+
 Release 0.9.1 is used in a shipping application, changes against previous release:
 - Moved the private definitions inside the class to avoid name collisions
 - Replaced type extensions with static class methods

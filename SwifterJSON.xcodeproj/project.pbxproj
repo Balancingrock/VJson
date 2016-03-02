@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		865AFCB91C8718BA006CCAD8 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
+		865AFCBA1C8718BA006CCAD8 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB81C8718BA006CCAD8 /* VJson.swift */; };
 		865B7B0D1A88F2E100411EDA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B0C1A88F2E100411EDA /* AppDelegate.swift */; };
 		865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B0E1A88F2E100411EDA /* ViewController.swift */; };
 		865B7B111A88F2E100411EDA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 865B7B101A88F2E100411EDA /* Images.xcassets */; };
@@ -30,6 +32,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		865AFCB71C8718BA006CCAD8 /* ASCII.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASCII.swift; sourceTree = "<group>"; };
+		865AFCB81C8718BA006CCAD8 /* VJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
 		865B7B071A88F2E100411EDA /* SwifterJSON.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwifterJSON.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		865B7B0B1A88F2E100411EDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		865B7B0C1A88F2E100411EDA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -87,6 +91,8 @@
 				865B7B0C1A88F2E100411EDA /* AppDelegate.swift */,
 				865B7B0E1A88F2E100411EDA /* ViewController.swift */,
 				865B7B291A88F2F400411EDA /* SwifterJSON.swift */,
+				865AFCB71C8718BA006CCAD8 /* ASCII.swift */,
+				865AFCB81C8718BA006CCAD8 /* VJson.swift */,
 				865B7B101A88F2E100411EDA /* Images.xcassets */,
 				865B7B121A88F2E100411EDA /* Main.storyboard */,
 				865B7B0A1A88F2E100411EDA /* Supporting Files */,
@@ -224,8 +230,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				865B7B2A1A88F2F400411EDA /* SwifterJSON.swift in Sources */,
+				865AFCBA1C8718BA006CCAD8 /* VJson.swift in Sources */,
 				865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */,
 				865B7B0D1A88F2E100411EDA /* AppDelegate.swift in Sources */,
+				865AFCB91C8718BA006CCAD8 /* ASCII.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

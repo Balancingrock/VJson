@@ -20,6 +20,27 @@ class VJsonInitTests: XCTestCase {
         super.tearDown()
     }
 
+/*    func testExample() {
+        
+        let top = VJson.createJsonHierarchy()
+        top["books"][0]["title"].stringValue = "THHGTTG"
+        let myJsonString = top.description
+        
+        // Use the above generated string to read JSON code
+        
+        let data = myJsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        do {
+            let json = try VJson.createJsonHierarchy(UnsafePointer<UInt8>(data.bytes), length: data.length)
+            if let title = json["books"][0]["title"].stringValue {
+                print("The title of the first book is: " + title)
+            } else {
+                print("The title of the first book in myJsonString was not found")
+            }
+        } catch let error as VJson.Exception {
+            print(error.description)
+        } catch {}
+    }*/
+    
     func testNull() {
 
         var json = VJson.createNull(name: nil)

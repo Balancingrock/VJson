@@ -2,41 +2,57 @@
 
 Two single class frameworks in Swift to read/write & parse the JSON Format.
 
-SwifterJSON is the original implementation, but as that was rather slow, a new parser called VJson was implented. It is anticipated that SwifterJSON will eventually be retired.
+SwifterJSON is the original implementation, but as that was rather slow, a new parser called VJson was implented. SwifterJSON development has been stopped.
 
-However VJson is faster and has many of the same features as SwifterJSON.
-
-To use SwifterJSON: Just add the SwifterJSON.swift file to your project, this is the only file you need. You can find it in the "SwifterJSON" directory.
+VJson is faster and has many of the same features as SwifterJSON.
 
 To use VJson: Add the files ASCII.swift and VJson to your project.
 
 Example usage (Full example, you can use the code below directly)
 
-<pre>
-// Create a string with JSON code
-
-let top = SwifterJSON.createJSONHierarchy()
-top["books"][0]["title"].stringValue = "THHGTTG"
-let myJsonString = top.description()
-
-// Use the above generated string to read JSON code
-
-let (topOrNil, errorOrNil) = SwifterJSON.createJSONHierarchyFromString(myJsonString)
-if let top = topOrNil {
-    if let title = top["books"][0]["title"].stringValue {
-       println("The title of the first book is: " + title)
-    } else {
-       println("The title of the first book in myJsonString was not found")
+    func testExample() {
+        
+        let top = VJson.createJsonHierarchy()
+        top["books"][0]["title"].stringValue = "THHGTTG"
+        let myJsonString = top.description
+        
+        // Use the above generated string to read JSON code
+        
+        let data = myJsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        do {
+            let json = try VJson.createJsonHierarchy(UnsafePointer<UInt8>(data.bytes), length: data.length)
+            if let title = json["books"][0]["title"].stringValue {
+                print("The title of the first book is: " + title)
+            } else {
+                print("The title of the first book in myJsonString was not found")
+            }
+        } catch let error as VJson.Exception {
+            print(error.description)
+        } catch {}
     }
-} else {
-  println(errorOrNil!)
-}
-</pre>
-See the header of the SwifterJSON file for more on how to start using this framework.
 
-VJson can be used in the same way. Except that the return from the createJsonHierarchy throws its error rather than passing it back as a tuple.
 
 History:
+
+####v0.9.1 (VJson)
+
+- Changed parameter to 'addChild' to an optional.
+- Fixed a problem where an object without a leading brace in an array would not be thrown as an error
+- Changed 'makeCopy()' to 'copy' for constency with other projects
+- Fixed the asString for BOOL types
+- Changed all "...Value" returns to optionals (makes more sense as this allows the use of guard let statements to check the JSON structure.
+- Overhauled the child support interfaces (changes parameters and return values to optionals)
+- Removed 'set' access from arrayValue and dictionaryValue as it could potentially lead to an invalid JSON hierarchy
+- Fixed subscript accessors, array can now be used on top-level with an implicit name of "array"
+- Fixed missing braces around named objects in an array
+
+Also added unit tests for VJson and performance tests for Apple's JSON, SwifterJSON and VJson.
+
+####v0.9.0 (VJson)
+
+- Initial release
+
+######The versions below refer to the older SwifterJSON class (this is no longer updated)
 
 V0.9.5
 

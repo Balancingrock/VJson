@@ -1132,7 +1132,7 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
             try str.writeToFile(filepath.path!, atomically: true, encoding: NSUTF8StringEncoding)
             return true
         } catch let error as NSError {
-            //log.atLevelError(source: "VJson.save", message: "Error: \(error.localizedDescription)")
+            log.atLevelError(source: "VJson.save", message: "Error: \(error.localizedDescription)")
             return false
         }
     }

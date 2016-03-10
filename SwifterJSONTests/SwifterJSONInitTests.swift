@@ -21,6 +21,7 @@ class SwifterJSONInitTests: XCTestCase {
         super.tearDown()
     }
     
+    
     func testInitNull() {
         
         /*
@@ -44,12 +45,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertTrue(json.isNull(), "Expected true on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertTrue(json.isNull, "Expected true on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -97,12 +98,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
 
-        XCTAssertTrue(json.isString(), "Expected true on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertTrue(json.isString, "Expected true on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -150,12 +151,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
 
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertTrue(json.isNumber(), "Expected true on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertTrue(json.isNumber, "Expected true on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
 
         
         // Test accessors validity
@@ -204,12 +205,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertTrue(json.isNumber(), "Expected true on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertTrue(json.isNumber, "Expected true on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -257,12 +258,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertTrue(json.isNumber(), "Expected true on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertTrue(json.isNumber, "Expected true on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -310,12 +311,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertTrue(json.isBool(), "Expected true on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertTrue(json.isBool, "Expected true on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -362,12 +363,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertTrue(json.isObject(), "Expected true on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertTrue(json.isObject, "Expected true on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -412,12 +413,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertTrue(json.isArray(), "Expected true on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertTrue(json.isArray, "Expected true on isArray")
         
         
         // Test accessors validity
@@ -461,12 +462,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertTrue(json.isArray(), "Expected true on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertTrue(json.isArray, "Expected true on isArray")
         
         
         // Test accessors validity
@@ -515,12 +516,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertTrue(json.isArray(), "Expected true on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertTrue(json.isArray, "Expected true on isArray")
         
         
         // Test accessors validity
@@ -569,12 +570,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertTrue(json.isArray(), "Expected true on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertTrue(json.isArray, "Expected true on isArray")
         
         
         // Test accessors validity
@@ -623,12 +624,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertTrue(json.isArray(), "Expected true on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertTrue(json.isArray, "Expected true on isArray")
         
         
         // Test accessors validity
@@ -677,12 +678,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertFalse(json.isObject(), "Expected false on isObject")
-        XCTAssertTrue(json.isArray(), "Expected true on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertFalse(json.isObject, "Expected false on isObject")
+        XCTAssertTrue(json.isArray, "Expected true on isArray")
         
         
         // Test accessors validity
@@ -733,12 +734,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertTrue(json.isObject(), "Expected true on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertTrue(json.isObject, "Expected true on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -792,12 +793,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertTrue(json.isObject(), "Expected true on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertTrue(json.isObject, "Expected true on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -851,12 +852,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertTrue(json.isObject(), "Expected true on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertTrue(json.isObject, "Expected true on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -910,12 +911,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertTrue(json.isObject(), "Expected true on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertTrue(json.isObject, "Expected true on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity
@@ -969,12 +970,12 @@ class SwifterJSONInitTests: XCTestCase {
         
         // Test type properties
         
-        XCTAssertFalse(json.isString(), "Expected false on isString")
-        XCTAssertFalse(json.isNumber(), "Expected false on isNumber")
-        XCTAssertFalse(json.isBool(), "Expected false on isBool")
-        XCTAssertFalse(json.isNull(), "Expected false on isNull")
-        XCTAssertTrue(json.isObject(), "Expected true on isObject")
-        XCTAssertFalse(json.isArray(), "Expected false on isArray")
+        XCTAssertFalse(json.isString, "Expected false on isString")
+        XCTAssertFalse(json.isNumber, "Expected false on isNumber")
+        XCTAssertFalse(json.isBool, "Expected false on isBool")
+        XCTAssertFalse(json.isNull, "Expected false on isNull")
+        XCTAssertTrue(json.isObject, "Expected true on isObject")
+        XCTAssertFalse(json.isArray, "Expected false on isArray")
         
         
         // Test accessors validity

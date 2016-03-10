@@ -35,8 +35,8 @@ class SwifterJSONInterfaceTests: XCTestCase {
         // Show that there is nothing yet
         
         XCTAssert(json.count == 0, "Object should be empty")
-        XCTAssertFalse(json.isObject(), "Object should not yet be a JSON OBJECT")
-        XCTAssertTrue(json.isNull(), "Object should be a JSON NULL object")
+        XCTAssertFalse(json.isObject, "Object should not yet be a JSON OBJECT")
+        XCTAssertTrue(json.isNull, "Object should be a JSON NULL object")
         
         
         // Add 2 name/value pairs
@@ -47,8 +47,8 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         // Show that the object has changed into a JSON OBJECT and that the added pairs are present
         
-        XCTAssertTrue(json.isObject(), "Object should be a JSON OBJECT")
-        XCTAssertFalse(json.isNull(), "Object should no longer be a JSON NULL object")
+        XCTAssertTrue(json.isObject, "Object should be a JSON OBJECT")
+        XCTAssertFalse(json.isNull, "Object should no longer be a JSON NULL object")
         XCTAssert(json.count == 2, "Expected two objects in top")
         XCTAssertEqual(json["name-true"].boolValue!, true, "Expected value 'true' for 'name-true'")
         XCTAssertEqual(json["name-false"].boolValue!, false, "Expected value 'true' for 'name-false'")
@@ -167,8 +167,8 @@ class SwifterJSONInterfaceTests: XCTestCase {
         // Show that there is nothing yet
         
         XCTAssert(json.count == 0, "Object should be empty")
-        XCTAssertFalse(json.isArray(), "Object should not yet be a JSON ARRAY")
-        XCTAssertTrue(json.isNull(), "Object should be a JSON NULL object")
+        XCTAssertFalse(json.isArray, "Object should not yet be a JSON ARRAY")
+        XCTAssertTrue(json.isNull, "Object should be a JSON NULL object")
 
         
         // Append two values
@@ -179,8 +179,8 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         // Show that this is correct
         
-        XCTAssertTrue(json.isArray(), "Object should be a JSON ARRAY")
-        XCTAssertFalse(json.isNull(), "Object should not be a JSON NULL object")
+        XCTAssertTrue(json.isArray, "Object should be a JSON ARRAY")
+        XCTAssertFalse(json.isNull, "Object should not be a JSON NULL object")
         XCTAssert(json.count == 2, "Expected two objects in top")
         XCTAssertEqual(json[0].stringValue!, "one", "Expected value 'one' for the first entry")
         XCTAssertEqual(json[1].intValue!, 12, "Expected value '12' for second entry")
@@ -224,7 +224,7 @@ class SwifterJSONInterfaceTests: XCTestCase {
         json.append(removedItem)
         json.append(12)
         
-        XCTAssertTrue(json.isArray(), "Object should have changed into an array")
+        XCTAssertTrue(json.isArray, "Object should have changed into an array")
         
         
         // Show that this is correct
@@ -281,7 +281,7 @@ class SwifterJSONInterfaceTests: XCTestCase {
         json.append(originalItem3)
         json.append(originalItem4)
         
-        XCTAssertTrue(json.isArray(), "Object should have been converted into an array")
+        XCTAssertTrue(json.isArray, "Object should have been converted into an array")
         
         
         // Show that this is correct
@@ -548,25 +548,25 @@ class SwifterJSONInterfaceTests: XCTestCase {
         
         let json = JSON()
         
-        XCTAssertTrue(json.isNull(), "Should be a NULL object")
+        XCTAssertTrue(json.isNull, "Should be a NULL object")
         
         json.stringValue = "string"
-        XCTAssertTrue(json.isString(), "Should be a STRING object")
+        XCTAssertTrue(json.isString, "Should be a STRING object")
         
         json.intValue = 12
-        XCTAssertTrue(json.isNumber(), "Should be a NUMBER object")
+        XCTAssertTrue(json.isNumber, "Should be a NUMBER object")
         
         json.boolValue = true
-        XCTAssertTrue(json.isBool(), "Should be a BOOL object")
+        XCTAssertTrue(json.isBool, "Should be a BOOL object")
         
         json.doubleValue = 12.12
-        XCTAssertTrue(json.isNumber(), "Should be a NUMBER object")
+        XCTAssertTrue(json.isNumber, "Should be a NUMBER object")
         
         json.updateValueNull(forName: "a")
-        XCTAssertTrue(json.isObject(), "Should be an OBJECT object")
+        XCTAssertTrue(json.isObject, "Should be an OBJECT object")
         
         json.append(true)
-        XCTAssertTrue(json.isArray(), "Should be an ARRAY object")
+        XCTAssertTrue(json.isArray, "Should be an ARRAY object")
     }
     
     func testObjectAtPath() {

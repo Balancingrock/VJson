@@ -28,8 +28,8 @@ class ParserErrorMessageWhiteBoxTests: XCTestCase {
         
         let testCases: [[String]] = [
             ["",                            "Empty JSON source."],
-            [" ",                           "No JSON code found, missing opening brace."],
-            ["{ ",                          "Incomplete JSON code, missing ending brace."],
+            [" ",                           "No JSON code found, missing opening brace '{'."],
+            ["{ ",                          "Incomplete JSON code, missing ending brace '}'."],
             [" q{}",                        "Expected '{', parsing aborted at line = 1, character = 2"],
             ["{q}",                         "Expected '}' or '\"', parsing aborted at line = 1, character = 2"],
             ["{\"k\":1,q",                  "Expected a name string to start '\"', parsing aborted at line = 1, character = 8"],
@@ -38,7 +38,7 @@ class ParserErrorMessageWhiteBoxTests: XCTestCase {
             ["{\"key\":12t}",               "Expected a comma ',' or object end '}', parsing aborted at line = 1, character = 10"],
             ["{\"key\":[12t}",              "Expected a comma ',' or object end ']', parsing aborted at line = 1, character = 11"],
             ["{\"key\"12}",                 "Expected a colon ':', parsing stopped at line = 1, character = 7"],
-            ["{\"key\":12}q",               "Character occured after top level object end, parsing aborted at line = 1, character = 11"],
+            ["{\"key\":12}q",               "Character occured after top level object end, parsing aborted at line = 1, character = 11 character = q"],
             ["{\"key\":[q",                 "Expected the start of a value or the closing brace of an empty array, parsing aborted at line = 1, character = 9"],
             ["{\"key\":q",                  "Expected the start of a value, parsing aborted at line = 1, character = 8"],
             ["{\"key\":[1,q",               "Expected the start of a value, parsing aborted at line = 1, character = 11"],
@@ -61,7 +61,7 @@ class ParserErrorMessageWhiteBoxTests: XCTestCase {
         ]
         
         for testCase in testCases {
-            let (top, error) = JSON.createJSONHierarchyFromString(testCase[TEST_STRING])
+            let (top, error) = JSON._createJSONHierarchyFromString(testCase[TEST_STRING])
             XCTAssertNil(top, "Expected nil")
             XCTAssertNotNil(error, "Expected an error message, found nil")
             XCTAssertEqual(error!, testCase[EXPECTED_ERROR], "Expected '\(testCase[EXPECTED_ERROR])', found '\(error!)'")

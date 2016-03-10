@@ -45,7 +45,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (top, error) = JSON.createJSONHierarchyFromString(source)
+        let (top, error) = JSON._createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -96,7 +96,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON._createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -151,7 +151,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON._createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -201,7 +201,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON._createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -246,7 +246,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON._createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -289,7 +289,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         // Parse the source
         
-        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON._createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -304,9 +304,9 @@ class ParserBlackBoxSuccessTests: XCTestCase {
             
             XCTAssertEqual(top.count, 1, "Expected 1 pair, found \(top.count)")
             if let _ = top["k01"].nullValue {
-                XCTAssertTrue(top["k01"].isNull(), "Expected null value")
+                XCTAssertTrue(top["k01"].isNull, "Expected null value")
             } else {
-                XCTFail("Key/Value pair not found for key k01")
+                XCTFail("Key/Value pair not found for key 'k01'")
             }
         }
     }
@@ -315,7 +315,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         let source = "{\"key\":[1,2,3]}"
         
-        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON._createJSONHierarchyFromString(source)
 
         
         // Standard nil/non-nil tests
@@ -355,7 +355,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         
         let source = "{\"key\":[1,{\"key\":[]},3]}"
         
-        let (topOrNil, errorOrNil) = JSON.createJSONHierarchyFromString(source)
+        let (topOrNil, errorOrNil) = JSON._createJSONHierarchyFromString(source)
         
         
         // Standard nil/non-nil tests
@@ -374,7 +374,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
                 XCTFail("Could not read element 0")
             }
             
-            XCTAssertTrue(top["key"][1]["key"].isArray(), "Expected an array")
+            XCTAssertTrue(top["key"][1]["key"].isArray, "Expected an array")
             XCTAssertEqual(top["key"][1]["key"].count, 0, "Expected empty array")
             
             if let v = top["key"][2].intValue {

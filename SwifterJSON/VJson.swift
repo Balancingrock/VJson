@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.1
+//  Version:    0.9.2
 //
 //  Author:     Marinus van der Lugt
 //  Website:    http://www.balancingrock.nl/swifterjson
@@ -78,7 +78,8 @@
 // =====================================================================================================================
 //
 // History
-// w0.9.1 - Changed parameter to 'addChild' to an optional.
+// w0.9.2 - Fixed a problem where an assigned NULL object was removed from the hierarchy
+// v0.9.1 - Changed parameter to 'addChild' to an optional.
 //        - Fixed a problem where an object without a leading brace in an array would not be thrown as an error
 //        - Changed 'makeCopy()' to 'copy' for constency with other projects
 //        - Fixed the asString for BOOL types
@@ -223,6 +224,7 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
                 neutralize()
                 type = .NULL
             }
+            createdBySubscript = false // A previous null may have been created by a subscript accessor, this prevents it from being removed.
         }
     }
     

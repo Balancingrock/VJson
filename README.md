@@ -34,6 +34,10 @@ Example usage (Full example, you can use the code below directly)
 
 History:
 
+####v0.9.2 (VJson)
+
+- Fixed a problem where a named NULL object was removed from the hierarchy upon fetching the description.
+
 ####v0.9.1 (VJson)
 
 - Changed parameter to 'addChild' to an optional.

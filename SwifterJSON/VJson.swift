@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.2
+//  Version:    0.9.3
 //
 //  Author:     Marinus van der Lugt
 //  Website:    http://www.balancingrock.nl/swifterjson
@@ -78,7 +78,8 @@
 // =====================================================================================================================
 //
 // History
-// w0.9.2 - Fixed a problem where an assigned NULL object was removed from the hierarchy
+// v0.9.3 - Updated for changes in ASCII.swift
+// v0.9.2 - Fixed a problem where an assigned NULL object was removed from the hierarchy
 // v0.9.1 - Changed parameter to 'addChild' to an optional.
 //        - Fixed a problem where an object without a leading brace in an array would not be thrown as an error
 //        - Changed 'makeCopy()' to 'copy' for constency with other projects
@@ -1468,8 +1469,8 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
         }
         
         // First digit series
-        if buffer[offset].isAsciiNumber() {
-            while buffer[offset].isAsciiNumber() {
+        if buffer[offset].isAsciiNumber {
+            while buffer[offset].isAsciiNumber {
                 numbuf.append(buffer[offset++])
                 // If the original string is a fraction, it could end right after the number
                 if offset >= numberOfBytes {
@@ -1492,8 +1493,8 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
         if buffer[offset] == ASCII_DOT {
             numbuf.append(buffer[offset++])
             if offset >= numberOfBytes { throw Exception.REASON(code: 36, incomplete: true, message: "Missing digits (expecting fraction) at offset \(--offset)") }
-            if buffer[offset].isAsciiNumber() {
-                while buffer[offset].isAsciiNumber() {
+            if buffer[offset].isAsciiNumber {
+                while buffer[offset].isAsciiNumber {
                     numbuf.append(buffer[offset++])
                     // If the original string is a fraction, it could end right after the number
                     if offset >= numberOfBytes {
@@ -1521,8 +1522,8 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
                 numbuf.append(buffer[offset++])
                 if offset >= numberOfBytes { throw Exception.REASON(code: 41, incomplete: true, message: "Missing mantissa at buffer end") }
             }
-            if buffer[offset].isAsciiNumber() {
-                while buffer[offset].isAsciiNumber() {
+            if buffer[offset].isAsciiNumber {
+                while buffer[offset].isAsciiNumber {
                     numbuf.append(buffer[offset++])
                     if offset >= numberOfBytes { break }
                 }
@@ -1711,7 +1712,7 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
     private static func skipWhitespaces(buffer: UnsafePointer<UInt8>, numberOfBytes: Int, inout offset: Int) {
 
         if offset >= numberOfBytes { return }
-        while buffer[offset].isAsciiWhitespace() {
+        while buffer[offset].isAsciiWhitespace {
             offset++
             if offset >= numberOfBytes { break }
         }

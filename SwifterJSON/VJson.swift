@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.3
+//  Version:    0.9.4
 //
 //  Author:     Marinus van der Lugt
 //  Website:    http://www.balancingrock.nl/swifterjson
@@ -78,6 +78,10 @@
 // =====================================================================================================================
 //
 // History
+// w0.9.4 - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
+//        - Added conveniance operation "addChild" that does not need the name of the child to be added.
+//        - Changed behaviour of "addChild:name" to change the item into an OBJECT if it is'nt one.
+//        - Changed behaviour of "appendChild" to change the item into an ARRAY if it is'nt one.
 // v0.9.3 - Updated for changes in ASCII.swift
 // v0.9.2 - Fixed a problem where an assigned NULL object was removed from the hierarchy
 // v0.9.1 - Changed parameter to 'addChild' to an optional.
@@ -493,7 +497,7 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
     
     /**
      Appends the given object to the end of the current children.
-     - Note: Only for ARRAY objects.
+     - Note: Changes the item into an ARRAY object if necessary.
      - Parameter child: The VJson object to be inserted.
      - Returns: True if the operation succeeded, false if not. Nil if the child is nil.
      */
@@ -502,7 +506,9 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
         
         guard let c = child else { return nil }
         guard children != nil else { return false }
-        guard type == .ARRAY else { return false }        
+        
+        if type != .ARRAY { changeToArrayType() }
+        
         guard (c.type == .OBJECT) ? true : (c.name == nil) else { return false }
         
         children!.append(c)
@@ -518,7 +524,7 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
      - Returns: True if the operation succeeded, false if not. Nil if the child is nil.
      */
     
-    func replaceChild(child: VJson?, atIndex index: Int) -> Bool? {
+    func replaceChildAtIndex(index: Int, withChild child: VJson? ) -> Bool? {
         
         guard let c = child else { return nil }
         guard children != nil else { return false }
@@ -571,18 +577,19 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
     
     
     /// Add a new object with the given name or replace a current object with that same name (simulate dictionary access)
-    /// - Note: Only for on OBJECT objects.
+    /// - Note: This will change the item into a JSON OBJECT if it is not.
     
     func addChild(child: VJson?, forName name: String) -> Bool? {
         
         guard let c = child else { return nil }
-        guard type == .OBJECT else { return false }
+        
+        if type != .OBJECT { changeToObjectType() }
         
         c.name = name
         
         for (index, c) in children!.enumerate() {
             if c.name == name {
-                replaceChild(c, atIndex: index)
+                replaceChildAtIndex(index, withChild: c)
                 return true
             }
         }
@@ -592,6 +599,17 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
         return true
     }
     
+    
+    /// Add a new object with the given name or replace a current object with that same name (simulate dictionary access)
+    /// - Note: This will change the item into a JSON OBJECT if it is not.
+
+    func addChild(child: VJson?) -> Bool? {
+        
+        guard let name = child?.nameValue else { return false }
+        
+        return addChild(child, forName: name)
+    }
+
     
     /// Remove the first child with the given name (simulate dictionary access)
     

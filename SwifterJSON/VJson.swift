@@ -83,6 +83,7 @@
 //        - Changed behaviour of "addChild:name" to change the item into an OBJECT if it is'nt one.
 //        - Changed behaviour of "appendChild" to change the item into an ARRAY if it is'nt one.
 //        - Upgraded to Swift 2.2
+//        - Removed dependency on SwifterLog
 // v0.9.3 - Updated for changes in ASCII.swift
 // v0.9.2 - Fixed a problem where an assigned NULL object was removed from the hierarchy
 // v0.9.1 - Changed parameter to 'addChild' to an optional.
@@ -1145,17 +1146,16 @@ final class VJson: Equatable, CustomStringConvertible, SequenceType {
     /**
      Tries to saves the contents of the JSON hierarchy to the specified file.
      
-     - Returns: True on success, False on fail.
+     - Returns: Nil on success, Error description on fail.
      */
     
-    func save(filepath: NSURL) -> Bool {
+    func save(url: NSURL) -> String? {
         let str = self.description
         do {
-            try str.writeToFile(filepath.path!, atomically: true, encoding: NSUTF8StringEncoding)
-            return true
+            try str.writeToURL(url, atomically: false, encoding: NSUTF8StringEncoding)
+            return nil
         } catch let error as NSError {
-            log.atLevelError(source: "VJson.save", message: "Error: \(error.localizedDescription)")
-            return false
+            return error.localizedDescription
         }
     }
     

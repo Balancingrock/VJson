@@ -11,8 +11,6 @@
 		865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B0E1A88F2E100411EDA /* ViewController.swift */; };
 		865B7B111A88F2E100411EDA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 865B7B101A88F2E100411EDA /* Images.xcassets */; };
 		865B7B141A88F2E100411EDA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865B7B121A88F2E100411EDA /* Main.storyboard */; };
-		865B7B2A1A88F2F400411EDA /* SwifterJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B291A88F2F400411EDA /* SwifterJSON.swift */; };
-		865B7B2B1A88F2F400411EDA /* SwifterJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B291A88F2F400411EDA /* SwifterJSON.swift */; };
 		86745A031C91631D004A1868 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
 		86745A041C91631D004A1868 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
 		86745A061C916335004A1868 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A051C916335004A1868 /* AppDelegate.swift */; };
@@ -20,10 +18,6 @@
 		86745A091C9163CB004A1868 /* VJsonInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A081C9163CB004A1868 /* VJsonInitTests.swift */; };
 		86745A0A1C9163E0004A1868 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
 		86745A0C1C916430004A1868 /* SpeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A0B1C916430004A1868 /* SpeedTests.swift */; };
-		86745A0E1C9165BA004A1868 /* ParserBlackBoxSuccessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A0D1C9165BA004A1868 /* ParserBlackBoxSuccessTests.swift */; };
-		86745A101C9165D7004A1868 /* SwifterJSONInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A0F1C9165D7004A1868 /* SwifterJSONInitTests.swift */; };
-		86745A121C9165F8004A1868 /* ParserErrorMessageWhiteBoxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A111C9165F8004A1868 /* ParserErrorMessageWhiteBoxTests.swift */; };
-		86745A141C9165FE004A1868 /* SwifterJSONInterfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A131C9165FE004A1868 /* SwifterJSONInterfaceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -238,7 +232,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				865B7B2A1A88F2F400411EDA /* SwifterJSON.swift in Sources */,
 				86745A031C91631D004A1868 /* VJson.swift in Sources */,
 				865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */,
 				86745A061C916335004A1868 /* AppDelegate.swift in Sources */,
@@ -252,13 +245,8 @@
 			files = (
 				86745A041C91631D004A1868 /* VJson.swift in Sources */,
 				86745A0A1C9163E0004A1868 /* ASCII.swift in Sources */,
-				86745A141C9165FE004A1868 /* SwifterJSONInterfaceTests.swift in Sources */,
-				86745A101C9165D7004A1868 /* SwifterJSONInitTests.swift in Sources */,
-				86745A121C9165F8004A1868 /* ParserErrorMessageWhiteBoxTests.swift in Sources */,
-				865B7B2B1A88F2F400411EDA /* SwifterJSON.swift in Sources */,
 				86745A0C1C916430004A1868 /* SpeedTests.swift in Sources */,
 				86745A071C916335004A1868 /* AppDelegate.swift in Sources */,
-				86745A0E1C9165BA004A1868 /* ParserBlackBoxSuccessTests.swift in Sources */,
 				86745A091C9163CB004A1868 /* VJsonInitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -391,6 +379,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -412,6 +401,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",

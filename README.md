@@ -34,6 +34,16 @@ Example usage (Full example, you can use the code below directly)
 
 History:
 
+####v0.9.3 (VJson)
+
+- Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
+- Added conveniance operation "addChild" that does not need the name of the child to be added.
+- Changed behaviour of "addChild:name" to change the item into an OBJECT if it is'nt one.
+- Changed behaviour of "appendChild" to change the item into an ARRAY if it is'nt one.
+- Upgraded to Swift 2.2
+- Removed dependency on SwifterLog
+- Updated for changes in ASCII.swift (added hexLookUp, changed is___ functions to var's)
+
 ####v0.9.2 (VJson)
 
 - Fixed a problem where a named NULL object was removed from the hierarchy upon fetching the description.

@@ -90,7 +90,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         for (key, value) in sourceDict {
             source += "\"\(key)\":\"\(value)\""
             if count < sourceDict.count { source += "," }
-            count++
+            count += 1
         }
         source += "}"
         
@@ -145,7 +145,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         for (key, value) in sourceDict {
             source += "\"\(key)\":\(value)"
             if count < sourceDict.count { source += "," }
-            count++
+            count += 1
         }
         source += "}"
         
@@ -195,7 +195,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         for (key, value) in sourceDict {
             source += "\"\(key)\":\(value)"
             if count < sourceDict.count { source += "," }
-            count++
+            count += 1
         }
         source += "}"
         
@@ -240,7 +240,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         for (key, value) in sourceDict {
             source += "\"\(key)\":\(value)"
             if count < sourceDict.count { source += "," }
-            count++
+            count += 1
         }
         source += "}"
         
@@ -283,7 +283,7 @@ class ParserBlackBoxSuccessTests: XCTestCase {
         for (key, value) in sourceDict {
             source += "\"\(key)\":\(value)"
             if count < sourceDict.count { source += "," }
-            count++
+            count += 1
         }
         source += "}"
         

@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.4
+//  Version:    0.9.3
 //
 //  Author:     Marinus van der Lugt
 //  Website:    http://www.balancingrock.nl/swifterjson
@@ -78,13 +78,13 @@
 // =====================================================================================================================
 //
 // History
-// w0.9.4 - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
+// v0.9.3 - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
 //        - Added conveniance operation "addChild" that does not need the name of the child to be added.
 //        - Changed behaviour of "addChild:name" to change the item into an OBJECT if it is'nt one.
 //        - Changed behaviour of "appendChild" to change the item into an ARRAY if it is'nt one.
 //        - Upgraded to Swift 2.2
 //        - Removed dependency on SwifterLog
-// v0.9.3 - Updated for changes in ASCII.swift
+//        - Updated for changes in ASCII.swift
 // v0.9.2 - Fixed a problem where an assigned NULL object was removed from the hierarchy
 // v0.9.1 - Changed parameter to 'addChild' to an optional.
 //        - Fixed a problem where an object without a leading brace in an array would not be thrown as an error

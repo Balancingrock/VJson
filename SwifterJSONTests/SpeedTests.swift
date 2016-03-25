@@ -45,7 +45,7 @@ class SpeedTests: XCTestCase {
         }
     }
     
-    func testSwifterJSONPerformance1() {
+/*    func testSwifterJSONPerformance1() {
         
         self.measureBlock {
             do {
@@ -56,7 +56,7 @@ class SpeedTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
         }
-    }
+    } */
 
     func testVJSONPerformance1() {
         
@@ -84,7 +84,7 @@ class SpeedTests: XCTestCase {
         }
     }
 
-    func testSwifterJSONPerformance2() {
+/*    func testSwifterJSONPerformance2() {
         
         self.measureBlock {
             do {
@@ -95,7 +95,7 @@ class SpeedTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
         }
-    }
+    }*/
     
     func testVJSONPerformance2() {
         
@@ -123,7 +123,7 @@ class SpeedTests: XCTestCase {
         }
     }
     
-    func testSwifterJSONPerformance3() {
+/*    func testSwifterJSONPerformance3() {
         
         self.measureBlock {
             do {
@@ -134,7 +134,7 @@ class SpeedTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
         }
-    }
+    }*/
     
     func testVJSONPerformance3() {
         
@@ -163,7 +163,7 @@ class SpeedTests: XCTestCase {
         }
     }
     
-    func testSwifterJSONPerformance4() {
+/*    func testSwifterJSONPerformance4() {
         
         self.measureBlock {
             do {
@@ -174,7 +174,7 @@ class SpeedTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
         }
-    }
+    }*/
     
     func testVJSONPerformance4() {
         
@@ -203,7 +203,7 @@ class SpeedTests: XCTestCase {
         }
     }
 
-    func testSwifterJSONPerformance5() {
+/*    func testSwifterJSONPerformance5() {
         
         self.measureBlock {
             do {
@@ -214,7 +214,7 @@ class SpeedTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
         }
-    }
+    }*/
     
     func testVJSONPerformance5() {
         

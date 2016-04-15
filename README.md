@@ -1,11 +1,40 @@
-# SwifterJSON
+#SwifterJSON
 
 Two single class frameworks in Swift to read/write & parse the JSON Format.
+
+SwifterJSON is part of the 5 packages that make up the Swiftfire webserver:
+
+#####Swiftfire
+
+An open source web server in Swift.
+
+#####SwiftfireConsole
+
+A GUI application for Swiftfire.
+
+#####[SwifterSockets](https://github.com/Swiftrien/SwifterSockets)
+
+General purpose socket utilities.
+
+#####[SwifterLog](https://github.com/Swiftrien/SwifterLog)
+
+General purpose logging utility.
+
+There is a 6th package called SwiftfireTester that can be used to challenge a webserver (any webserver) and see/verify the response.
+
+##Note
 
 SwifterJSON is the original implementation, but as that was rather slow, a new parser called VJson was implented. SwifterJSON development has been stopped.
 
 VJson is faster and has many of the same features as SwifterJSON.
 
+#Features
+- Creates a fully featured JSON hierarchy from file (or String).
+- Easy subscript accessors (creation & interrogation).
+- Interrogation operations for item existence and item types.
+- Interpret items as other types (eg read a Bool as a String).
+
+#Usage
 To use VJson: Add the files ASCII.swift and VJson to your project.
 
 Example usage (Full example, you can use the code below directly)

@@ -45,19 +45,6 @@ class SpeedTests: XCTestCase {
         }
     }
     
-/*    func testSwifterJSONPerformance1() {
-        
-        self.measureBlock {
-            do {
-                for _ in 1 ... 1000 {
-                    _ = try SwifterJSON.createJSONHierarchyFromString(SpeedTests.data1Str)
-                }
-            } catch let error as NSError {
-                XCTFail(error.localizedDescription)
-            }
-        }
-    } */
-
     func testVJSONPerformance1() {
         
         self.measureBlock {
@@ -83,19 +70,6 @@ class SpeedTests: XCTestCase {
             }
         }
     }
-
-/*    func testSwifterJSONPerformance2() {
-        
-        self.measureBlock {
-            do {
-                for _ in 1 ... 1000 {
-                    _ = try SwifterJSON.createJSONHierarchyFromString(SpeedTests.data2Str)
-                }
-            } catch let error as NSError {
-                XCTFail(error.localizedDescription)
-            }
-        }
-    }*/
     
     func testVJSONPerformance2() {
         
@@ -122,19 +96,6 @@ class SpeedTests: XCTestCase {
             }
         }
     }
-    
-/*    func testSwifterJSONPerformance3() {
-        
-        self.measureBlock {
-            do {
-                for _ in 1 ... 1000 {
-                    _ = try SwifterJSON.createJSONHierarchyFromString(SpeedTests.data3Str)
-                }
-            } catch let error as NSError {
-                XCTFail(error.localizedDescription)
-            }
-        }
-    }*/
     
     func testVJSONPerformance3() {
         
@@ -163,18 +124,6 @@ class SpeedTests: XCTestCase {
         }
     }
     
-/*    func testSwifterJSONPerformance4() {
-        
-        self.measureBlock {
-            do {
-                for _ in 1 ... 1000 {
-                    _ = try SwifterJSON.createJSONHierarchyFromString(SpeedTests.data4Str)
-                }
-            } catch let error as NSError {
-                XCTFail(error.localizedDescription)
-            }
-        }
-    }*/
     
     func testVJSONPerformance4() {
         
@@ -202,19 +151,7 @@ class SpeedTests: XCTestCase {
             }
         }
     }
-
-/*    func testSwifterJSONPerformance5() {
-        
-        self.measureBlock {
-            do {
-                for _ in 1 ... 1000 {
-                    _ = try SwifterJSON.createJSONHierarchyFromString(SpeedTests.data5Str)
-                }
-            } catch let error as NSError {
-                XCTFail(error.localizedDescription)
-            }
-        }
-    }*/
+    
     
     func testVJSONPerformance5() {
         

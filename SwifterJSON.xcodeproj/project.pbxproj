@@ -7,61 +7,51 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		865AFCB91C8718BA006CCAD8 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
-		865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865B7B0E1A88F2E100411EDA /* ViewController.swift */; };
-		865B7B111A88F2E100411EDA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 865B7B101A88F2E100411EDA /* Images.xcassets */; };
-		865B7B141A88F2E100411EDA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 865B7B121A88F2E100411EDA /* Main.storyboard */; };
-		86745A031C91631D004A1868 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
-		86745A041C91631D004A1868 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
-		86745A061C916335004A1868 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A051C916335004A1868 /* AppDelegate.swift */; };
-		86745A071C916335004A1868 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A051C916335004A1868 /* AppDelegate.swift */; };
-		86745A091C9163CB004A1868 /* VJsonInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A081C9163CB004A1868 /* VJsonInitTests.swift */; };
-		86745A0A1C9163E0004A1868 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
-		86745A0C1C916430004A1868 /* SpeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A0B1C916430004A1868 /* SpeedTests.swift */; };
+		866F6C431CDCA63A00557ACE /* VJson.h in Headers */ = {isa = PBXBuildFile; fileRef = 866F6C421CDCA63A00557ACE /* VJson.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		866F6C4A1CDCA63A00557ACE /* VJson.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 866F6C401CDCA63A00557ACE /* VJson.framework */; };
+		866F6C511CDCA63A00557ACE /* VJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866F6C501CDCA63A00557ACE /* VJsonTests.swift */; };
+		866F6C5E1CDCA64800557ACE /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
+		866F6C5F1CDCA64800557ACE /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
+		866F6C601CDCA64A00557ACE /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
+		866F6C611CDCA64A00557ACE /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
+		866F6C621CDCB6FD00557ACE /* SpeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A0B1C916430004A1868 /* SpeedTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		865B7B1A1A88F2E100411EDA /* PBXContainerItemProxy */ = {
+		866F6C4B1CDCA63A00557ACE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 865B7AFF1A88F2E100411EDA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 865B7B061A88F2E100411EDA;
-			remoteInfo = SwifterJSON;
+			remoteGlobalIDString = 866F6C3F1CDCA63A00557ACE;
+			remoteInfo = VJson;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		865AFCB71C8718BA006CCAD8 /* ASCII.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASCII.swift; sourceTree = "<group>"; };
-		865B7B071A88F2E100411EDA /* SwifterJSON.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwifterJSON.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		865B7B0B1A88F2E100411EDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		865B7B0E1A88F2E100411EDA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		865B7B101A88F2E100411EDA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		865B7B131A88F2E100411EDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		865B7B191A88F2E100411EDA /* SwifterJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwifterJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		865B7B1E1A88F2E100411EDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		865B7B291A88F2F400411EDA /* SwifterJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwifterJSON.swift; sourceTree = "<group>"; };
+		866F6C401CDCA63A00557ACE /* VJson.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VJson.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		866F6C421CDCA63A00557ACE /* VJson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VJson.h; sourceTree = "<group>"; };
+		866F6C441CDCA63A00557ACE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		866F6C491CDCA63A00557ACE /* VJsonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VJsonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		866F6C501CDCA63A00557ACE /* VJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTests.swift; sourceTree = "<group>"; };
+		866F6C521CDCA63A00557ACE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		86745A021C91631D004A1868 /* VJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
-		86745A051C916335004A1868 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		86745A081C9163CB004A1868 /* VJsonInitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJsonInitTests.swift; sourceTree = "<group>"; };
-		86745A0B1C916430004A1868 /* SpeedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeedTests.swift; sourceTree = "<group>"; };
-		86745A0D1C9165BA004A1868 /* ParserBlackBoxSuccessTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserBlackBoxSuccessTests.swift; sourceTree = "<group>"; };
-		86745A0F1C9165D7004A1868 /* SwifterJSONInitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwifterJSONInitTests.swift; sourceTree = "<group>"; };
-		86745A111C9165F8004A1868 /* ParserErrorMessageWhiteBoxTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserErrorMessageWhiteBoxTests.swift; sourceTree = "<group>"; };
-		86745A131C9165FE004A1868 /* SwifterJSONInterfaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwifterJSONInterfaceTests.swift; sourceTree = "<group>"; };
+		86745A0B1C916430004A1868 /* SpeedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpeedTests.swift; path = ../SwifterJSONTests/SpeedTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		865B7B041A88F2E100411EDA /* Frameworks */ = {
+		866F6C3C1CDCA63A00557ACE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		865B7B161A88F2E100411EDA /* Frameworks */ = {
+		866F6C461CDCA63A00557ACE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				866F6C4A1CDCA63A00557ACE /* VJson.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +62,8 @@
 			isa = PBXGroup;
 			children = (
 				865B7B091A88F2E100411EDA /* SwifterJSON */,
-				865B7B1C1A88F2E100411EDA /* SwifterJSONTests */,
+				866F6C411CDCA63A00557ACE /* VJson */,
+				866F6C4F1CDCA63A00557ACE /* VJsonTests */,
 				865B7B081A88F2E100411EDA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -80,8 +71,8 @@
 		865B7B081A88F2E100411EDA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				865B7B071A88F2E100411EDA /* SwifterJSON.app */,
-				865B7B191A88F2E100411EDA /* SwifterJSONTests.xctest */,
+				866F6C401CDCA63A00557ACE /* VJson.framework */,
+				866F6C491CDCA63A00557ACE /* VJsonTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,84 +80,79 @@
 		865B7B091A88F2E100411EDA /* SwifterJSON */ = {
 			isa = PBXGroup;
 			children = (
-				86745A051C916335004A1868 /* AppDelegate.swift */,
-				865B7B0E1A88F2E100411EDA /* ViewController.swift */,
-				865B7B291A88F2F400411EDA /* SwifterJSON.swift */,
 				865AFCB71C8718BA006CCAD8 /* ASCII.swift */,
 				86745A021C91631D004A1868 /* VJson.swift */,
-				865B7B101A88F2E100411EDA /* Images.xcassets */,
-				865B7B121A88F2E100411EDA /* Main.storyboard */,
-				865B7B0A1A88F2E100411EDA /* Supporting Files */,
 			);
 			path = SwifterJSON;
 			sourceTree = "<group>";
 		};
-		865B7B0A1A88F2E100411EDA /* Supporting Files */ = {
+		866F6C411CDCA63A00557ACE /* VJson */ = {
 			isa = PBXGroup;
 			children = (
-				865B7B0B1A88F2E100411EDA /* Info.plist */,
+				866F6C421CDCA63A00557ACE /* VJson.h */,
+				866F6C441CDCA63A00557ACE /* Info.plist */,
 			);
-			name = "Supporting Files";
+			path = VJson;
 			sourceTree = "<group>";
 		};
-		865B7B1C1A88F2E100411EDA /* SwifterJSONTests */ = {
+		866F6C4F1CDCA63A00557ACE /* VJsonTests */ = {
 			isa = PBXGroup;
 			children = (
-				86745A0F1C9165D7004A1868 /* SwifterJSONInitTests.swift */,
-				86745A131C9165FE004A1868 /* SwifterJSONInterfaceTests.swift */,
-				86745A0D1C9165BA004A1868 /* ParserBlackBoxSuccessTests.swift */,
-				86745A111C9165F8004A1868 /* ParserErrorMessageWhiteBoxTests.swift */,
-				86745A081C9163CB004A1868 /* VJsonInitTests.swift */,
+				866F6C501CDCA63A00557ACE /* VJsonTests.swift */,
 				86745A0B1C916430004A1868 /* SpeedTests.swift */,
-				865B7B1D1A88F2E100411EDA /* Supporting Files */,
+				866F6C521CDCA63A00557ACE /* Info.plist */,
 			);
-			path = SwifterJSONTests;
-			sourceTree = "<group>";
-		};
-		865B7B1D1A88F2E100411EDA /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				865B7B1E1A88F2E100411EDA /* Info.plist */,
-			);
-			name = "Supporting Files";
+			path = VJsonTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
-/* Begin PBXNativeTarget section */
-		865B7B061A88F2E100411EDA /* SwifterJSON */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 865B7B231A88F2E100411EDA /* Build configuration list for PBXNativeTarget "SwifterJSON" */;
-			buildPhases = (
-				865B7B031A88F2E100411EDA /* Sources */,
-				865B7B041A88F2E100411EDA /* Frameworks */,
-				865B7B051A88F2E100411EDA /* Resources */,
+/* Begin PBXHeadersBuildPhase section */
+		866F6C3D1CDCA63A00557ACE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				866F6C431CDCA63A00557ACE /* VJson.h in Headers */,
 			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SwifterJSON;
-			productName = SwifterJSON;
-			productReference = 865B7B071A88F2E100411EDA /* SwifterJSON.app */;
-			productType = "com.apple.product-type.application";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		865B7B181A88F2E100411EDA /* SwifterJSONTests */ = {
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		866F6C3F1CDCA63A00557ACE /* VJson */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 865B7B261A88F2E100411EDA /* Build configuration list for PBXNativeTarget "SwifterJSONTests" */;
+			buildConfigurationList = 866F6C5B1CDCA63A00557ACE /* Build configuration list for PBXNativeTarget "VJson" */;
 			buildPhases = (
-				865B7B151A88F2E100411EDA /* Sources */,
-				865B7B161A88F2E100411EDA /* Frameworks */,
-				865B7B171A88F2E100411EDA /* Resources */,
+				866F6C3B1CDCA63A00557ACE /* Sources */,
+				866F6C3C1CDCA63A00557ACE /* Frameworks */,
+				866F6C3D1CDCA63A00557ACE /* Headers */,
+				866F6C3E1CDCA63A00557ACE /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				865B7B1B1A88F2E100411EDA /* PBXTargetDependency */,
 			);
-			name = SwifterJSONTests;
-			productName = SwifterJSONTests;
-			productReference = 865B7B191A88F2E100411EDA /* SwifterJSONTests.xctest */;
+			name = VJson;
+			productName = VJson;
+			productReference = 866F6C401CDCA63A00557ACE /* VJson.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		866F6C481CDCA63A00557ACE /* VJsonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 866F6C5D1CDCA63A00557ACE /* Build configuration list for PBXNativeTarget "VJsonTests" */;
+			buildPhases = (
+				866F6C451CDCA63A00557ACE /* Sources */,
+				866F6C461CDCA63A00557ACE /* Frameworks */,
+				866F6C471CDCA63A00557ACE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				866F6C4C1CDCA63A00557ACE /* PBXTargetDependency */,
+			);
+			name = VJsonTests;
+			productName = VJsonTests;
+			productReference = 866F6C491CDCA63A00557ACE /* VJsonTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -176,16 +162,15 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Marinus van der Lugt";
 				TargetAttributes = {
-					865B7B061A88F2E100411EDA = {
-						CreatedOnToolsVersion = 6.1.1;
+					866F6C3F1CDCA63A00557ACE = {
+						CreatedOnToolsVersion = 7.3.1;
 					};
-					865B7B181A88F2E100411EDA = {
-						CreatedOnToolsVersion = 6.1.1;
-						TestTargetID = 865B7B061A88F2E100411EDA;
+					866F6C481CDCA63A00557ACE = {
+						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
 			};
@@ -202,23 +187,21 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				865B7B061A88F2E100411EDA /* SwifterJSON */,
-				865B7B181A88F2E100411EDA /* SwifterJSONTests */,
+				866F6C3F1CDCA63A00557ACE /* VJson */,
+				866F6C481CDCA63A00557ACE /* VJsonTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		865B7B051A88F2E100411EDA /* Resources */ = {
+		866F6C3E1CDCA63A00557ACE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				865B7B111A88F2E100411EDA /* Images.xcassets in Resources */,
-				865B7B141A88F2E100411EDA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		865B7B171A88F2E100411EDA /* Resources */ = {
+		866F6C471CDCA63A00557ACE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -228,49 +211,35 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		865B7B031A88F2E100411EDA /* Sources */ = {
+		866F6C3B1CDCA63A00557ACE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86745A031C91631D004A1868 /* VJson.swift in Sources */,
-				865B7B0F1A88F2E100411EDA /* ViewController.swift in Sources */,
-				86745A061C916335004A1868 /* AppDelegate.swift in Sources */,
-				865AFCB91C8718BA006CCAD8 /* ASCII.swift in Sources */,
+				866F6C5F1CDCA64800557ACE /* VJson.swift in Sources */,
+				866F6C5E1CDCA64800557ACE /* ASCII.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		865B7B151A88F2E100411EDA /* Sources */ = {
+		866F6C451CDCA63A00557ACE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86745A041C91631D004A1868 /* VJson.swift in Sources */,
-				86745A0A1C9163E0004A1868 /* ASCII.swift in Sources */,
-				86745A0C1C916430004A1868 /* SpeedTests.swift in Sources */,
-				86745A071C916335004A1868 /* AppDelegate.swift in Sources */,
-				86745A091C9163CB004A1868 /* VJsonInitTests.swift in Sources */,
+				866F6C611CDCA64A00557ACE /* VJson.swift in Sources */,
+				866F6C511CDCA63A00557ACE /* VJsonTests.swift in Sources */,
+				866F6C601CDCA64A00557ACE /* ASCII.swift in Sources */,
+				866F6C621CDCB6FD00557ACE /* SpeedTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		865B7B1B1A88F2E100411EDA /* PBXTargetDependency */ = {
+		866F6C4C1CDCA63A00557ACE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 865B7B061A88F2E100411EDA /* SwifterJSON */;
-			targetProxy = 865B7B1A1A88F2E100411EDA /* PBXContainerItemProxy */;
+			target = 866F6C3F1CDCA63A00557ACE /* VJson */;
+			targetProxy = 866F6C4B1CDCA63A00557ACE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		865B7B121A88F2E100411EDA /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				865B7B131A88F2E100411EDA /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		865B7B211A88F2E100411EDA /* Debug */ = {
@@ -351,67 +320,83 @@
 			};
 			name = Release;
 		};
-		865B7B241A88F2E100411EDA /* Debug */ = {
+		866F6C571CDCA63A00557ACE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = SwifterJSON/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "nl.balancingrock.$(PRODUCT_NAME:rfc1034identifier)";
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = VJson/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJson;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		865B7B251A88F2E100411EDA /* Release */ = {
+		866F6C581CDCA63A00557ACE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = SwifterJSON/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "nl.balancingrock.$(PRODUCT_NAME:rfc1034identifier)";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = VJson/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJson;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
-		865B7B271A88F2E100411EDA /* Debug */ = {
+		866F6C591CDCA63A00557ACE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "";
+				CLANG_ANALYZER_NONNULL = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SwifterJSONTests/Info.plist;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = VJsonTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "nl.balancingrock.$(PRODUCT_NAME:rfc1034identifier)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwifterJSON.app/Contents/MacOS/SwifterJSON";
 			};
 			name = Debug;
 		};
-		865B7B281A88F2E100411EDA /* Release */ = {
+		866F6C5A1CDCA63A00557ACE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "";
+				CLANG_ANALYZER_NONNULL = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SwifterJSONTests/Info.plist;
+				COPY_PHASE_STRIP = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = VJsonTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "nl.balancingrock.$(PRODUCT_NAME:rfc1034identifier)";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwifterJSON.app/Contents/MacOS/SwifterJSON";
 			};
 			name = Release;
 		};
@@ -427,23 +412,21 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		865B7B231A88F2E100411EDA /* Build configuration list for PBXNativeTarget "SwifterJSON" */ = {
+		866F6C5B1CDCA63A00557ACE /* Build configuration list for PBXNativeTarget "VJson" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				865B7B241A88F2E100411EDA /* Debug */,
-				865B7B251A88F2E100411EDA /* Release */,
+				866F6C571CDCA63A00557ACE /* Debug */,
+				866F6C581CDCA63A00557ACE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
-		865B7B261A88F2E100411EDA /* Build configuration list for PBXNativeTarget "SwifterJSONTests" */ = {
+		866F6C5D1CDCA63A00557ACE /* Build configuration list for PBXNativeTarget "VJsonTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				865B7B271A88F2E100411EDA /* Debug */,
-				865B7B281A88F2E100411EDA /* Release */,
+				866F6C591CDCA63A00557ACE /* Debug */,
+				866F6C5A1CDCA63A00557ACE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

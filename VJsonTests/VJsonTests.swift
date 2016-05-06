@@ -1,15 +1,16 @@
 //
-//  VJsonInitTests.swift
-//  SwifterJSON
+//  VJsonTests.swift
+//  VJsonTests
 //
-//  Created by Marinus van der Lugt on 07/03/16.
+//  Created by Marinus van der Lugt on 06/05/16.
 //  Copyright © 2016 Marinus van der Lugt. All rights reserved.
 //
 
 import XCTest
+@testable import VJson
 
-class VJsonInitTests: XCTestCase {
-
+class VJsonTests: XCTestCase {
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -19,30 +20,30 @@ class VJsonInitTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-
-/*    func testExample() {
-        
-        let top = VJson.createJsonHierarchy()
-        top["books"][0]["title"].stringValue = "THHGTTG"
-        let myJsonString = top.description
-        
-        // Use the above generated string to read JSON code
-        
-        let data = myJsonString.dataUsingEncoding(NSUTF8StringEncoding)!
-        do {
-            let json = try VJson.createJsonHierarchy(UnsafePointer<UInt8>(data.bytes), length: data.length)
-            if let title = json["books"][0]["title"].stringValue {
-                print("The title of the first book is: " + title)
-            } else {
-                print("The title of the first book in myJsonString was not found")
-            }
-        } catch let error as VJson.Exception {
-            print(error.description)
-        } catch {}
-    }*/
+    
+    /*    func testExample() {
+     
+     let top = VJson.createJsonHierarchy()
+     top["books"][0]["title"].stringValue = "THHGTTG"
+     let myJsonString = top.description
+     
+     // Use the above generated string to read JSON code
+     
+     let data = myJsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+     do {
+     let json = try VJson.createJsonHierarchy(UnsafePointer<UInt8>(data.bytes), length: data.length)
+     if let title = json["books"][0]["title"].stringValue {
+     print("The title of the first book is: " + title)
+     } else {
+     print("The title of the first book in myJsonString was not found")
+     }
+     } catch let error as VJson.Exception {
+     print(error.description)
+     } catch {}
+     }*/
     
     func testNull() {
-
+        
         var json = VJson.createNull(name: nil)
         var expDesc = "null"
         let expStr = "null"
@@ -66,7 +67,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertNil(json.doubleValue)
         XCTAssertNil(json.numberValue)
     }
-
+    
     func testBool() {
         
         var json = VJson.createBool(value: false, name: nil)
@@ -94,9 +95,9 @@ class VJsonInitTests: XCTestCase {
         XCTAssertNil(json.integerValue)
         XCTAssertNil(json.doubleValue)
         XCTAssertNil(json.numberValue)
-
+        
     }
-
+    
     func testNumber() {
         
         var json = VJson.createNumber(value: true, name: nil)
@@ -130,7 +131,7 @@ class VJsonInitTests: XCTestCase {
         json = VJson.createNumber(value: 2, name: nil)
         expDesc = "2"
         expStr = "2"
-
+        
         XCTAssertEqual(json.description, expDesc)
         XCTAssertTrue(json.isNumber)
         XCTAssertNotNil(json.numberValue)
@@ -138,7 +139,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json.numberValue?.integerValue, 2)
         XCTAssertEqual(json.numberValue?.doubleValue, 2.0)
         XCTAssertEqual(json.asString, expStr)
-
+        
         json = VJson.createNumber(value: 3.3, name: nil)
         expDesc = "3.3"
         expStr = "3.3"
@@ -150,7 +151,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json.numberValue?.integerValue, 3)
         XCTAssertEqual(json.numberValue?.doubleValue, 3.3)
         XCTAssertEqual(json.asString, expStr)
-
+        
         json = VJson.createNumber(value: NSNumber(double: 4.4), name: nil)
         expDesc = "4.4"
         expStr = "4.4"
@@ -174,7 +175,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertTrue(json.isString)
         XCTAssertEqual(json.stringValue, expStr)
         XCTAssertEqual(json.asString, expStr)
-
+        
         json = VJson.createString(value: "strstr", name: "MyName")
         expDesc = "\"MyName\":\"strstr\""
         expStr = "strstr"
@@ -228,7 +229,7 @@ class VJsonInitTests: XCTestCase {
         
         XCTAssertNil(VJson.createArray(withChildren: [VJson.createBool(value: true, name: "theBool")], name: "aBool"))
     }
-
+    
     
     func testObject() {
         
@@ -250,7 +251,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertNil(json.integerValue)
         XCTAssertNil(json.doubleValue)
         XCTAssertEqual(json.asString, "")
-
+        
         
         // 2: Name is given, no content
         
@@ -262,8 +263,8 @@ class VJsonInitTests: XCTestCase {
         XCTAssertTrue(json.isObject)
         XCTAssertEqual(json.nofChildren, 0)
         XCTAssertNotNil(json.nameValue)
-
-
+        
+        
         // 3: Name = nil, contains 1 BOOL
         
         var ch1 = VJson.createBool(value: true, name: "ch1")
@@ -311,7 +312,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertNil(json.integerValue)
         XCTAssertNil(json.doubleValue)
         XCTAssertEqual(json.asString, "")
-
+        
         
         // 2: Hierarchy with 1 bool
         
@@ -322,7 +323,7 @@ class VJsonInitTests: XCTestCase {
         
         XCTAssertEqual(json.description, expDesc)
         XCTAssertEqual(json.nofChildren, 1)
-
+        
         
         // 3: Hierarchy with 1 bool and 1 number
         
@@ -334,7 +335,7 @@ class VJsonInitTests: XCTestCase {
         
         XCTAssertEqual(json.description, expDesc)
         XCTAssertEqual(json.nofChildren, 2)
-
+        
         
         // 4: Hierarchy with an empty array
         
@@ -342,20 +343,20 @@ class VJsonInitTests: XCTestCase {
         
         var arr = VJson.createArray(name: "arr")
         json.addChild(arr, forName: "arr")
-
+        
         expDesc = "{\"arr\":[]}"
         
         XCTAssertEqual(json.description, expDesc)
         XCTAssertEqual(json.nofChildren, 1)
-
+        
         
         // 5: Hierarchy with an array with a bool
         // Note: This is not a valid JSON hierarchy construction, but the subscript accessor forces it to become valid by inserting "array" as the name for the array
         
         json = VJson.createJsonHierarchy()
-
+        
         json[0].boolValue = true
-
+        
         expDesc = "{\"array\":[true]}"
         
         XCTAssertEqual(json.description, expDesc)
@@ -363,7 +364,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json["array"].nofChildren, 1)
         XCTAssertTrue(json["array"][0].boolValue!)
         XCTAssertTrue(json[0].boolValue!)
-
+        
         
         // 6: Hierarchy with an array with a bool and a number
         // Note: This is not a valid JSON hierarchy construction, but the subscript accessor forces it to become valid by inserting "array" as the name for the array
@@ -387,12 +388,12 @@ class VJsonInitTests: XCTestCase {
         // 7: Hierachy with an array containing an empty object without a name
         
         json = VJson.createJsonHierarchy()
-
+        
         json[0] = VJson.createObject(name: nil)
         
         expDesc = "{\"array\":[{}]}"
         XCTAssertEqual(json.description, expDesc)
-
+        
         
         // 8: Hierachy with an array containing an object with a bool
         
@@ -418,7 +419,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json.nofChildren, 1)
         XCTAssertEqual(json[0].nofChildren, 1)
         XCTAssertTrue(json[0]["ch1"].boolValue!)
-
+        
         
         // 10: Hierachy with an array containing an object with a bool and a number, subscript creation
         
@@ -433,7 +434,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json[0].nofChildren, 2)
         XCTAssertTrue(json[0]["ch1"].boolValue!)
         XCTAssertEqual(json[0]["ch2"].integerValue!, 4)
-
+        
         
         // 11: Hierachy with an array containing an object with a bool and a number
         
@@ -447,12 +448,12 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json[0].nofChildren, 2)
         XCTAssertTrue(json[0]["ch1"].boolValue!)
         XCTAssertEqual(json[0]["ch2"].integerValue!, 4)
-
+        
         
         // 12: Hierarchy with an empty object
         
         json = VJson.createJsonHierarchy()
-
+        
         json.addChild(VJson.createObject(name: "ch1"), forName: "ch1")
         
         expDesc = "{\"ch1\":{}}"
@@ -461,21 +462,21 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json.nofChildren, 1)
         XCTAssertEqual(json["ch1"].nofChildren, 0)
         
-
+        
         // 13: Hierarchy with an object with a bool in it
         
         json = VJson.createJsonHierarchy()
-
+        
         json["ch1"]["b1"].boolValue = true
-
+        
         expDesc = "{\"ch1\":{\"b1\":true}}"
         
         XCTAssertEqual(json.description, expDesc)
         XCTAssertEqual(json.nofChildren, 1)
         XCTAssertEqual(json["ch1"].nofChildren, 1)
         XCTAssertTrue(json["ch1"]["b1"].boolValue!)
-
-    
+        
+        
         // 14: Hierarchy with an object with a bool and a number in it
         
         json = VJson.createJsonHierarchy()
@@ -490,7 +491,7 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json["ch1"].nofChildren, 2)
         XCTAssertTrue(json["ch1"]["b1"].boolValue!)
         XCTAssertEqual(json["ch1"]["i1"].integerValue, 5)
-
+        
         
         // 15: Hierarchy with an object with an array with an object with bool in it
         
@@ -505,10 +506,10 @@ class VJsonInitTests: XCTestCase {
         XCTAssertEqual(json["ch1"].nofChildren, 1)
         XCTAssertEqual(json["ch1"][0].nofChildren, 1)
         XCTAssertTrue(json["ch1"][0]["b1"].boolValue!)
-
+        
         
         // 16: Hierarchy with an object with an array with an object with two bools in it
-
+        
         json = VJson.createJsonHierarchy()
         
         json["ch1"][0]["b1"].boolValue = true
@@ -571,5 +572,12 @@ class VJsonInitTests: XCTestCase {
         
         XCTAssertTrue(tst.isObject)
         XCTAssertEqual(tst.nofChildren, 2)
+    }
+    
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measureBlock {
+            // Put the code you want to measure the time of here.
+        }
     }
 }

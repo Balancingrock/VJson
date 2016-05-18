@@ -55,8 +55,30 @@ Example usage (Full example, you can use the code below directly)
         } catch {}
     }
 
+#Notes:
+
+The subscript accessors have a side-effect of creating items that are not present to satisfy the full path.
+
+I.e.
+
+    let json = VJson.createJsonHierarchy()
+    guard let name = json["root"][2]["name"].stringValue else { return }
+    
+will create all items necessary to resolve the path. Even though the string value will not be assigned to the let property because it does not exist. This can easily produce undesired side effects even though unnecessary items will be removed automatically before persisting the hierarchy.
+
+To avoid those side effects use the pipe operators:
+
+    let json = VJson.createJsonHierarchy()
+    guard let name = (json|"root"|2|"name")?.stringValue else { return }
+
+As a general rule: use the pipe operators to read from a JSON hierarchy and use the subscript accessors to create the JSON hierarchy.
 
 #History:
+
+####v0.9.5
+
+- Added "pipe" functions ("|") to allow for better testing of paths. The pipe functions greatly improve the readability when used in 'guard' statements.
+
 
 ####v0.9.4
 

@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.4
+//  Version:    0.9.5
 //
 //  Author:     Marinus van der Lugt
 //  Website:    http://www.balancingrock.nl/swifterjson
@@ -67,17 +67,32 @@
 //        jsonHierarchy["books"].removeChild(title)
 //        print(jsonHierarchy.code) // prints {"top":[]}
 //
-// By far the best way to use a JSON hierarchy is to create one using the createJsonHierarchy calls and do all
-// subsequent accessing with the subscript operators. While it is possible to do everything manually I find that it is
+// By far the best way to create a JSON hierarchy is to create one using the createJsonHierarchy calls and do all
+// subsequent creation with the subscript operators. While it is possible to do everything manually I find that it is
 // very easy to make mistakes that way.
 //
 // To make the subscript accessors work, it was necessary to create an automaticaly generated array at the top level
 // if the first subscript is an integer. That array will have the name "array".
-// Example:
+// 
+// The subscript accessors have a side-effect of creating items that are not present to satisfy the full path.
+// I.e.
+//    let json = VJson.createJsonHierarchy()
+//    guard let test = json["root"][2]["name"].stringValue else { return }
+// will create all items necessary to resolve the path. Even though the string value will not be assigned to the let
+// property because it does not exist. This can easily produce undesired side effects.
+//
+// To avoid those side effects use the pipe operators:
+//    let json = VJson.createJsonHierarchy()
+//    guard let test = (json|"root"|2|"name")?.stringValue else { return }
+//
+// As a general rule: use the pipe operators to read from a JSON hierarchy and use the subscript accessors to create the
+// JSON hierarchy.
 //
 // =====================================================================================================================
 //
 // History
+//
+// v0.9.5 - Added "pipe" functions to allow for guard constructs when testing for item existence without side effect
 // v0.9.4 - Changed target to a shared framework
 //        - Added 'public' declarations to support use as framework
 // v0.9.3 - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
@@ -104,6 +119,22 @@
 
 
 import Foundation
+
+infix operator | {}
+
+public func |(lhs: VJson?, rhs: String?) -> VJson? {
+    guard let lhs = lhs else { return nil }
+    guard let rhs = rhs else { return nil }
+    return lhs.childWithName(rhs)
+}
+
+public func |(lhs: VJson?, rhs: Int?) -> VJson? {
+    guard let lhs = lhs else { return nil }
+    guard let rhs = rhs else { return nil }
+    guard lhs.type == VJson.JType.ARRAY else { return nil }
+    guard rhs < lhs.nofChildren else { return nil }
+    return lhs.children![rhs]
+}
 
 public func == (lhs: VJson, rhs: VJson) -> Bool {
     if lhs.type != rhs.type { return false }

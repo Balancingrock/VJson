@@ -3,10 +3,11 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.5
+//  Version:    0.9.6
 //
 //  Author:     Marinus van der Lugt
-//  Website:    http://www.balancingrock.nl/swifterjson
+//  Company:    http://balancingrock.nl
+//  Website:    http://swiftfire.nl/pages/projects/swifterjson/
 //  Blog:       http://swiftrien.blogspot.com
 //  Git:        https://github.com/Swiftrien/SwifterJSON
 //
@@ -48,17 +49,15 @@
 //
 // =====================================================================================================================
 //
-// This JSON class/parser was developped as a faster alternative to SwifterJSON.
-//
 // Subscript accessors are implemented, i.e. it is possible to address values as:
-// let title = jsonHierarchy["top"]["book"][3]["title"].string
+// let title = aJsonHierarchy["top"]["book"][3]["title"].stringValue
 // But this simplicity comes at a double cost:
-// 1) Accessing any VJson object with a subscript will turn that object into either an .ARRAY or .OBJECT depending on
-//    the kind of subscript used.
-// 2) VJson objects will automatically be created as needed to fulfill the path given by the subscripts. For integer
-//    subscripts missing subscript indicies will be filled by .NULL objects. Note: If subsequent manipulations creates
-//    auto generated objects that no longer serve a purpose, then these purposeless objects will not be saved nor appear
-//    in a description.
+// 1) Accessing any kind VJson object with a subscript will turn that object into either an .ARRAY or .OBJECT depending
+//    on the kind of subscript used.
+// 2) Ephemeral VJson objects will automatically be created as needed to fulfill the path given by the subscripts. For
+//    integer subscripts missing items according to the index will be filled by .NULL objects.
+//    Note: If subsequent manipulations creates ephemeral objects that no longer serve a purpose, then these objects
+//    will not be saved nor appear in a description.
 //    Example:
 //        let jsonHierarchy = VJson.createJsonHierarchy()
 //        let title = VJson.createString(value: "Once upon a time", name: nil)
@@ -92,6 +91,7 @@
 //
 // History
 //
+// v0.9.6 - Header update
 // v0.9.5 - Added "pipe" functions to allow for guard constructs when testing for item existence without side effect
 // v0.9.4 - Changed target to a shared framework
 //        - Added 'public' declarations to support use as framework

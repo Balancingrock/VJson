@@ -7,18 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		860C83351CF4A15400EF3E63 /* VJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860C83341CF4A15400EF3E63 /* VJsonTests.swift */; };
+		860C83371CF4A15400EF3E63 /* VJson.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 866F6C401CDCA63A00557ACE /* VJson.framework */; };
+		860C833D1CF4A23600EF3E63 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
+		860C833E1CF4A23600EF3E63 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
 		866F6C431CDCA63A00557ACE /* VJson.h in Headers */ = {isa = PBXBuildFile; fileRef = 866F6C421CDCA63A00557ACE /* VJson.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		866F6C4A1CDCA63A00557ACE /* VJson.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 866F6C401CDCA63A00557ACE /* VJson.framework */; };
-		866F6C511CDCA63A00557ACE /* VJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866F6C501CDCA63A00557ACE /* VJsonTests.swift */; };
 		866F6C5E1CDCA64800557ACE /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
 		866F6C5F1CDCA64800557ACE /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
-		866F6C601CDCA64A00557ACE /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
-		866F6C611CDCA64A00557ACE /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
-		866F6C621CDCB6FD00557ACE /* SpeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A0B1C916430004A1868 /* SpeedTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		866F6C4B1CDCA63A00557ACE /* PBXContainerItemProxy */ = {
+		860C83381CF4A15400EF3E63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 865B7AFF1A88F2E100411EDA /* Project object */;
 			proxyType = 1;
@@ -28,18 +27,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		860C83321CF4A15400EF3E63 /* VJsonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VJsonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		860C83341CF4A15400EF3E63 /* VJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTests.swift; sourceTree = "<group>"; };
+		860C83361CF4A15400EF3E63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		865AFCB71C8718BA006CCAD8 /* ASCII.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASCII.swift; sourceTree = "<group>"; };
 		866F6C401CDCA63A00557ACE /* VJson.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VJson.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		866F6C421CDCA63A00557ACE /* VJson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VJson.h; sourceTree = "<group>"; };
 		866F6C441CDCA63A00557ACE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		866F6C491CDCA63A00557ACE /* VJsonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VJsonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		866F6C501CDCA63A00557ACE /* VJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTests.swift; sourceTree = "<group>"; };
-		866F6C521CDCA63A00557ACE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		86745A021C91631D004A1868 /* VJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
-		86745A0B1C916430004A1868 /* SpeedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SpeedTests.swift; path = ../SwifterJSONTests/SpeedTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		860C832F1CF4A15400EF3E63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				860C83371CF4A15400EF3E63 /* VJson.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		866F6C3C1CDCA63A00557ACE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -47,23 +53,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		866F6C461CDCA63A00557ACE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				866F6C4A1CDCA63A00557ACE /* VJson.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		860C83331CF4A15400EF3E63 /* VJsonTests */ = {
+			isa = PBXGroup;
+			children = (
+				860C83341CF4A15400EF3E63 /* VJsonTests.swift */,
+				860C83361CF4A15400EF3E63 /* Info.plist */,
+			);
+			path = VJsonTests;
+			sourceTree = "<group>";
+		};
 		865B7AFE1A88F2E100411EDA = {
 			isa = PBXGroup;
 			children = (
 				865B7B091A88F2E100411EDA /* SwifterJSON */,
 				866F6C411CDCA63A00557ACE /* VJson */,
-				866F6C4F1CDCA63A00557ACE /* VJsonTests */,
+				860C83331CF4A15400EF3E63 /* VJsonTests */,
 				865B7B081A88F2E100411EDA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -72,7 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				866F6C401CDCA63A00557ACE /* VJson.framework */,
-				866F6C491CDCA63A00557ACE /* VJsonTests.xctest */,
+				860C83321CF4A15400EF3E63 /* VJsonTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,16 +102,6 @@
 			path = VJson;
 			sourceTree = "<group>";
 		};
-		866F6C4F1CDCA63A00557ACE /* VJsonTests */ = {
-			isa = PBXGroup;
-			children = (
-				866F6C501CDCA63A00557ACE /* VJsonTests.swift */,
-				86745A0B1C916430004A1868 /* SpeedTests.swift */,
-				866F6C521CDCA63A00557ACE /* Info.plist */,
-			);
-			path = VJsonTests;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -119,6 +116,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		860C83311CF4A15400EF3E63 /* VJsonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 860C833A1CF4A15400EF3E63 /* Build configuration list for PBXNativeTarget "VJsonTests" */;
+			buildPhases = (
+				860C832E1CF4A15400EF3E63 /* Sources */,
+				860C832F1CF4A15400EF3E63 /* Frameworks */,
+				860C83301CF4A15400EF3E63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				860C83391CF4A15400EF3E63 /* PBXTargetDependency */,
+			);
+			name = VJsonTests;
+			productName = VJsonTests;
+			productReference = 860C83321CF4A15400EF3E63 /* VJsonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		866F6C3F1CDCA63A00557ACE /* VJson */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 866F6C5B1CDCA63A00557ACE /* Build configuration list for PBXNativeTarget "VJson" */;
@@ -137,24 +152,6 @@
 			productReference = 866F6C401CDCA63A00557ACE /* VJson.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		866F6C481CDCA63A00557ACE /* VJsonTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 866F6C5D1CDCA63A00557ACE /* Build configuration list for PBXNativeTarget "VJsonTests" */;
-			buildPhases = (
-				866F6C451CDCA63A00557ACE /* Sources */,
-				866F6C461CDCA63A00557ACE /* Frameworks */,
-				866F6C471CDCA63A00557ACE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				866F6C4C1CDCA63A00557ACE /* PBXTargetDependency */,
-			);
-			name = VJsonTests;
-			productName = VJsonTests;
-			productReference = 866F6C491CDCA63A00557ACE /* VJsonTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -166,10 +163,10 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Marinus van der Lugt";
 				TargetAttributes = {
-					866F6C3F1CDCA63A00557ACE = {
+					860C83311CF4A15400EF3E63 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
-					866F6C481CDCA63A00557ACE = {
+					866F6C3F1CDCA63A00557ACE = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
@@ -188,20 +185,20 @@
 			projectRoot = "";
 			targets = (
 				866F6C3F1CDCA63A00557ACE /* VJson */,
-				866F6C481CDCA63A00557ACE /* VJsonTests */,
+				860C83311CF4A15400EF3E63 /* VJsonTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		866F6C3E1CDCA63A00557ACE /* Resources */ = {
+		860C83301CF4A15400EF3E63 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		866F6C471CDCA63A00557ACE /* Resources */ = {
+		866F6C3E1CDCA63A00557ACE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -211,6 +208,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		860C832E1CF4A15400EF3E63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				860C833E1CF4A23600EF3E63 /* VJson.swift in Sources */,
+				860C83351CF4A15400EF3E63 /* VJsonTests.swift in Sources */,
+				860C833D1CF4A23600EF3E63 /* ASCII.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		866F6C3B1CDCA63A00557ACE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -220,28 +227,47 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		866F6C451CDCA63A00557ACE /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				866F6C611CDCA64A00557ACE /* VJson.swift in Sources */,
-				866F6C511CDCA63A00557ACE /* VJsonTests.swift in Sources */,
-				866F6C601CDCA64A00557ACE /* ASCII.swift in Sources */,
-				866F6C621CDCB6FD00557ACE /* SpeedTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		866F6C4C1CDCA63A00557ACE /* PBXTargetDependency */ = {
+		860C83391CF4A15400EF3E63 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 866F6C3F1CDCA63A00557ACE /* VJson */;
-			targetProxy = 866F6C4B1CDCA63A00557ACE /* PBXContainerItemProxy */;
+			targetProxy = 860C83381CF4A15400EF3E63 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		860C833B1CF4A15400EF3E63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = VJsonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		860C833C1CF4A15400EF3E63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = VJsonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		865B7B211A88F2E100411EDA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -370,39 +396,18 @@
 			};
 			name = Release;
 		};
-		866F6C591CDCA63A00557ACE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = VJsonTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		866F6C5A1CDCA63A00557ACE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = VJsonTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		860C833A1CF4A15400EF3E63 /* Build configuration list for PBXNativeTarget "VJsonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				860C833B1CF4A15400EF3E63 /* Debug */,
+				860C833C1CF4A15400EF3E63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		865B7B021A88F2E100411EDA /* Build configuration list for PBXProject "SwifterJSON" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -419,14 +424,7 @@
 				866F6C581CDCA63A00557ACE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-		};
-		866F6C5D1CDCA63A00557ACE /* Build configuration list for PBXNativeTarget "VJsonTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				866F6C591CDCA63A00557ACE /* Debug */,
-				866F6C5A1CDCA63A00557ACE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

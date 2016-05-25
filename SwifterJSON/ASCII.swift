@@ -3,10 +3,11 @@
 //  File:       ASCII.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.1
+//  Version:    0.9.6
 //
 //  Author:     Marinus van der Lugt
-//  Website:    http://www.balancingrock.nl/swifterjson
+//  Company:    http://balancingrock.nl
+//  Website:    http://swiftfire.nl/pages/projects/swifterjson/
 //  Blog:       http://swiftrien.blogspot.com
 //  Git:        https://github.com/Swiftrien/SwifterJSON
 //
@@ -46,6 +47,7 @@
 //
 // History
 //
+// v0.9.6 - Header update
 // v0.9.1 - Added hexLookup
 //        - Changed 'is___' functions to var's
 // v0.9.0 Initial release

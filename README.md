@@ -2,7 +2,7 @@
 
 A single class framework in Swift to read/write & parse the JSON Format.
 
-SwifterJSON is part of the 5 packages that make up the Swiftfire webserver:
+SwifterJSON is part of the 5 packages that make up the [Swiftfire](http://swiftfire.nl) webserver:
 
 #####[Swiftfire](https://github.com/Swiftrien/Swiftfire)
 

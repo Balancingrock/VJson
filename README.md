@@ -75,6 +75,10 @@ As a general rule: use the pipe operators to read from a JSON hierarchy and use 
 
 #History:
 
+####v0.9.6
+
+- Header update to include new website: [swiftfire.nl](http://swiftfire.nl)
+
 ####v0.9.5
 
 - Added "pipe" functions ("|") to allow for better testing of paths. The pipe functions greatly improve the readability when used in 'guard' statements.

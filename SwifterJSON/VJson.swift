@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.6
+//  Version:    0.9.7
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -91,6 +91,8 @@
 //
 // History
 //
+// v0.9.7 - Added protocol definition VJsonSerializable
+//        - Added createJsonHierarchy(string)
 // v0.9.6 - Header update
 // v0.9.5 - Added "pipe" functions to allow for guard constructs when testing for item existence without side effect
 // v0.9.4 - Changed target to a shared framework
@@ -117,8 +119,15 @@
 // v0.9.0 Initial release
 // =====================================================================================================================
 
-
 import Foundation
+
+
+/// For classes and structs that can be converted into VJson and instantiated from VJson
+protocol VJsonSerializable {
+    var json: VJson { get }
+    init?(json: VJson?)
+}
+
 
 infix operator | {}
 
@@ -1207,6 +1216,10 @@ public final class VJson: Equatable, CustomStringConvertible, SequenceType {
         return try VJson.parse(buffer, numberOfBytes: length)
     }
     
+    public static func createJsonHierarchy(string: String) throws -> VJson {
+        guard let buffer = string.dataUsingEncoding(NSUTF8StringEncoding) else { throw VJson.Exception.REASON(code: 59, incomplete: false, message: "Could not convert string to UTF8") }
+        return try VJson.parse(NSMutableData(data: buffer))
+    }
     
     /**
      Reads an returns a new JSON hierarchy from the mutable data object and removes the found JSON hierarchy from the mutable data object. If no valid JSON hierarchy was found, the mutable data object will be unchanged.

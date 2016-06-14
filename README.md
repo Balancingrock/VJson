@@ -75,6 +75,11 @@ As a general rule: use the pipe operators to read from a JSON hierarchy and use 
 
 #History:
 
+####v0.9.7
+
+- Added protocol definition VJsonSerializable
+- Added createJsonHierarchy(string)
+
 ####v0.9.6
 
 - Header update to include new website: [swiftfire.nl](http://swiftfire.nl)

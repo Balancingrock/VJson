@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		860C83351CF4A15400EF3E63 /* VJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860C83341CF4A15400EF3E63 /* VJsonTests.swift */; };
+		860C83351CF4A15400EF3E63 /* VJsonTestsPart1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860C83341CF4A15400EF3E63 /* VJsonTestsPart1.swift */; };
 		860C83371CF4A15400EF3E63 /* VJson.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 866F6C401CDCA63A00557ACE /* VJson.framework */; };
 		860C833D1CF4A23600EF3E63 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
 		860C833E1CF4A23600EF3E63 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
 		866F6C431CDCA63A00557ACE /* VJson.h in Headers */ = {isa = PBXBuildFile; fileRef = 866F6C421CDCA63A00557ACE /* VJson.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		866F6C5E1CDCA64800557ACE /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
 		866F6C5F1CDCA64800557ACE /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
+		8674E4E11D2CE1C200F82222 /* VJsonTestsPart2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8674E4E01D2CE1C200F82222 /* VJsonTestsPart2.swift */; };
+		867F64981D2ED2B50061F11B /* ParseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867F64971D2ED2B50061F11B /* ParseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,13 +30,15 @@
 
 /* Begin PBXFileReference section */
 		860C83321CF4A15400EF3E63 /* VJsonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VJsonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		860C83341CF4A15400EF3E63 /* VJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTests.swift; sourceTree = "<group>"; };
+		860C83341CF4A15400EF3E63 /* VJsonTestsPart1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart1.swift; sourceTree = "<group>"; };
 		860C83361CF4A15400EF3E63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		865AFCB71C8718BA006CCAD8 /* ASCII.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASCII.swift; sourceTree = "<group>"; };
 		866F6C401CDCA63A00557ACE /* VJson.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VJson.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		866F6C421CDCA63A00557ACE /* VJson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VJson.h; sourceTree = "<group>"; };
 		866F6C441CDCA63A00557ACE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		86745A021C91631D004A1868 /* VJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
+		8674E4E01D2CE1C200F82222 /* VJsonTestsPart2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart2.swift; sourceTree = "<group>"; };
+		867F64971D2ED2B50061F11B /* ParseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +63,9 @@
 		860C83331CF4A15400EF3E63 /* VJsonTests */ = {
 			isa = PBXGroup;
 			children = (
-				860C83341CF4A15400EF3E63 /* VJsonTests.swift */,
+				860C83341CF4A15400EF3E63 /* VJsonTestsPart1.swift */,
+				8674E4E01D2CE1C200F82222 /* VJsonTestsPart2.swift */,
+				867F64971D2ED2B50061F11B /* ParseTests.swift */,
 				860C83361CF4A15400EF3E63 /* Info.plist */,
 			);
 			path = VJsonTests;
@@ -212,8 +218,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				867F64981D2ED2B50061F11B /* ParseTests.swift in Sources */,
+				8674E4E11D2CE1C200F82222 /* VJsonTestsPart2.swift in Sources */,
 				860C833E1CF4A23600EF3E63 /* VJson.swift in Sources */,
-				860C83351CF4A15400EF3E63 /* VJsonTests.swift in Sources */,
+				860C83351CF4A15400EF3E63 /* VJsonTestsPart1.swift in Sources */,
 				860C833D1CF4A23600EF3E63 /* ASCII.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

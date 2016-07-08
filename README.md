@@ -25,55 +25,233 @@ There is a 6th package called SwiftfireTester that can be used to challenge a we
 
 #Features
 - Creates a fully featured JSON hierarchy from file (or String).
-- Intuitive subscript accessors (for creation & interrogation).
-- Interrogation operations for item existence and item types.
+- Intuitive subscript accessors (for creation).
+- Intuitive pipe accessors (for iem interrogation).
 - Interpret items as other types (eg read a Bool as a String or vice-versa).
+- Allows multiple values with identical names in an OBJECT.
+- Allows ARRAYs with different JSON types.
+- Overloaded assignment operators for readable code.
+- Auto creation of null values for optional items that are nil.
+- Type conflicts can be configured to create fatal errors (is in fact default).
+- Prepared for Swift 3.
+- Includes extensive unit tests
 
 #Usage
-Add the files ASCII.swift and VJson.swift to your project.
+Add the files ASCII.swift and VJson.swift to the project.
 
-Example usage (Full example, you can use the code below directly)
+##Full Example
+
+This code can be used as is:
 
     func testExample() {
+    
+        let top = VJson() // Create JSON hierarchy
+        top["books"][0]["title"] &= "THHGTTG"
+        let jsonCode = top.description
         
-        let top = VJson.createJsonHierarchy()
-        top["books"][0]["title"].stringValue = "THHGTTG"
-        let myJsonString = top.description
-        
-        // Use the above generated string to read JSON code
-        
-        let data = myJsonString.dataUsingEncoding(NSUTF8StringEncoding)!
         do {
-            let json = try VJson.createJsonHierarchy(UnsafePointer<UInt8>(data.bytes), length: data.length)
-            if let title = json["books"][0]["title"].stringValue {
-                print("The title of the first book is: " + title)
+            let json = try VJson.parse(jsonCode)
+            if let title = (json|"books"|0|"title")?.stringValue {
+                XCTAssertEqual(title, "THHGTTG")
             } else {
-                print("The title of the first book in myJsonString was not found")
+                XCTFail("The title of the first book in the JSON code was not found")
             }
-        } catch let error as VJson.Exception {
-            print(error.description)
-        } catch {}
+        } catch {
+            XCTFail("Parser failed: \(error)")
+        }
     }
 
+##Typical use cases:
+
+Create an empty top level JSON item:
+
+	let json = VJson()
+
+Create a JSON hierarchy from input:
+
+	let json = try VJson.parse(fileUrl)
+	let json = try VJson.parse(uInt8Ptr, numberOfBytes)
+	let json = try VJson.parse(string)
+	let json = try VJson.parse(nsMutableData)
+
+Or without exceptions:
+
+	var parseErrorInfo: VJson.ParseError?
+	if let json = VJson.parse(fileUrl, &parseErrorInfo) {...}
+	if let json = VJson.parse(uInt8Ptr, numberOfBytes, &parseErrorInfo) {...}
+	if let json = VJson.parse(string, &parseErrorInfo) {...}
+	if let json = VJson.parse(nsMutableData, &parseErrorInfo) {...}
+	
+Note1: Creating from NSMutableData removes the data that was used from the buffer.
+
+Note2: In the 'else' part the "parseErrorInfo.message" will describe the error.
+
+Creating values:
+
+	let n = VJson(8)
+	let n = VJson(3.12)
+	let b = VJson(true)
+	let s = VJson("A String")
+	
+Create a collection type:
+
+	let a = VJson.array()
+	let o = VJson.object()
+	
+Creating a named item:
+
+	let n = VJson(8, name: "AnyName")
+	let n = VJson(3.12, name: "AnyName")
+	let b = VJson(true, name: "AnyName")
+	let s = VJson("A String", name: "AnyName")
+	let a = VJson.array(name: "AnyName")
+	let o = VJson.object(name: "AnyName")
+
+Preferred way of creating a VJson hierarchy:
+
+	let json = VJson()
+	json["description"] @= "Book price list"
+	json["books"][0]["title"] @= "Book Title"
+	json["books"][0]["price"] @= 12.34
+	json["books"][1]["title"] @= "Second Book Title"
+
+	
+Preferred way of inspecting/retrieving from an hierarchy:
+
+	guard let title = (json|"books"|0|"title")?.stringValue else {...}
+	guard let price = (json|"books"|0|"price")?.doubleValue else {...}
+
+Adding a (named) item to an object:
+
+	let o = VJson.object()
+	o.add(VJson(8), name: "AnyName")		// {"AnyName":8}
+	
+is equivalent to:
+
+	let o = VJson.object()
+	o.add(VJson(8, name: "AnyName"))		// {"AnyName":8}
+
+Adding an item to an array:
+
+	let a = VJson.array()
+	a.append(VJson(8))						// [8]
+
+is equivalent to:
+
+	let a = VJson.array()
+	o.append(VJson(8, name: "AnyName"))	// [8]
+
+Create an item in the hierarchy:
+
+	let json = VJson()						// {}
+	var i: Int?
+	json["first"].integerOrNull = i			// {"first":null}
+	i = 12
+	json["first"].integerOrNull = i			// {"first":12}
+
+Or using the defined operator "&=":
+
+	json["first"] &= 23						// {"first":23}
+
+Changing the type of "first" to a string:
+
+	json["first"] &= "second"  				// {"first":"second"}
+
+Creating JSON OBJECTs and ARRAYs implicitly using subscript accessors:
+
+	let json = VJson()
+	json["books"][2]["Authors"][0] &= "Jane" // {"books":[null, null, {"Authors":["Jane"]}]}
+
+Adding a JSON OBJECT to a JSON OBJECT explicitly:
+
+	let json = VJson()						// {}
+	json["first"] &= "second"  				// {"first":"second"}
+	json.add(VJson.object(name: "Child"))	// {"first":"second","Child":{}}
+	
+Adding a JSON ARRAY to a JSON OBJECT explicitly:
+
+	json.add(VJson.array(), name: "Array")	// {"first":"second","Child":{},"Array":[]}
+
+Adding a JSON OBJECT to a JSON ARRAY explicitly:
+
+	let json = VJson
+	json["Arr"].append(VJson.object(name: "No1")) // {"Arr":[{"No1":{}}]}
+	
+Testing for and retrieving of values:
+
+	guard let title = (json|"Book"|3|"Title")?.stringValue else { ... }
+	
+Itterating over all children of an object (or array):
+
+	for child in json { ... }
+
 #Notes:
+##Subscript vs pipe operator
 
 The subscript accessors have a side-effect of creating items that are not present to satisfy the full path.
 
 I.e.
 
-    let json = VJson.createJsonHierarchy()
+    let json = VJson()
     guard let name = json["root"][2]["name"].stringValue else { return }
     
-will create all items necessary to resolve the path. Even though the string value will not be assigned to the let property because it does not exist. This can easily produce undesired side effects even though unnecessary items will be removed automatically before persisting the hierarchy.
+will create all items necessary to resolve the path. Even though the string value will not be assigned to the let property because it does not exist. The unnecessary items will be removed automatically before persisting the hierarchy. But creating and destroying unneccesary items takes time that could be spend differently. 
 
-To avoid those side effects use the pipe operators:
+To avoid those side effects use the pipe operator:
 
-    let json = VJson.createJsonHierarchy()
+    let json = VJson()
     guard let name = (json|"root"|2|"name")?.stringValue else { return }
 
 As a general rule: use the pipe operators to read from a JSON hierarchy and use the subscript accessors to create the JSON hierarchy.
 
+It is possible to use the pipe opertors to assign values to the JSON hierarchy, but only if the item that is written to already exists:
+
+	let json = VJson()         			// results in: {}
+	(json|"top"|2|"name")? &= 42 		// results in: {}
+	json["top"][2]["name"] &= 42		// results in: {"top":[null, null, {"name":42}]}
+
+##Values with names in an array
+
+Every object in a VJson JSON Hierarchy is a VJson object. This is very convenient, but also poses somewhat of a challenge: The JSON specification treats values differently depending on whether they are contained in an ARRAY or OBJECT. In an OBJECT the values have names (or key's in NS parlour). In an ARRAY values are simply values without a name. However since VJson provides only one type of object for everything, this object must have a name component. The optionality of this name thus depends on where the VJson object is used.
+What if a VJson VALUE with a specified name is inserted into an array? Well, the name will be ignored. This leads (possibly) to information loss, but the alternative would be to create an extra object in the hierarchy. If this is the preferred behaviour, it is up to the application to create that object explicitly.
+In an example:
+
+	let json = VJson()
+	json["top"].append(VJson(12))				// results in: {"top":[12]}
+	
+	let json = VJson()
+	json["top"].append(VJson(12, name: "one"))	// results in: {"top":[12]}
+
+##JSON item type changes
+
+Allowing the use of subscript accessors without optionality necessitates a leniet behaviour towards JSON item type conversions. To prevent that the application code inadvertently changes the type of a JSON item a fatal error will be thrown if that happens.
+
+Legal type changes involve either as target or destination the JSON NULL type.
+
+All other type changes -for example- a BOOL to an ARRAY or from STRING to a NUMBER will result in a fatal error when the static option "fatalErrorOnTypeConversion" is set to 'true' (which is the default). Such type changes can only be made by transistioning explicitly through a JSON NULL type.
+
+To allow leniency for type changes not involving NULL, set "fatalErrorOnTypeConversion" to 'false'.
+
+Do note however that the operations "add" and "append" are not lenient. I.e. it is not possible to "add" to an ARRAY or "append" to an OBJECT as that could result in data loss. However there are operations to change an ARRAY into an OBJECT and vice versa.
+
+
 #History:
+
+####v0.9.8 (Major overhaul!)
+
+- Preparations for Swift 3 (name changes)
+- Added functions: stringOrNull, integerOrNull, doubleOrNull, boolOrNull and numberOrNull.
+- Fixed problem where appendChild would not convert a non-array into an array.
+- Added "&=" operators
+- Changed VJsonSerializable and created additional protocols VJsonDeserializable and VJsonConvertible
+- Added a load of new initializers and factories
+- Added a conditional conversion of ARRAY into OBJECT
+- Removed createXXXX functions where these duplicated the new initializers.
+- Fixed crash when changing from an ARRAY to OBJECT and vice-versa
+- Created better distiction between ARRAY and OBJECT access, it is no longer possible to insert in or append to objects just as it is no longer possible to add to arrays. There is no longer an automatic conversion of JSON items for child access/management. Instead, two new operations have been added to change object's into array's and vice versa. Note that value assignment en array accessors still auto-convert JSON item types.
+- Added static option fatalErrorOnTypeConversion (for use during debugging)
+- Improved iterator: will no longer generates items that are deleted while in the itteration loop
+- Changed operation 'object' to 'item'
 
 ####v0.9.7
 

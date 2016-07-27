@@ -48,12 +48,95 @@ class ParseTests: XCTestCase {
             XCTFail("Test fail: \(error)")
         }
     }
+    
+    func testAppleParsingDescription() {
+        
+        let testcases: Array<String> = [
+            "{}",
+            "{\"one\":null}",
+            "{\"one\":0}",
+            "{\"one\":1}",
+            "{\"one\":1.2}",
+            "{\"one\":\"string\"}",
+            "{\"one\":[]}",
+            "{\"one\":[1]}",
+            "{\"one\":[1,2]}",
+            "{\"one\":{\"two\":2}}",
+            "{\"one\":[1,2,{\"name\":{}}]}"
+        ]
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
+        do {
+            for tc in testcases {
+                let tcd = (tc as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+                let json = try VJson.parseUsingAppleParser(tcd)
+                XCTAssertEqual(tc, json.description)
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
         }
     }
+
+    func testVJsonParsingPerformance() {
+
+        let jcode = "{" +
+            "\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"value\":false}}}}}}}}}}," +
+            "\"arr\":[[[[[[[[[[[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9]]]]]]]]]]]," +
+            "\"nulls\":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]," +
+            "\"trues\":[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]," +
+            "\"falses\":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]," +
+            "\"twelve\":[12,12,12,12,12,12,12,12,12,12,12,12,12,12]," +
+            "\"onethree\":[1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3]," +
+            "\"onethreeE4\":[1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4]," +
+            "\"negative\":[-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10]," +
+            "\"strings\":[\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\"]" +
+        "}"
+        
+        self.measureBlock {
+            var json: VJson?
+            do {
+                for _ in 1 ... 1000 {
+                    json = try VJson.parse(jcode)
+                }
+            } catch let error as VJson.ParseError {
+                XCTFail("Parser test failed: \(error)")
+            } catch {
+                XCTFail("Test fail: \(error)")
+            }
+            XCTAssertNotNil(json)
+        }
+    }
+    
+    func testAppleParsingPerformance() {
+        
+        let jcode = ("{" +
+            "\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"obj\":{\"value\":false}}}}}}}}}}," +
+            "\"arr\":[[[[[[[[[[[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9],[0,1,2,3,4,5,6,7,8,9]]]]]]]]]]]," +
+            "\"nulls\":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]," +
+            "\"trues\":[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]," +
+            "\"falses\":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]," +
+            "\"twelve\":[12,12,12,12,12,12,12,12,12,12,12,12,12,12]," +
+            "\"onethree\":[1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3]," +
+            "\"onethreeE4\":[1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4]," +
+            "\"negative\":[-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10]," +
+            "\"strings\":[\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\"]" +
+        "}" as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+        
+        self.measureBlock {
+            var json: VJson?
+            do {
+                for _ in 1 ... 1000 {
+                    json = try VJson.parseUsingAppleParser(jcode)
+                }
+            } catch let error as VJson.ParseError {
+                XCTFail("Parser test failed: \(error)")
+            } catch {
+                XCTFail("Test fail: \(error)")
+            }
+            XCTAssertNotNil(json)
+        }
+    }
+
 
 }

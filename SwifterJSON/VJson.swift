@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.8
+//  Version:    0.9.9
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,7 @@
 //
 // History
 //
+// v0.9.9 - Added "parseUsingAppleParser"
 // v0.9.8 - Preparations for Swift 3 (name changes)
 //        - Added functions: stringOrNull, integerOrNull, doubleOrNull, boolOrNull and numberOrNull.
 //        - Fixed problem where appendChild would not convert a non-array into an array.
@@ -361,11 +362,13 @@ public final class VJson: Equatable, CustomStringConvertible, SequenceType {
     
     
     /// - Returns: True if this object contains a JSON BOOL object.
+    /// - Note: If the Apple Parser was used, all JSON bools will have been converted into a NUMBER.
     
     public var isBool: Bool { return self.type == JType.BOOL }
     
     
     /// - Returns: True if this object contains a JSON NUMBER object.
+    /// - Note: If the Apple Parser was used, all JSON bools will have been converted into a NUMBER.
     
     public var isNumber: Bool { return self.type == JType.NUMBER }
 
@@ -2208,6 +2211,65 @@ public final class VJson: Equatable, CustomStringConvertible, SequenceType {
         while buffer[offset].isAsciiWhitespace {
             offset += 1
             if offset >= numberOfBytes { break }
+        }
+    }
+    
+    
+    // MARK: - Apple JSON parser
+    
+    
+    /// This parser uses the Apple NSJSONSerialization class to parse the given data.
+    /// - Note: Parser differences: Apple's parser is usually faster (about 2x). However Apple's parser cannot parse multiple key/value pairs with the same name and Apple's parser will create a VJson NUMBER items for BOOL's.
+    /// - Returns: A VJson hierarchy
+    /// - Throws: Error code 100 or the error thrown by NSJSONSerialization. Error code 100 should be impossible.
+    
+    static func parseUsingAppleParser(data: NSData) throws -> VJson {
+        
+        let json = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+        
+        return try getVJsonFrom(json)
+    }
+    
+    private static func getVJsonFrom(o: AnyObject) throws -> VJson {
+        
+        if let str = o as? NSString {
+            
+            return VJson(str as String)
+            
+        } else if let num = o as? NSNumber {
+            
+            return VJson(num)
+            
+        } else if o is NSNull {
+            
+            return VJson.null()
+            
+        } else if let arr = o as? NSArray {
+            
+            let vjson = VJson.array()
+
+            for e in arr {
+                vjson.append(try getVJsonFrom(e))
+            }
+
+            return vjson
+            
+        } else if let dict = o as? NSDictionary {
+            
+            let vjson = VJson.object()
+            
+            for e in dict {
+                let name = e.key as! String
+                let value = try getVJsonFrom(e.value)
+                vjson.add(value, forName: name)
+            }
+            
+            return vjson
+            
+        } else {
+            
+            // This should be impossible.
+            throw Exception.REASON(code: 100, incomplete: true, message: "Illegal value in AppleParser result")
         }
     }
 }

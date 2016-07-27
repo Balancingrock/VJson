@@ -35,6 +35,7 @@ There is a 6th package called SwiftfireTester that can be used to challenge a we
 - Type conflicts can be configured to create fatal errors (is in fact default).
 - Prepared for Swift 3.
 - Includes extensive unit tests
+- Use either integrated parser or Apple's NSJSONSerialization parser
 
 #Usage
 Add the files ASCII.swift and VJson.swift to the project.
@@ -234,8 +235,20 @@ To allow leniency for type changes not involving NULL, set "fatalErrorOnTypeConv
 
 Do note however that the operations "add" and "append" are not lenient. I.e. it is not possible to "add" to an ARRAY or "append" to an OBJECT as that could result in data loss. However there are operations to change an ARRAY into an OBJECT and vice versa.
 
+## Differences between standard parser or Apple's NSJSONSerialization parser
+
+The advantage of Apple's parser is that it is faster, about twice as fast as the standard parser. However Apple's parser has at least two drawbacks:
+
+- It cannot handle multiple name/value pairs with identical names. I.e. {"test":1,"test":2} will fail. With the standard VJson parser this will actually result in an object with two childeren with identical names.
+- JSON BOOL items are parsed as NSNumber and hence must be interrogated as a JSON NUMBER item. This results in a symmetry break when json code with a bool in it is converted into a VJson hierarchy and that hierachy is then translated back into code. (The in- and output code will not be the same)
+
+If time is an issue, it is advisable to use the "parseUsingAppleParser" instead of any of the other parse functions.
 
 #History:
+
+####v0.9.9
+
+- Added NSJSONSerialization parsing
 
 ####v0.9.8 (Major overhaul!)
 

@@ -237,16 +237,26 @@ Do note however that the operations "add" and "append" are not lenient. I.e. it 
 
 ## Differences between standard parser or Apple's NSJSONSerialization parser
 
-The advantage of Apple's parser is that it is faster, about twice as fast as the standard parser. However Apple's parser has at least two drawbacks:
+The advantage of Apple's parser is that it is faster, about twice as fast as the standard parser on the MacBook Pro and PowerMac. However Apple's parser has at least two drawbacks:
 
-- It cannot handle multiple name/value pairs with identical names. I.e. {"test":1,"test":2} will fail. With the standard VJson parser this will actually result in an object with two childeren with identical names.
-- JSON BOOL items are parsed as NSNumber and hence must be interrogated as a JSON NUMBER item. This results in a symmetry break when json code with a bool in it is converted into a VJson hierarchy and that hierachy is then translated back into code. (The in- and output code will not be the same)
+- It cannot handle multiple name/value pairs with identical names. I.e. {"test":1,"test":2} will fail. With the standard VJson parser this will result in an object with two childeren with identical names. Accessable through the "arrayValue" accessor.
+- JSON BOOL items are parsed as an NSNumber and hence must be interrogated as a JSON NUMBER item. This results in a symmetry break when json code with a bool in it is converted into a VJson hierarchy and that hierachy is then translated back into code. (The in- and output code will not be the same)
 
 If time is an issue, it is advisable to use the "parseUsingAppleParser" instead of any of the other parse functions.
 
 #History:
 
-####v0.9.9
+Note: Planned releases are for information only and subject to change without notice.
+
+####v1.0.0 (Planned)
+
+- Update for swift 3 (official release)
+
+####v0.9.10 (Planned)
+
+- Update for Swift 3 (Xcode 8 prerelease)
+
+####v0.9.9 (Current)
 
 - Added NSJSONSerialization parsing
 

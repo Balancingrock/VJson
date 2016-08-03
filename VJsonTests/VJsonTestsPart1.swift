@@ -33,7 +33,7 @@ class VJsonTests: XCTestCase {
         let jsonCode = top.description
         
         do {
-            let json = try VJson.parse(jsonCode)
+            let json = try VJson.parse(string: jsonCode)
             if let title = (json|"books"|0|"title")?.stringValue {
                 XCTAssertEqual(title, "THHGTTG")
             } else {
@@ -65,11 +65,11 @@ class VJsonTests: XCTestCase {
         
         // Execute the string pipe operator with a single matched path
         json!["bottom"] &= 26
-        XCTAssertEqual((json|"top")!.integerValue!, 13)
+        XCTAssertEqual((json|"top")!.intValue!, 13)
         
         // Execute the string pipe operator with a multiple matched path
         json!.add(VJson(17), forName: "top", replace: false)
-        XCTAssertEqual((json|"top")!.integerValue!, 13)
+        XCTAssertEqual((json|"top")!.intValue!, 13)
     }
     
     
@@ -93,7 +93,7 @@ class VJsonTests: XCTestCase {
         
         // Execute the string pipe operator with a matched path
         json![2] &= 26
-        XCTAssertEqual((json|1)!.integerValue!, 13)
+        XCTAssertEqual((json|1)!.intValue!, 13)
     }
 
     
@@ -111,12 +111,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
     
     
@@ -134,12 +134,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
 
     
@@ -157,12 +157,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
 
     
@@ -180,12 +180,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
     
     
@@ -203,12 +203,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
     
     
@@ -226,12 +226,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
     
     
@@ -249,12 +249,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
     
     
@@ -272,12 +272,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
     
     
@@ -295,12 +295,12 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
         json &= i
-        XCTAssertEqual(json!.integerValue!, 3)
+        XCTAssertEqual(json!.intValue!, 3)
     }
     
     
@@ -318,7 +318,7 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
@@ -341,7 +341,7 @@ class VJsonTests: XCTestCase {
         json = VJson(i!)
         i = nil
         json &= i
-        XCTAssertNil(json!.integerValue)
+        XCTAssertNil(json!.intValue)
         
         // Execute the assignment with a non-nil argument
         i = 3
@@ -735,7 +735,7 @@ class VJsonTests: XCTestCase {
         XCTAssertFalse(json.asBool)
         XCTAssertFalse(json.isNumber)
         XCTAssertFalse(json.boolValue!)
-        XCTAssertNil(json.integerValue)
+        XCTAssertNil(json.intValue)
         
         // Convert from STRING
         json = VJson("true")
@@ -772,7 +772,7 @@ class VJsonTests: XCTestCase {
         // Create with no value and no name
         var num: NSNumber?
         var json = VJson(num)
-        var exp = NSNumber(int: 0)
+        var exp = NSNumber(value: 0)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertNil(json.numberValue)
@@ -780,7 +780,7 @@ class VJsonTests: XCTestCase {
         
         // Create with no value and with name
         json = VJson(num, name: "qwerty")
-        exp = NSNumber(int: 0)
+        exp = NSNumber(value: 0)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertNil(json.numberValue)
@@ -788,18 +788,18 @@ class VJsonTests: XCTestCase {
         XCTAssertEqual(json.nameValue, "qwerty")
         
         // Create with value and no name
-        num = NSNumber(int: 32)
+        num = NSNumber(value: 32)
         json = VJson(num)
-        exp = NSNumber(int: 32)
+        exp = NSNumber(value: 32)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.numberValue!, exp)
         XCTAssertFalse(json.hasName)
         
         // Create with value and with name
-        num = NSNumber(int: 32)
+        num = NSNumber(value: 32)
         json = VJson(num, name: "qwerty")
-        exp = NSNumber(int: 32)
+        exp = NSNumber(value: 32)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.numberValue!, exp)
@@ -808,7 +808,7 @@ class VJsonTests: XCTestCase {
 
         // Test NULL value as NUMBER
         json = VJson.null("qwerty")
-        exp = NSNumber(int: 0)
+        exp = NSNumber(value: 0)
         XCTAssertTrue(json.isNull)
         XCTAssertFalse(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
@@ -818,7 +818,7 @@ class VJsonTests: XCTestCase {
 
         // Test BOOL(true) value as NUMBER
         json = VJson(true)
-        exp = NSNumber(int: 1)
+        exp = NSNumber(value: 1)
         XCTAssertTrue(json.isBool)
         XCTAssertFalse(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
@@ -828,7 +828,7 @@ class VJsonTests: XCTestCase {
 
         // Test BOOL(false) value as NUMBER
         json = VJson(false)
-        exp = NSNumber(int: 0)
+        exp = NSNumber(value: 0)
         XCTAssertTrue(json.isBool)
         XCTAssertFalse(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
@@ -838,7 +838,7 @@ class VJsonTests: XCTestCase {
 
         // Test STRING("12") value as NUMBER
         json = VJson("12")
-        exp = NSNumber(int: 12)
+        exp = NSNumber(value: 12)
         XCTAssertTrue(json.isString)
         XCTAssertFalse(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
@@ -848,7 +848,7 @@ class VJsonTests: XCTestCase {
 
         // Test STRING("qwerty") value as NUMBER
         json = VJson("qwerty")
-        exp = NSNumber(int: 0)
+        exp = NSNumber(value: 0)
         XCTAssertTrue(json.isString)
         XCTAssertFalse(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
@@ -857,58 +857,58 @@ class VJsonTests: XCTestCase {
         XCTAssertNil(json.nameValue)
         
         // Assign a NUMBER? = nil
-        json = VJson(NSNumber(int: 45))
+        json = VJson(NSNumber(value: 45))
         num = nil
         json.numberValue = num
-        exp = NSNumber(int: 0)
+        exp = NSNumber(value: 0)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertNil(json.numberValue)
         
         // Assign a NUMBER = 12
-        json = VJson(NSNumber(int: 45))
-        num = NSNumber(int: 12)
+        json = VJson(NSNumber(value: 45))
+        num = NSNumber(value: 12)
         json.numberValue = num
-        exp = NSNumber(int: 12)
+        exp = NSNumber(value: 12)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.numberValue!, exp)
 
         // Assign a NUMBER with Int? = nil
-        json = VJson(NSNumber(int: 45))
+        json = VJson(NSNumber(value: 45))
         var inum: Int?
-        json.integerValue = inum
-        exp = NSNumber(int: 0)
+        json.intValue = inum
+        exp = NSNumber(value: 0)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.asInt, 0)
-        XCTAssertNil(json.integerValue)
+        XCTAssertNil(json.intValue)
 
         // Assign a NUMBER with Int? = 12
-        json = VJson(NSNumber(int: 45))
+        json = VJson(NSNumber(value: 45))
         inum = 12
-        json.integerValue = inum
-        exp = NSNumber(int: 12)
+        json.intValue = inum
+        exp = NSNumber(value: 12)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.asInt, 12)
-        XCTAssertEqual(json.integerValue!, exp)
+        XCTAssertEqual(json.intValue!, exp)
 
         // Assign a NUMBER with Double? = nil
-        json = VJson(NSNumber(int: 45))
+        json = VJson(NSNumber(value: 45))
         var dnum: Double?
         json.doubleValue = dnum
-        exp = NSNumber(int: 0)
+        exp = NSNumber(value: 0)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.asDouble, 0.0)
         XCTAssertNil(json.doubleValue)
 
         // Assign a NUMBER with Double = 1.2
-        json = VJson(NSNumber(int: 45))
+        json = VJson(NSNumber(value: 45))
         dnum = 12.0
-        json.integerValue = inum
-        exp = NSNumber(int: 12)
+        json.intValue = inum
+        exp = NSNumber(value: 12)
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.asDouble, 12)
@@ -917,52 +917,52 @@ class VJsonTests: XCTestCase {
         // Test constructor Int
         json = VJson(Int(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor UInt
         json = VJson(UInt(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor Int8
         json = VJson(Int8(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor UInt8
         json = VJson(UInt8(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor Int16
         json = VJson(Int16(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor UInt16
         json = VJson(UInt16(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor Int32
         json = VJson(Int32(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor UInt32
         json = VJson(UInt32(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor Int64
         json = VJson(Int64(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor UInt64
         json = VJson(UInt64(12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Test constructor Float
         json = VJson(Float(12))
@@ -975,9 +975,9 @@ class VJsonTests: XCTestCase {
         XCTAssertEqual(json.doubleValue!, 12)
         
         // Test constructor NSNumber
-        json = VJson(NSNumber(int: 12))
+        json = VJson(NSNumber(value: 12))
         XCTAssertTrue(json.isNumber)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Convert from NULL
         json = VJson.null()
@@ -985,7 +985,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isNumber)
         XCTAssertFalse(json.isNull)
         XCTAssertEqual(json.asInt, 1)
-        XCTAssertEqual(json.integerValue!, 1)
+        XCTAssertEqual(json.intValue!, 1)
 
         // Do no longer raise fatal errors
         VJson.fatalErrorOnTypeConversion = false // Change manually to check if this works as expected
@@ -996,7 +996,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isNumber)
         XCTAssertFalse(json.isBool)
         XCTAssertEqual(json.asInt, 12)
-        XCTAssertEqual(json.integerValue!, 12)
+        XCTAssertEqual(json.intValue!, 12)
         
         // Convert from STRING
         json = VJson("true")
@@ -1004,7 +1004,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isNumber)
         XCTAssertFalse(json.isString)
         XCTAssertEqual(json.asInt, 23)
-        XCTAssertEqual(json.integerValue!, 23)
+        XCTAssertEqual(json.intValue!, 23)
         
         // Convert from OBJECT
         json = VJson.object()
@@ -1012,7 +1012,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isNumber)
         XCTAssertFalse(json.isObject)
         XCTAssertEqual(json.asInt, 34)
-        XCTAssertEqual(json.integerValue!, 34)
+        XCTAssertEqual(json.intValue!, 34)
         
         // Convert from ARRAY
         json = VJson.array()
@@ -1020,7 +1020,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isNumber)
         XCTAssertFalse(json.isArray)
         XCTAssertEqual(json.asInt, 45)
-        XCTAssertEqual(json.integerValue!, 45)
+        XCTAssertEqual(json.intValue!, 45)
     }
     
     
@@ -1244,7 +1244,11 @@ class VJsonTests: XCTestCase {
         json.add(VJson(true), forName: "qwerty")
         if let arr = json.arrayValue {
             XCTAssertEqual(arr.count, 1)
-            XCTAssertEqual(arr[0].boolValue!, true)
+            if arr[0].isBool {
+                XCTAssertEqual(arr[0].boolValue!, true)
+            } else {
+                XCTFail()
+            }
         } else {
             XCTFail()
         }
@@ -1256,7 +1260,7 @@ class VJsonTests: XCTestCase {
         if let arr = json.arrayValue {
             XCTAssertEqual(arr.count, 2)
             XCTAssertEqual(arr[0].boolValue!, true)
-            XCTAssertEqual(arr[1].integerValue!, 23)
+            XCTAssertEqual(arr[1].intValue!, 23)
         } else {
             XCTFail()
         }
@@ -1338,7 +1342,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isArray)
         XCTAssertEqual(json.nofChildren, 3)
         XCTAssertTrue(json.arrayValue![0].isNull)
-        XCTAssertTrue(json.arrayValue![1].integerValue! == 12)
+        XCTAssertTrue(json.arrayValue![1].intValue! == 12)
         XCTAssertTrue(json.arrayValue![2].boolValue!)
         
         // With children including a nil, without name, not including nil option set to true
@@ -1346,7 +1350,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isArray)
         XCTAssertEqual(json.nofChildren, 4)
         XCTAssertTrue(json.arrayValue![0].isNull)
-        XCTAssertTrue(json.arrayValue![1].integerValue! == 12)
+        XCTAssertTrue(json.arrayValue![1].intValue! == 12)
         XCTAssertTrue(json.arrayValue![2].isNull)
         XCTAssertTrue(json.arrayValue![3].boolValue!)
         
@@ -1393,18 +1397,18 @@ class VJsonTests: XCTestCase {
         json = VJson(arr)
         XCTAssertTrue(json.isArray)
         XCTAssertEqual(json.nofChildren, 3)
-        XCTAssertTrue(json.arrayValue![0].integerValue! == 2)
-        XCTAssertTrue(json.arrayValue![1].integerValue! == 3)
-        XCTAssertTrue(json.arrayValue![2].integerValue! == 4)
+        XCTAssertTrue(json.arrayValue![0].intValue! == 2)
+        XCTAssertTrue(json.arrayValue![1].intValue! == 3)
+        XCTAssertTrue(json.arrayValue![2].intValue! == 4)
         
         // With children including a nil, without name, not including nil option set to true
         json = VJson(arr, includeNil: true)
         XCTAssertTrue(json.isArray)
         XCTAssertEqual(json.nofChildren, 4)
-        XCTAssertTrue(json.arrayValue![0].integerValue! == 2)
-        XCTAssertTrue(json.arrayValue![1].integerValue! == 3)
+        XCTAssertTrue(json.arrayValue![0].intValue! == 2)
+        XCTAssertTrue(json.arrayValue![1].intValue! == 3)
         XCTAssertTrue(json.arrayValue![2].isNull)
-        XCTAssertTrue(json.arrayValue![3].integerValue! == 4)
+        XCTAssertTrue(json.arrayValue![3].intValue! == 4)
         
         // Remove compilation warning
         nilv = Assist(val: 1)
@@ -1437,9 +1441,9 @@ class VJsonTests: XCTestCase {
         json = VJson(dict)
         XCTAssertTrue(json.isObject)
         XCTAssertEqual(json.nofChildren, 3)
-        XCTAssertTrue(json.children("key1")[0].integerValue! == 1)
-        XCTAssertTrue(json.children("key2")[0].integerValue! == 2)
-        XCTAssertTrue(json.children("key3")[0].integerValue! == 3)
+        XCTAssertTrue(json.children(withName: "key1")[0].intValue! == 1)
+        XCTAssertTrue(json.children(withName: "key2")[0].intValue! == 2)
+        XCTAssertTrue(json.children(withName: "key3")[0].intValue! == 3)
     }
     
     
@@ -1480,9 +1484,9 @@ class VJsonTests: XCTestCase {
         json = VJson(dict)
         XCTAssertTrue(json.isObject)
         XCTAssertEqual(json.nofChildren, 3)
-        XCTAssertTrue(json.children("key1")[0].integerValue! == 1)
-        XCTAssertTrue(json.children("key2")[0].integerValue! == 2)
-        XCTAssertTrue(json.children("key3")[0].integerValue! == 3)
+        XCTAssertTrue(json.children(withName: "key1")[0].intValue! == 1)
+        XCTAssertTrue(json.children(withName: "key2")[0].intValue! == 2)
+        XCTAssertTrue(json.children(withName: "key3")[0].intValue! == 3)
     }
 
     
@@ -1499,9 +1503,9 @@ class VJsonTests: XCTestCase {
         if json.arrayToObject() {
             XCTAssertTrue(json.isObject)
             XCTAssertEqual(json.nofChildren, 3)
-            XCTAssertTrue(json.children("one")[0].isNull)
-            XCTAssertTrue(json.children("two")[0].integerValue! == 12)
-            XCTAssertTrue(json.children("three")[0].boolValue!)
+            XCTAssertTrue(json.children(withName: "one")[0].isNull)
+            XCTAssertTrue(json.children(withName: "two")[0].intValue! == 12)
+            XCTAssertTrue(json.children(withName: "three")[0].boolValue!)
         } else {
             XCTFail()
         }
@@ -1539,7 +1543,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.objectToArray())
         XCTAssertTrue(json.isArray)
         XCTAssertEqual(json.nofChildren, 1)
-        XCTAssertTrue(json.arrayValue![0].integerValue! == 1)
+        XCTAssertTrue(json.arrayValue![0].intValue! == 1)
 
         // Illegal conversions
         json = VJson.array()

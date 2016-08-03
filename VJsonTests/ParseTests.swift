@@ -39,7 +39,7 @@ class ParseTests: XCTestCase {
         
         do {
             for tc in testcases {
-                let json = try VJson.parse(tc)
+                let json = try VJson.parse(string: tc)
                 XCTAssertEqual(tc, json.description)
             }
         } catch let error as VJson.ParseError {
@@ -67,7 +67,7 @@ class ParseTests: XCTestCase {
 
         do {
             for tc in testcases {
-                let tcd = (tc as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+                let tcd = (tc as NSString).data(using: String.Encoding.utf8.rawValue)!
                 let json = try VJson.parseUsingAppleParser(tcd)
                 XCTAssertEqual(tc, json.description)
             }
@@ -93,11 +93,11 @@ class ParseTests: XCTestCase {
             "\"strings\":[\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\"]" +
         "}"
         
-        self.measureBlock {
+        self.measure {
             var json: VJson?
             do {
                 for _ in 1 ... 1000 {
-                    json = try VJson.parse(jcode)
+                    json = try VJson.parse(string: jcode)
                 }
             } catch let error as VJson.ParseError {
                 XCTFail("Parser test failed: \(error)")
@@ -121,9 +121,9 @@ class ParseTests: XCTestCase {
             "\"onethreeE4\":[1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4,1.3e4]," +
             "\"negative\":[-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10,-1.3e-10]," +
             "\"strings\":[\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\",\"one\"]" +
-        "}" as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+        "}" as NSString).data(using: String.Encoding.utf8.rawValue)!
         
-        self.measureBlock {
+        self.measure {
             var json: VJson?
             do {
                 for _ in 1 ... 1000 {

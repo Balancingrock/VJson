@@ -1,14 +1,10 @@
-#SwifterJSON
+#SwifterJSON / VJson
 
 A single class framework in Swift to read/write & parse the JSON Format.
 
-SwifterJSON is part of the 5 packages that make up the [Swiftfire](http://swiftfire.nl) webserver:
+SwifterJSON is part of the 4 packages that make up the [Swiftfire](http://swiftfire.nl) webserver:
 
 #####[Swiftfire](https://github.com/Swiftrien/Swiftfire)
-
-An open source web server in Swift.
-
-#####[SwiftfireConsole](https://github.com/Swiftrien/SwiftfireConsole)
 
 A GUI application for Swiftfire.
 
@@ -20,7 +16,7 @@ General purpose socket utilities.
 
 General purpose logging utility.
 
-There is a 6th package called SwiftfireTester that can be used to challenge a webserver (any webserver) and see/verify the response.
+There is a 5th package called SwiftfireTester that can be used to challenge a webserver (any webserver) and see/verify the response.
 
 
 #Features
@@ -33,7 +29,7 @@ There is a 6th package called SwiftfireTester that can be used to challenge a we
 - Overloaded assignment operators for readable code.
 - Auto creation of null values for optional items that are nil.
 - Type conflicts can be configured to create fatal errors (is in fact default).
-- Prepared for Swift 3.
+- Build with Swift 3 beta (Xcode 8 beat)
 - Includes extensive unit tests
 - Use either integrated parser or Apple's NSJSONSerialization parser
 
@@ -248,15 +244,20 @@ If time is an issue, it is advisable to use the "parseUsingAppleParser" instead 
 
 Note: Planned releases are for information only and subject to change without notice.
 
+####v1.1.0 (Open)
+
+- No new features planned. Features and bugfixes will be made on an ad-hoc basis as needed to support Swiftfire development.
+- To request features or bug fixes please contact rien@balancingrock.nl
+
 ####v1.0.0 (Planned)
 
 - Update for swift 3 (official release)
 
-####v0.9.10 (Planned)
+####v0.9.10 (Current)
 
-- Update for Swift 3 (Xcode 8 prerelease)
+- Update for Swift 3 beta (Xcode 8 prerelease)
 
-####v0.9.9 (Current)
+####v0.9.9
 
 - Added NSJSONSerialization parsing
 

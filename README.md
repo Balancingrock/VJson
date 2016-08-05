@@ -272,7 +272,7 @@ Note: Planned releases are for information only and subject to change without no
 - Added a conditional conversion of ARRAY into OBJECT
 - Removed createXXXX functions where these duplicated the new initializers.
 - Fixed crash when changing from an ARRAY to OBJECT and vice-versa
-- Created better distiction between ARRAY and OBJECT access, it is no longer possible to insert in or append to objects just as it is no longer possible to add to arrays. There is no longer an automatic conversion of JSON items for child access/management. Instead, two new operations have been added to change object's into array's and vice versa. Note that value assignment en array accessors still auto-convert JSON item types.
+- Created better distiction between ARRAY and OBJECT access, it is no longer possible to insert in or append to objects just as it is no longer possible to add to arrays. There is no longer an automatic conversion of JSON items for child access/management. Instead, two new operations have been added to change object's into array's and vice versa. Note that value assignment and array accessors still auto-convert JSON item types.
 - Added static option fatalErrorOnTypeConversion (for use during debugging)
 - Improved iterator: will no longer generates items that are deleted while in the itteration loop
 - Changed operation 'object' to 'item'

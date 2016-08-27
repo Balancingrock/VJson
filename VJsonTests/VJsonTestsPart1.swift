@@ -11,8 +11,8 @@
 import XCTest
 @testable import VJson
 
-infix operator &= {} // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
-infix operator | { associativity left } // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
+infix operator &= // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
+infix operator | : LeftAssociative // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
 
 class VJsonTests: XCTestCase {
     
@@ -347,6 +347,95 @@ class VJsonTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.doubleValue!, 3.0)
+    }
+
+    
+    // Testing: public func &= (lhs: VJson?, rhs: VJson?) {...}
+    
+    func testAssignJsonJson() {
+        
+        // Execute the assignment to on a VJson object that is nil
+        var json: VJson?
+        json &= 1
+        XCTAssertNil(json)
+        
+        // Execute the assignment with a nil argument
+        json = VJson.null()
+        var v: VJson?
+        json &= v
+        XCTAssertTrue(json!.isNull)
+        
+        json = VJson.array()
+        json &= v
+        XCTAssertTrue(json!.nofChildren == 0)
+
+        json = VJson.object()
+        json &= v
+        XCTAssertTrue(json!.nofChildren == 0)
+
+        // Implicit change of named null to named object with name of null
+        json = VJson()
+        json!.add(VJson.null("top"))
+        XCTAssertTrue((json!|"top")!.isNull)
+        XCTAssertEqual(json!.code, "{\"top\":null}")
+        v = VJson(3, name: "one")
+        json!["top"] &= v
+        XCTAssertEqual(json!.code, "{\"top\":3}")
+        
+        // Implicit change of unnamed null to named object
+        json = VJson()
+        v = VJson(3, name: "one")
+        json!["top"] &= v
+        XCTAssertEqual(json!.code, "{\"top\":3}")
+        
+        // Implicit change of null to given object
+        json = VJson.null()
+        v = VJson(3)
+        json &= v
+        XCTAssertEqual(json!.description, "3")
+        
+        json = VJson.null()
+        v = VJson(true)
+        json &= v
+        XCTAssertEqual(json!.description, "true")
+
+        json = VJson.null()
+        v = VJson.null()
+        json &= v
+        XCTAssertEqual(json!.description, "null")
+
+        json = VJson.null()
+        v = VJson("test")
+        json &= v
+        XCTAssertEqual(json!.description, "\"test\"")
+
+        json = VJson.null()
+        v = VJson(["first" : VJson(3)])
+        json &= v
+        XCTAssertEqual(json!.description, "{\"first\":3}")
+
+        json = VJson.null()
+        v = VJson([VJson(3)])
+        json &= v
+        XCTAssertEqual(json!.description, "[3]")
+
+        // Array always accepts
+        json = VJson.array()
+        v = VJson(3, name: "one")
+        json &= v
+        XCTAssertEqual(json!.description, "[3]")
+        
+        // Object ignores nameless
+        json = VJson.object()
+        v = VJson(3)
+        json &= v
+        XCTAssertEqual(json!.description, "{}")
+        
+        // Object accepts named items
+        json = VJson.object()
+        v = VJson(3, name: "one")
+        json &= v
+        XCTAssertEqual(json!.description, "{\"one\":3}")
     }
 
     
@@ -892,7 +981,7 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.isNumber)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.asInt, 12)
-        XCTAssertEqual(json.intValue!, exp)
+        XCTAssertEqual(json.intValue!, 12)
 
         // Assign a NUMBER with Double? = nil
         json = VJson(NSNumber(value: 45))

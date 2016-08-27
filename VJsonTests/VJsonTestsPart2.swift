@@ -925,7 +925,7 @@ class VJsonTestsPart2: XCTestCase {
         XCTAssertEqual(VJson(false).description, "false")
         XCTAssertEqual(VJson(false, name: "name").description, "false")
         
-        // NUMER
+        // NUMBER
         XCTAssertEqual(VJson(23).description, "23")
         XCTAssertEqual(VJson(23.45).description, "23.45")
         XCTAssertEqual(VJson(23.45, name: "name").description, "23.45")

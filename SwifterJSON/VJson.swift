@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.11
+//  Version:    0.9.12
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,8 @@
 //
 // History
 //
+// v0.9.12 - Added "findPossibleJsonCode'.
+//         - Fixed bug that failed to skip whitespace characters after a comma.
 // v0.9.11 - Updated to Xcode 8 beta 6
 //         - Added convenience func to VJsonSerializable to name nameless VJson objects.
 //         - Added &= operator for adding/appending VJson objects
@@ -2334,8 +2336,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
                 
             if buffer[offset] != ASCII_COMMA { throw Exception.reason(code: 56, incomplete: false, message: "Unexpected character, expected comma at offset \(offset)") }
             
-            offset += 1
+            offset += 1 // Consume the ','
             
+            skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
+            
+            if offset >= numberOfBytes { throw Exception.reason(code: 60, incomplete: true, message: "Missing name/value pair at buffer end") }
         }
         
         throw Exception.reason(code: 57, incomplete: true, message: "Missing name in name/value pair of object at buffer end")
@@ -2407,5 +2412,79 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             // This should be impossible.
             throw Exception.reason(code: 100, incomplete: true, message: "Illegal value in AppleParser result")
         }
+    }
+    
+    
+    /// Scans a memory area for a JSON formatted message as defined by opening and closing braces. Scanning for the opening brace starts at the first byte. Scanning continues until either the closing brace or the end of the range is encountered. Braces inside strings are not evaluated.
+    ///
+    /// - Note: This function does not guarantee that the JSON code between the braces is valid JSON code.
+    ///
+    /// - Note: When a buffer is returned, the start of the buffer is the location of the opening brace, which is not necessarily equal to the start-pointer.
+    ///
+    /// - Parameter start: A pointer to the start of the area to scan for a JSON message.
+    /// - Parameter count: The number of bytes to scan.
+    ///
+    /// - Returns: Nil if no (complete) JSON message was found, otherwise an UnsafeBufferPointer covering the area with the JSON message. Note that the bufer is not copied. Hence make sure to process the JSON message before removing or moving the area.
+    
+    public static func findPossibleJsonCode(start: UnsafeMutableRawPointer, count: Int) -> UnsafeBufferPointer<UInt8>? {
+        
+        enum ScanPhase { case normal, inString, escaped, hex1, hex2, hex3, hex4 }
+        
+        var scanPhase: ScanPhase = .normal
+        
+        var countOpeningBraces = 0
+        var countClosingBraces = 0
+        
+        var bytePtr = start.assumingMemoryBound(to: UInt8.self)
+        let pastLastBytePtr = start.assumingMemoryBound(to: UInt8.self).advanced(by: count)
+        
+        var jsonAreaStart = bytePtr // Any value, will be overwritten on success
+        var jsonCount = 0 // Any value, will be overwritten on success
+        
+        while bytePtr < pastLastBytePtr {
+            let byte = bytePtr.pointee
+            switch scanPhase {
+            case .normal:
+                if byte == ASCII_BRACE_OPEN {
+                    countOpeningBraces += 1
+                    if countOpeningBraces == 1 {
+                        jsonAreaStart = bytePtr
+                        jsonCount = 0
+                    }
+                } else if byte == ASCII_BRACE_CLOSE {
+                    countClosingBraces += 1
+                    if countOpeningBraces == countClosingBraces {
+                        jsonCount += 1
+                        let jsonBufferArea = UnsafeBufferPointer<UInt8>(start: jsonAreaStart, count: jsonCount)
+                        return jsonBufferArea
+                    }
+                } else if byte == ASCII_DOUBLE_QUOTES {
+                    scanPhase = .inString
+                }
+            case .inString:
+                if byte == ASCII_DOUBLE_QUOTES {
+                    scanPhase = .normal
+                } else if byte == ASCII_BACKWARD_SLASH {
+                    scanPhase = .escaped
+                }
+            case .escaped:
+                if byte == ASCII_u {
+                    scanPhase = .hex1
+                } else {
+                    scanPhase = .inString
+                }
+            case .hex1:
+                scanPhase = .hex2
+            case .hex2:
+                scanPhase = .hex3
+            case .hex3:
+                scanPhase = .hex4
+            case .hex4:
+                scanPhase = .inString
+            }
+            bytePtr = bytePtr.advanced(by: 1)
+            jsonCount += 1
+        }
+        return nil
     }
 }

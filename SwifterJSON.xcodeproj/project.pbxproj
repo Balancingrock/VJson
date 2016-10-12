@@ -16,6 +16,12 @@
 		866F6C5F1CDCA64800557ACE /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
 		8674E4E11D2CE1C200F82222 /* VJsonTestsPart2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8674E4E01D2CE1C200F82222 /* VJsonTestsPart2.swift */; };
 		867F64981D2ED2B50061F11B /* ParseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867F64971D2ED2B50061F11B /* ParseTests.swift */; };
+		8681189C1DA38A8700ED36C3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8681189B1DA38A8700ED36C3 /* AppDelegate.swift */; };
+		8681189E1DA38A8700ED36C3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8681189D1DA38A8700ED36C3 /* Assets.xcassets */; };
+		868118A11DA38A8700ED36C3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8681189F1DA38A8700ED36C3 /* MainMenu.xib */; };
+		868118A71DA38C8200ED36C3 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868118A61DA38C8200ED36C3 /* MainWindowController.swift */; };
+		868118A81DA39A0B00ED36C3 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865AFCB71C8718BA006CCAD8 /* ASCII.swift */; };
+		868118A91DA39A0B00ED36C3 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86745A021C91631D004A1868 /* VJson.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +45,12 @@
 		86745A021C91631D004A1868 /* VJson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
 		8674E4E01D2CE1C200F82222 /* VJsonTestsPart2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart2.swift; sourceTree = "<group>"; };
 		867F64971D2ED2B50061F11B /* ParseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseTests.swift; sourceTree = "<group>"; };
+		868118991DA38A8600ED36C3 /* VJsonGui.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VJsonGui.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8681189B1DA38A8700ED36C3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8681189D1DA38A8700ED36C3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		868118A01DA38A8700ED36C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		868118A21DA38A8700ED36C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		868118A61DA38C8200ED36C3 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +63,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		866F6C3C1CDCA63A00557ACE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		868118961DA38A8600ED36C3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -77,6 +96,7 @@
 				865B7B091A88F2E100411EDA /* SwifterJSON */,
 				866F6C411CDCA63A00557ACE /* VJson */,
 				860C83331CF4A15400EF3E63 /* VJsonTests */,
+				8681189A1DA38A8700ED36C3 /* VJsonGui */,
 				865B7B081A88F2E100411EDA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,6 +106,7 @@
 			children = (
 				866F6C401CDCA63A00557ACE /* VJson.framework */,
 				860C83321CF4A15400EF3E63 /* VJsonTests.xctest */,
+				868118991DA38A8600ED36C3 /* VJsonGui.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -106,6 +127,18 @@
 				866F6C441CDCA63A00557ACE /* Info.plist */,
 			);
 			path = VJson;
+			sourceTree = "<group>";
+		};
+		8681189A1DA38A8700ED36C3 /* VJsonGui */ = {
+			isa = PBXGroup;
+			children = (
+				8681189B1DA38A8700ED36C3 /* AppDelegate.swift */,
+				8681189D1DA38A8700ED36C3 /* Assets.xcassets */,
+				868118A61DA38C8200ED36C3 /* MainWindowController.swift */,
+				8681189F1DA38A8700ED36C3 /* MainMenu.xib */,
+				868118A21DA38A8700ED36C3 /* Info.plist */,
+			);
+			path = VJsonGui;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,6 +191,23 @@
 			productReference = 866F6C401CDCA63A00557ACE /* VJson.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		868118981DA38A8600ED36C3 /* VJsonGui */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 868118A51DA38A8700ED36C3 /* Build configuration list for PBXNativeTarget "VJsonGui" */;
+			buildPhases = (
+				868118951DA38A8600ED36C3 /* Sources */,
+				868118961DA38A8600ED36C3 /* Frameworks */,
+				868118971DA38A8600ED36C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VJsonGui;
+			productName = VJsonGui;
+			productReference = 868118991DA38A8600ED36C3 /* VJsonGui.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -165,7 +215,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 0800;
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Marinus van der Lugt";
 				TargetAttributes = {
@@ -176,6 +226,11 @@
 					866F6C3F1CDCA63A00557ACE = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 0800;
+					};
+					868118981DA38A8600ED36C3 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = 7P4D6LHV5G;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -194,6 +249,7 @@
 			targets = (
 				866F6C3F1CDCA63A00557ACE /* VJson */,
 				860C83311CF4A15400EF3E63 /* VJsonTests */,
+				868118981DA38A8600ED36C3 /* VJsonGui */,
 			);
 		};
 /* End PBXProject section */
@@ -210,6 +266,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		868118971DA38A8600ED36C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8681189E1DA38A8700ED36C3 /* Assets.xcassets in Resources */,
+				868118A11DA38A8700ED36C3 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +302,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		868118951DA38A8600ED36C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				868118A71DA38C8200ED36C3 /* MainWindowController.swift in Sources */,
+				8681189C1DA38A8700ED36C3 /* AppDelegate.swift in Sources */,
+				868118A91DA39A0B00ED36C3 /* VJson.swift in Sources */,
+				868118A81DA39A0B00ED36C3 /* ASCII.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -246,6 +322,17 @@
 			targetProxy = 860C83381CF4A15400EF3E63 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		8681189F1DA38A8700ED36C3 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				868118A01DA38A8700ED36C3 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		860C833B1CF4A15400EF3E63 /* Debug */ = {
@@ -414,6 +501,48 @@
 			};
 			name = Release;
 		};
+		868118A31DA38A8700ED36C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7P4D6LHV5G;
+				INFOPLIST_FILE = VJsonGui/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonGui;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		868118A41DA38A8700ED36C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 7P4D6LHV5G;
+				INFOPLIST_FILE = VJsonGui/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = nl.balancingrock.VJsonGui;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -443,6 +572,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		868118A51DA38A8700ED36C3 /* Build configuration list for PBXNativeTarget "VJsonGui" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				868118A31DA38A8700ED36C3 /* Debug */,
+				868118A41DA38A8700ED36C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

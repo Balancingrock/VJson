@@ -29,7 +29,7 @@ There is a 5th package called SwiftfireTester that can be used to challenge a we
 - Overloaded assignment operators for readable code.
 - Auto creation of null values for optional items that are nil.
 - Type conflicts can be configured to create fatal errors (is in fact default).
-- Build with Swift 3 beta (Xcode 8 beta 6)
+- Build with Swift 3 (Xcode 8)
 - Includes extensive unit tests
 - Use either integrated parser or Apple's NSJSONSerialization parser
 
@@ -251,9 +251,14 @@ Note: Planned releases are for information only and subject to change without no
 
 ####v1.0.0 (Planned)
 
-- Update for Swift 3 (official release)
+- Bugfixes or features as necessary for Swiftfire 1.0
 
-####v0.9.11 (Current)
+####v0.9.12 (Current)
+
+- Added "findPossibleJsonCode'.
+- Fixed bug that failed to skip whitespace characters after a comma. 
+
+####v0.9.11
 
 - Update for Xcode 8 beta 6 (Swift 3)
 - Added &= operator to add VJson objects

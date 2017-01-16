@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.12
+//  Version:    0.9.13
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,8 @@
 //
 // History
 //
+// v0.9.13 - Added missing 'public' to conveniance initializers
+//         - Added '&=' assignments of Vjson to for var's
 // v0.9.12 - Added "findPossibleJsonCode'.
 //         - Fixed bug that failed to skip whitespace characters after a comma.
 // v0.9.11 - Updated to Xcode 8 beta 6
@@ -178,6 +180,10 @@ public func &= (lhs: VJson?, rhs: Int?) {
     lhs.intValue = rhs
 }
 
+public func &= (lhs: inout Int?, rhs: VJson?) {
+    lhs = rhs?.intValue
+}
+
 
 /// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -185,6 +191,10 @@ public func &= (lhs: VJson?, rhs: Int?) {
 public func &= (lhs: VJson?, rhs: UInt?) {
     guard let lhs = lhs else { return }
     lhs.uintValue = rhs
+}
+
+public func &= (lhs: inout UInt?, rhs: VJson?) {
+    lhs = rhs?.uintValue
 }
 
 
@@ -196,6 +206,10 @@ public func &= (lhs: VJson?, rhs: Int8?) {
     lhs.int8Value = rhs
 }
 
+public func &= (lhs: inout Int8?, rhs: VJson?) {
+    lhs = rhs?.int8Value
+}
+
 
 /// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -203,6 +217,10 @@ public func &= (lhs: VJson?, rhs: Int8?) {
 public func &= (lhs: VJson?, rhs: UInt8?) {
     guard let lhs = lhs else { return }
     lhs.uint8Value = rhs
+}
+
+public func &= (lhs: inout UInt8?, rhs: VJson?) {
+    lhs = rhs?.uint8Value
 }
 
 
@@ -214,6 +232,10 @@ public func &= (lhs: VJson?, rhs: Int16?) {
     lhs.int16Value = rhs
 }
 
+public func &= (lhs: inout Int16?, rhs: VJson?) {
+    lhs = rhs?.int16Value
+}
+
 
 /// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -221,6 +243,10 @@ public func &= (lhs: VJson?, rhs: Int16?) {
 public func &= (lhs: VJson?, rhs: UInt16?) {
     guard let lhs = lhs else { return }
     lhs.uint16Value = rhs
+}
+
+public func &= (lhs: inout UInt16?, rhs: VJson?) {
+    lhs = rhs?.uint16Value
 }
 
 
@@ -232,6 +258,10 @@ public func &= (lhs: VJson?, rhs: Int32?) {
     lhs.int32Value = rhs
 }
 
+public func &= (lhs: inout Int32?, rhs: VJson?) {
+    lhs = rhs?.int32Value
+}
+
 
 /// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -239,6 +269,10 @@ public func &= (lhs: VJson?, rhs: Int32?) {
 public func &= (lhs: VJson?, rhs: UInt32?) {
     guard let lhs = lhs else { return }
     lhs.uint32Value = rhs
+}
+
+public func &= (lhs: inout UInt32?, rhs: VJson?) {
+    lhs = rhs?.uint32Value
 }
 
 
@@ -250,6 +284,10 @@ public func &= (lhs: VJson?, rhs: Int64?) {
     lhs.int64Value = rhs
 }
 
+public func &= (lhs: inout Int64?, rhs: VJson?) {
+    lhs = rhs?.int64Value
+}
+
 
 /// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -259,6 +297,10 @@ public func &= (lhs: VJson?, rhs: UInt64?)  {
     lhs.uint64Value = rhs
 }
 
+public func &= (lhs: inout UInt64?, rhs: VJson?) {
+    lhs = rhs?.uint64Value
+}
+
 
 /// Assign a given double value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -266,6 +308,12 @@ public func &= (lhs: VJson?, rhs: UInt64?)  {
 public func &= (lhs: VJson?, rhs: Float?) {
     guard let lhs = lhs else { return }
     lhs.doubleValue = rhs == nil ? nil : Double(rhs!)
+}
+
+public func &= (lhs: inout Float?, rhs: VJson?) {
+    guard let rhs = rhs else { lhs = nil; return }
+    guard let d = rhs.doubleValue else { lhs = nil; return }
+    lhs = Float(d)
 }
 
 
@@ -278,6 +326,10 @@ public func &= (lhs: VJson?, rhs: Double?) -> VJson? {
     return lhs
 }
 
+public func &= (lhs: inout Double?, rhs: VJson?) {
+    lhs = rhs?.doubleValue
+}
+
 
 /// Assign a given Number to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -286,6 +338,10 @@ public func &= (lhs: VJson?, rhs: NSNumber?) -> VJson? {
     guard let lhs = lhs else { return nil }
     lhs.numberValue = rhs?.copy() as? NSNumber
     return lhs
+}
+
+public func &= (lhs: inout NSNumber?, rhs: VJson?) {
+    lhs = rhs?.numberValue
 }
 
 
@@ -298,6 +354,10 @@ public func &= (lhs: VJson?, rhs: Bool?) -> VJson? {
     return lhs
 }
 
+public func &= (lhs: inout Bool?, rhs: VJson?) {
+    lhs = rhs?.boolValue
+}
+
 
 /// Assign a given string to the JSON item. Change the JSON item into a STRING if possible. If the optional is nil, the JSON item becomes a NULL.
 
@@ -306,6 +366,10 @@ public func &= (lhs: VJson?, rhs: String?) -> VJson? {
     guard let lhs = lhs else { return nil }
     lhs.stringValue = rhs
     return lhs
+}
+
+public func &= (lhs: inout String?, rhs: VJson?) {
+    lhs = rhs?.stringValue
 }
 
 
@@ -791,7 +855,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson BOOL item with the given values.
 
-    convenience init(_ value: Bool?, name: String? = nil) {
+    public convenience init(_ value: Bool?, name: String? = nil) {
         self.init(type: VJson.JType.bool, name: name)
         bool = value
     }
@@ -922,7 +986,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: Int?, name: String? = nil) {
+    public convenience init(_ value: Int?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value
     }
@@ -930,7 +994,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: UInt?, name: String? = nil) {
+    public convenience init(_ value: UInt?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value == nil ? nil : Int(value!)
     }
@@ -938,7 +1002,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: Int8?, name: String? = nil) {
+    public convenience init(_ value: Int8?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value == nil ? nil : Int(value!)
     }
@@ -946,7 +1010,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: UInt8?, name: String? = nil) {
+    public convenience init(_ value: UInt8?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value == nil ? nil : Int(value!)
     }
@@ -954,7 +1018,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: Int16?, name: String? = nil) {
+    public convenience init(_ value: Int16?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value == nil ? nil : Int(value!)
     }
@@ -962,23 +1026,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: UInt16?, name: String? = nil) {
-        self.init(type: VJson.JType.number, name: name)
-        intValue = value == nil ? nil : Int(value!)
-    }
-
-    
-    /// - Returns: A VJson NUMBER item with the given values.
-    
-    convenience init(_ value: Int32?, name: String? = nil) {
-        self.init(type: VJson.JType.number, name: name)
-        intValue = value == nil ? nil : Int(value!)
-    }
-    
-    
-    /// - Returns: A VJson NUMBER item with the given values.
-    
-    convenience init(_ value: UInt32?, name: String? = nil) {
+    public convenience init(_ value: UInt16?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value == nil ? nil : Int(value!)
     }
@@ -986,7 +1034,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: Int64?, name: String? = nil) {
+    public convenience init(_ value: Int32?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value == nil ? nil : Int(value!)
     }
@@ -994,7 +1042,15 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: UInt64?, name: String? = nil) {
+    public convenience init(_ value: UInt32?, name: String? = nil) {
+        self.init(type: VJson.JType.number, name: name)
+        intValue = value == nil ? nil : Int(value!)
+    }
+
+    
+    /// - Returns: A VJson NUMBER item with the given values.
+    
+    public convenience init(_ value: Int64?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value == nil ? nil : Int(value!)
     }
@@ -1002,7 +1058,15 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: Float?, name: String? = nil) {
+    public convenience init(_ value: UInt64?, name: String? = nil) {
+        self.init(type: VJson.JType.number, name: name)
+        intValue = value == nil ? nil : Int(value!)
+    }
+    
+    
+    /// - Returns: A VJson NUMBER item with the given values.
+    
+    public convenience init(_ value: Float?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         doubleValue = value == nil ? nil : Double(value!)
     }
@@ -1010,7 +1074,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: Double?, name: String? = nil) {
+    public convenience init(_ value: Double?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         doubleValue = value
     }
@@ -1018,7 +1082,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson NUMBER item with the given values.
     
-    convenience init(_ value: NSNumber?, name: String? = nil) {
+    public convenience init(_ value: NSNumber?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         number =  value == nil ? nil : (value!.copy() as! NSNumber)
     }
@@ -1065,7 +1129,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A VJson STRING item with the given values.
     
-    convenience init(_ value: String?, name: String? = nil) {
+    public convenience init(_ value: String?, name: String? = nil) {
         self.init(type: VJson.JType.string, name: name)
         string = value
     }
@@ -1137,7 +1201,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A JSON ARRAY item with the specified children. Array elements that are 'nil' will not be included unless the "includeNil" parameter is set to 'true'. When 'nil' items are included they are included as NULL items.
 
-    convenience init(_ children: [VJson?], name: String? = nil, includeNil: Bool = false) {
+    public convenience init(_ children: [VJson?], name: String? = nil, includeNil: Bool = false) {
         self.init(type: VJson.JType.array, name: name)
         if includeNil {
             self.children!.append(contentsOf: children.map(){ $0 ?? VJson.null()})
@@ -1149,14 +1213,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A JSON ARRAY item with the specified children. Array elements that are 'nil' will not be included unless the "includeNil" parameter is set to 'true'. When 'nil' items are included they are included as NULL items.
     
-    convenience init(_ children: [VJsonSerializable?], name: String? = nil, includeNil: Bool = false) {
+    public convenience init(_ children: [VJsonSerializable?], name: String? = nil, includeNil: Bool = false) {
         self.init(children.map({$0?.json}), name: name, includeNil: includeNil)
     }
 
     
     /// - Returns: A JSON OBJECT item with the children from the dictionary.
     
-    convenience init(_ children: [String:VJson], name: String? = nil) {
+    public convenience init(_ children: [String:VJson], name: String? = nil) {
         self.init(type: VJson.JType.object, name: name)
         var newChildren: [VJson] = []
         for (name, child) in children {
@@ -1169,7 +1233,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// - Returns: A JSON OBJECT item with the children from the dictionary.
     
-    convenience init(_ children: [String:VJsonSerializable], name: String? = nil) {
+    public convenience init(_ children: [String:VJsonSerializable], name: String? = nil) {
         self.init(type: VJson.JType.object, name: name)
         var newChildren: [VJson] = []
         for (name, child) in children {

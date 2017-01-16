@@ -97,6 +97,52 @@ class VJsonTests: XCTestCase {
     }
 
     
+    // Testing: public func &= (lhs: VJson?, rhs: Bool?) {...}
+    
+    func testAssignJsonBool() {
+        
+        // Execute the assignment to on a VJson object that is nil
+        var json: VJson?
+        json &= 1
+        XCTAssertNil(json)
+        
+        // Execute the assignment with a nil argument
+        var i: Bool? = true
+        json = VJson(i!)
+        i = nil
+        json &= i
+        XCTAssertNil(json!.boolValue)
+        
+        // Execute the assignment with a non-nil argument
+        i = false
+        json &= i
+        XCTAssertEqual(json!.boolValue!, true)
+    }
+    
+    
+    // Testing: public func &= (lhs: Bool?, rhs: VJson?) {...}
+    
+    func testAssignBoolJson() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Bool?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(true)
+        val = false
+        val &= json
+        XCTAssertEqual(val!, true)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
+    
     // Testing: public func &= (lhs: VJson?, rhs: Int?) {...}
     
     func testAssignJsonInt() {
@@ -117,6 +163,29 @@ class VJsonTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+    }
+    
+    
+    // Testing: public func &= (lhs: Int?, rhs: VJson?) {...}
+    
+    func testAssignIntJson() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Int?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
     }
     
     
@@ -143,6 +212,29 @@ class VJsonTests: XCTestCase {
     }
 
     
+    // Testing: public func &= (lhs: Int8?, rhs: VJson?) {...}
+    
+    func testAssignInt8Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Int8?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
+    
     // Testing: public func &= (lhs: VJson?, rhs: UInt8?) {...}
     
     func testAssignJsonUInt8() {
@@ -163,6 +255,29 @@ class VJsonTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+    }
+
+    
+    // Testing: public func &= (lhs: UInt8?, rhs: VJson?) {...}
+    
+    func testAssignUInt8Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: UInt8?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
     }
 
     
@@ -189,6 +304,29 @@ class VJsonTests: XCTestCase {
     }
     
     
+    // Testing: public func &= (lhs: Int16?, rhs: VJson?) {...}
+    
+    func testAssignInt16Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Int16?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
+    
     // Testing: public func &= (lhs: VJson?, rhs: UInt16?) {...}
     
     func testAssignJsonUInt16() {
@@ -211,6 +349,29 @@ class VJsonTests: XCTestCase {
         XCTAssertEqual(json!.intValue!, 3)
     }
     
+    
+    // Testing: public func &= (lhs: UInt16?, rhs: VJson?) {...}
+    
+    func testAssignUInt16Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: UInt16?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
     
     // Testing: public func &= (lhs: VJson?, rhs: Int32?) {...}
     
@@ -235,6 +396,29 @@ class VJsonTests: XCTestCase {
     }
     
     
+    // Testing: public func &= (lhs: Int32?, rhs: VJson?) {...}
+    
+    func testAssignInt32Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Int32?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
+    
     // Testing: public func &= (lhs: VJson?, rhs: UInt32?) {...}
     
     func testAssignJsonUInt32() {
@@ -257,6 +441,29 @@ class VJsonTests: XCTestCase {
         XCTAssertEqual(json!.intValue!, 3)
     }
     
+    
+    // Testing: public func &= (lhs: UInt32?, rhs: VJson?) {...}
+    
+    func testAssignUInt32Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: UInt32?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
     
     // Testing: public func &= (lhs: VJson?, rhs: Int64?) {...}
     
@@ -281,6 +488,29 @@ class VJsonTests: XCTestCase {
     }
     
     
+    // Testing: public func &= (lhs: Int64?, rhs: VJson?) {...}
+    
+    func testAssignInt64Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Int64?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
+    
     // Testing: public func &= (lhs: VJson?, rhs: UInt64?) {...}
     
     func testAssignJsonUInt64() {
@@ -303,6 +533,29 @@ class VJsonTests: XCTestCase {
         XCTAssertEqual(json!.intValue!, 3)
     }
     
+    
+    // Testing: public func &= (lhs: UInt64?, rhs: VJson?) {...}
+    
+    func testAssignUInt64Json() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: UInt64?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
     
     // Testing: public func &= (lhs: VJson?, rhs: Float?) {...}
     
@@ -327,6 +580,30 @@ class VJsonTests: XCTestCase {
     }
     
     
+    // Testing: public func &= (lhs: Float?, rhs: VJson?) {...}
+    
+    func testAssignFloatJson() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Float?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10.0)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10.0)
+
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
+    
     // Testing: public func &= (lhs: VJson?, rhs: Double?) {...}
     
     func testAssignJsonDouble() {
@@ -347,6 +624,74 @@ class VJsonTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.doubleValue!, 3.0)
+    }
+
+    
+    // Testing: public func &= (lhs: Double?, rhs: VJson?) {...}
+    
+    func testAssignDoubleJson() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: Double?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson(10.0)
+        val = 1
+        val &= json
+        XCTAssertEqual(val!, 10.0)
+        
+        // Execute the assignment with a wrong json type
+        json = VJson("test")
+        val &= json
+        XCTAssertNil(val)
+    }
+
+    
+    // Testing: public func &= (lhs: VJson?, rhs: String?) {...}
+    
+    func testAssignJsonString() {
+        
+        // Execute the assignment to on a VJson object that is nil
+        var json: VJson?
+        json &= 1
+        XCTAssertNil(json)
+        
+        // Execute the assignment with a nil argument
+        var i: String? = "test"
+        json = VJson(i!)
+        i = nil
+        json &= i
+        XCTAssertNil(json!.stringValue)
+        
+        // Execute the assignment with a non-nil argument
+        i = "test"
+        json &= i
+        XCTAssertEqual(json!.stringValue!, "test")
+    }
+    
+    
+    // Testing: public func &= (lhs: String?, rhs: VJson?) {...}
+    
+    func testAssignStringJson() {
+        
+        // Execute the assignment to a nil object with a nil object
+        var json: VJson?
+        var val: String?
+        val &= json
+        XCTAssertNil(val)
+        
+        // Execute the assignment to a nil object with a value
+        json = VJson("test")
+        val &= json
+        XCTAssertEqual(val!, "test")
+        
+        // Execute the assignment with a wrong json type
+        json = VJson(10)
+        val &= json
+        XCTAssertNil(val)
     }
 
     

@@ -32,6 +32,7 @@ There is a 5th package called SwiftfireTester that can be used to challenge a we
 - Build with Swift 3 (Xcode 8)
 - Includes extensive unit tests
 - Use either integrated parser or Apple's NSJSONSerialization parser
+- Added a simple GUI to check if a file can be parsed correctly
 
 #Usage
 Add the files ASCII.swift and VJson.swift to the project.
@@ -136,7 +137,7 @@ Adding an item to an array:
 is equivalent to:
 
 	let a = VJson.array()
-	o.append(VJson(8, name: "AnyName"))	// [8]
+	a.append(VJson(8, name: "AnyName"))	// [8]
 
 Create an item in the hierarchy:
 
@@ -181,6 +182,13 @@ Testing for and retrieving of values:
 Itterating over all children of an object (or array):
 
 	for child in json { ... }
+
+The above examples all used 'let' variables. If 'var's are used there is another option is available to retrieve values from a VJson object
+
+	let json = try! VJson.parse(string: "{\"title\":\"A Good Read\"}")
+	var title: String?
+	title &= (json|"title")
+
 
 #Notes:
 ##Subscript vs pipe operator
@@ -253,7 +261,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-####v0.9.12 (Current)
+####v0.9.13 (Current)
+
+- Bugfix: Added missing 'public' to conveniance initializers
+- Added '&=' assignments of VJson to for var's
+
+####v0.9.12
 
 - Added "findPossibleJsonCode'.
 - Fixed bug that failed to skip whitespace characters after a comma. 

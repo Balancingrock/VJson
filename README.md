@@ -12,7 +12,7 @@ A GUI application for Swiftfire.
 
 General purpose socket utilities.
 
-#####[SwifterSockets](https://github.com/Balancingrock/SecureSockets)
+#####[SecureSockets](https://github.com/Balancingrock/SecureSockets)
 
 General purpose secure networking utilities.
 

@@ -3,13 +3,13 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.13
+//  Version:    0.9.14
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
-//  Website:    http://swiftfire.nl/pages/projects/swifterjson/
+//  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Blog:       http://swiftrien.blogspot.com
-//  Git:        https://github.com/Swiftrien/SwifterJSON
+//  Git:        https://github.com/Balancingrock/SwifterJSON
 //
 //  Copyright:  (c) 2014-2016 Marinus van der Lugt, All rights reserved.
 //
@@ -30,7 +30,7 @@
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
 //
 //  I prefer the above two, but if these options don't suit you, you might also send me a gift from my amazon.co.uk
-//  whishlist: http://www.amazon.co.uk/gp/registry/wishlist/34GNMPZKAQ0OO/ref=cm_sw_em_r_wsl_cE3Tub013CKN6_wb
+//  wishlist: http://www.amazon.co.uk/gp/registry/wishlist/34GNMPZKAQ0OO/ref=cm_sw_em_r_wsl_cE3Tub013CKN6_wb
 //
 //  If you like to pay in another way, please contact me at rien@balancingrock.nl
 //
@@ -56,6 +56,7 @@
 //
 // History
 //
+// v0.9.14 - Organizational and documentary changes for SPM and jazzy.
 // v0.9.13 - Added missing 'public' to conveniance initializers
 //         - Added '&=' assignments of Vjson to for var's
 // v0.9.12 - Added "findPossibleJsonCode'.
@@ -115,9 +116,19 @@ public protocol VJsonSerializable {
     var json: VJson { get }
 }
 
-extension VJsonSerializable {
+
+// MARK: - VJsonSerializable
+
+public extension VJsonSerializable {
     
-    /// Creates or changes the name for the VJson object. Usefull if an implementation creates an unnamed VJson object while a named version is needed.
+    
+    /// Creates or changes the name for the VJson object.
+    ///
+    /// Usefull if an implementation creates an unnamed VJson object when a named version is needed.
+    ///
+    /// - Parameter name: The name for the VJson object
+    ///
+    /// - Returns: The named VJson object
     
     func json(name: String) -> VJson {
         let j = self.json
@@ -150,7 +161,15 @@ infix operator | : LeftAssociative
 infix operator &=
 
 
-/// Interrogate a JSON object for the existence of a child object with the given name. Has no side effects
+// MARK: - Test for existence of child items
+
+/// Interrogate a JSON object for the existence of a child item with the given name. Has no side effects
+///
+/// - Parameters:
+///   - lhs: The VJson object to interrogate
+///   - rhs: The name of the sought after item
+///
+/// - Returns: Either the sought after item or nil if it does not exist.
 
 public func | (lhs: VJson?, rhs: String?) -> VJson? {
     guard let lhs = lhs else { return nil }
@@ -161,7 +180,13 @@ public func | (lhs: VJson?, rhs: String?) -> VJson? {
 }
 
 
-/// Interrogate a JSON object for the existence of a child object with the given index. Has no side effects
+/// Interrogate a JSON object for the existence of a child item at the given index. Has no side effects
+///
+/// - Parameters:
+///   - lhs: The VJson object to interrogate
+///   - rhs: The index of the sought after item
+///
+/// - Returns: Either the sought after item or nil if it does not exist.
 
 public func | (lhs: VJson?, rhs: Int?) -> VJson? {
     guard let lhs = lhs else { return nil }
@@ -172,7 +197,15 @@ public func | (lhs: VJson?, rhs: Int?) -> VJson? {
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+// MARK: - Convenience assignment operators
+
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Int?) {
@@ -180,12 +213,24 @@ public func &= (lhs: VJson?, rhs: Int?) {
     lhs.intValue = rhs
 }
 
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout Int?, rhs: VJson?) {
     lhs = rhs?.intValue
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: UInt?) {
@@ -193,12 +238,25 @@ public func &= (lhs: VJson?, rhs: UInt?) {
     lhs.uintValue = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout UInt?, rhs: VJson?) {
     lhs = rhs?.uintValue
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Int8?) {
@@ -206,12 +264,25 @@ public func &= (lhs: VJson?, rhs: Int8?) {
     lhs.int8Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout Int8?, rhs: VJson?) {
     lhs = rhs?.int8Value
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: UInt8?) {
@@ -219,12 +290,25 @@ public func &= (lhs: VJson?, rhs: UInt8?) {
     lhs.uint8Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout UInt8?, rhs: VJson?) {
     lhs = rhs?.uint8Value
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Int16?) {
@@ -232,12 +316,25 @@ public func &= (lhs: VJson?, rhs: Int16?) {
     lhs.int16Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout Int16?, rhs: VJson?) {
     lhs = rhs?.int16Value
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: UInt16?) {
@@ -245,12 +342,25 @@ public func &= (lhs: VJson?, rhs: UInt16?) {
     lhs.uint16Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout UInt16?, rhs: VJson?) {
     lhs = rhs?.uint16Value
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Int32?) {
@@ -258,12 +368,25 @@ public func &= (lhs: VJson?, rhs: Int32?) {
     lhs.int32Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout Int32?, rhs: VJson?) {
     lhs = rhs?.int32Value
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: UInt32?) {
@@ -271,12 +394,25 @@ public func &= (lhs: VJson?, rhs: UInt32?) {
     lhs.uint32Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout UInt32?, rhs: VJson?) {
     lhs = rhs?.uint32Value
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Int64?) {
@@ -284,12 +420,25 @@ public func &= (lhs: VJson?, rhs: Int64?) {
     lhs.int64Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout Int64?, rhs: VJson?) {
     lhs = rhs?.int64Value
 }
 
 
-/// Assign a given integer value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given integer value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the integer value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: UInt64?)  {
@@ -297,18 +446,38 @@ public func &= (lhs: VJson?, rhs: UInt64?)  {
     lhs.uint64Value = rhs
 }
 
+
+/// Assign the integer value of the JSON item to the integer if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The integer to assign to.
+///   - rhs: The JSON item to extract the integer from.
+
 public func &= (lhs: inout UInt64?, rhs: VJson?) {
     lhs = rhs?.uint64Value
 }
 
 
-/// Assign a given double value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given float value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the float value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Float?) {
     guard let lhs = lhs else { return }
     lhs.doubleValue = rhs == nil ? nil : Double(rhs!)
 }
+
+
+/// Assign the float value of the JSON item to the float if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The float to assign to.
+///   - rhs: The JSON item to extract the float from.
 
 public func &= (lhs: inout Float?, rhs: VJson?) {
     guard let rhs = rhs else { lhs = nil; return }
@@ -317,7 +486,13 @@ public func &= (lhs: inout Float?, rhs: VJson?) {
 }
 
 
-/// Assign a given double value to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given double value to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the double value is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Double?) -> VJson? {
@@ -326,12 +501,25 @@ public func &= (lhs: VJson?, rhs: Double?) -> VJson? {
     return lhs
 }
 
+
+/// Assign the double value of the JSON item to the double if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The double to assign to.
+///   - rhs: The JSON item to extract the double from.
+
 public func &= (lhs: inout Double?, rhs: VJson?) {
     lhs = rhs?.doubleValue
 }
 
 
-/// Assign a given Number to the JSON item. Change the JSON item into a NUMBER if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given NSNumber to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a NUMBER if necessary and possible. If the NSNumber is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: NSNumber?) -> VJson? {
@@ -340,12 +528,25 @@ public func &= (lhs: VJson?, rhs: NSNumber?) -> VJson? {
     return lhs
 }
 
+
+/// Assign the NSNumber value of the JSON item to the NSNumber if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The NSNumber to assign to.
+///   - rhs: The JSON item to extract the NSNumber from.
+
 public func &= (lhs: inout NSNumber?, rhs: VJson?) {
     lhs = rhs?.numberValue
 }
 
 
-/// Assign a given bool to the JSON item. Change the JSON item into a BOOL if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given bool to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a BOOL if necessary and possible. If the bool is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: Bool?) -> VJson? {
@@ -354,12 +555,25 @@ public func &= (lhs: VJson?, rhs: Bool?) -> VJson? {
     return lhs
 }
 
+
+/// Assign the bool value of the JSON item to the bool if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The bool to assign to.
+///   - rhs: The JSON item to extract the bool from.
+
 public func &= (lhs: inout Bool?, rhs: VJson?) {
     lhs = rhs?.boolValue
 }
 
 
-/// Assign a given string to the JSON item. Change the JSON item into a STRING if possible. If the optional is nil, the JSON item becomes a NULL.
+/// Assign a given string to a JSON item if possible. Fails silently if not possible.
+///
+/// Changes the JSON item into a STRING if necessary and possible. If the string is nil, the JSON item becomes a NULL.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The value to be assigned.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: String?) -> VJson? {
@@ -367,6 +581,13 @@ public func &= (lhs: VJson?, rhs: String?) -> VJson? {
     lhs.stringValue = rhs
     return lhs
 }
+
+
+/// Assign the string value of the JSON item to the string if possible. Fails silently if not possible.
+///
+/// - Parameters:
+///   - lhs: The string to assign to.
+///   - rhs: The JSON item to extract the string from.
 
 public func &= (lhs: inout String?, rhs: VJson?) {
     lhs = rhs?.stringValue
@@ -388,6 +609,12 @@ public func &= (lhs: inout String?, rhs: VJson?) {
 /// if lhs.isArray => rhs appended as item to the lhs array.
 ///
 /// - Note: This is a potentially dangerous operation since it can fail silently or even do something different than expected. Be sure to add (unit) test cases to find any errors that might occur.
+///
+/// - Parameters:
+///   - lhs: The JSON item to assign to.
+///   - rhs: The JSON item to assign.
+///
+/// - Returns: The JSON item that was assigned to.
 
 @discardableResult
 public func &= (lhs: VJson?, rhs: VJson?) -> VJson? {
@@ -414,7 +641,7 @@ public func &= (lhs: VJson?, rhs: VJson?) -> VJson? {
 }
 
 
-/// The Equatable protocol
+// MARK: - The Equatable protocol
 
 public func == (lhs: VJson, rhs: VJson) -> Bool {
     if lhs === rhs { return true }
@@ -438,17 +665,29 @@ public func != (lhs: VJson, rhs: VJson) -> Bool {
 }
 
 
-/**
- This class implements the JSON specification.
- */
+/// Implements the JSON specification as found on: http://json.org (2015.01.01)
 
 public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
-    /// The error type that gets thrown if errors are found during parsing.
+    /// This error type gets thrown if errors are found during parsing.
+    ///
+    /// - reason: The details of the error.
     
     public enum Exception: Error, CustomStringConvertible {
+        
+        
+        /// The details of the error
+        ///
+        /// - code: An integer number that references the error location
+        /// - incomplete: When true, the error occured because the parser ran out of characters.
+        /// - message: A textual description of the error.
+        
         case reason(code: Int, incomplete: Bool, message: String)
+        
+        
+        /// The textual description of the exception.
+        
         public var description: String {
             if case let .reason(code, incomplete, message) = self { return "[\(code), Incomplete:\(incomplete)] \(message)" }
             return "VJson: Error in Exception enum"
@@ -456,20 +695,49 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// Error info from the parser.
+    /// Error info from the parser for the parse operations that do not throw.
     
     public struct ParseError {
+        
+        
+        /// An integer number that references the error location
+
         public var code: Int
+        
+        
+        /// When true, the error occured because the parser ran out of characters.
+
         public var incomplete: Bool
+        
+        
+        /// A textual description of the error.
+
         public var message: String
+        
+        
+        /// Create a new ParseError
+        ///
+        /// - Parameters:
+        ///   - code: An integer number that references the error location
+        ///   - incomplete: True if the error occured because the parser ran out of characters.
+        ///   - message: A textual description of the error.
+        
         public init(code: Int, incomplete: Bool, message: String) {
             self.code = code
             self.incomplete = incomplete
             self.message = message
         }
+        
+        
+        /// Creates an empty ParseError
+        
         public init() {
             self.init(code: -1, incomplete: false, message: "")
         }
+        
+        
+        /// The textual description of the ParseError
+        
         public var description: String {
             return "[\(code), Incomplete:\(incomplete)] \(message)"
         }
@@ -477,15 +745,26 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
     /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
-    /// - Note: Conversion to and from NULL remain possible, eg to invoke a type change from NUMBER to STRING transition through NULL.
+    ///
+    /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
+    ///
+    /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
     
     public static var fatalErrorOnTypeConversion = true
     
     
     // =================================================================================================================
-    // MARK: - type
+    
+    // MARK: - JSON Type related operations
 
     /// The JSON types.
+    ///
+    /// - null: A JSON NULL
+    /// - bool: A JSON BOOL
+    /// - number: A JSON NUMBER
+    /// - string: A JSON STRING
+    /// - object: A JSON OBJECT
+    /// - array: A JSON ARRAY
     
     public enum JType: String {
         case null = "NULL"
@@ -502,39 +781,42 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     fileprivate var type: JType
     
     
-    /// - Returns: True if this object contains a JSON NULL object.
+    /// True if this object contains a JSON NULL object.
     
     public var isNull: Bool { return self.type == JType.null }
     
     
-    /// - Returns: True if this object contains a JSON BOOL object.
+    /// True if this object contains a JSON BOOL object.
+    ///
     /// - Note: If the Apple Parser was used, all JSON bools will have been converted into a NUMBER.
     
     public var isBool: Bool { return self.type == JType.bool }
     
     
-    /// - Returns: True if this object contains a JSON NUMBER object.
+    /// True if this object contains a JSON NUMBER object.
+    ///
     /// - Note: If the Apple Parser was used, all JSON bools will have been converted into a NUMBER.
     
     public var isNumber: Bool { return self.type == JType.number }
 
     
-    /// - Returns: True if this object contains a JSON STRING object.
+    /// True if this object contains a JSON STRING object.
 
     public var isString: Bool { return self.type == JType.string }
     
     
-    /// - Returns: True if this object contains a JSON ARRAY object.
+    /// True if this object contains a JSON ARRAY object.
 
     public var isArray: Bool { return self.type == JType.array }
 
 
-    /// - Returns: True if this object contains a JSON OBJECT object.
+    /// True if this object contains a JSON OBJECT object.
 
     public var isObject: Bool { return self.type == JType.object }
 
     
     // =================================================================================================================
+    
     // MARK: - Creating & initializing a JSON hierarchy
     
     
@@ -552,16 +834,20 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: An empty VJson hierarchy
+    /// Creates an empty VJson hierarchy
     
     public convenience init() {
         self.init(type: .object)
     }
     
     
-    /// Create a VJson hierarchy with the contents of the given file.
+    /// Create a VJson hierarchy from the contents of the given file.
+    ///
     /// - Parameter file: The URL that designates the file to be read.
-    /// - Throws: Either an VJson.Error.REASON or an NSError if the VJson hierarchy could not be created or the file not be read.
+    ///
+    /// - Returns: A VJson hierarchy with the contents of the file.
+    ///
+    /// - Throws: Either an VJson.Error.reason or an NSError if the VJson hierarchy could not be created or the file not be read.
     
     public static func parse(file: URL) throws -> VJson {
         var data = try Data(contentsOf: URL(fileURLWithPath: file.path), options: Data.ReadingOptions.uncached)
@@ -570,9 +856,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
     /// Create a VJson hierarchy with the contents of the given file.
-    /// - Parameter file: The URL that designates the file to be read.
-    /// - Parameter errorInfo: A (pointer to a) struct that will contain the error infor if an error occured during parsing (i.e. when the result of the function if nil). If the pointer is nil, no such information will be present.
-    /// - Returns: On success the JSON hierarchy. On error a nil for the JSON hierarchy and the structure with error information filled if that structure was present on the call.
+    ///
+    /// - Parameters:
+    ///   - file: The URL that designates the file to be read.
+    ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
+    ///
+    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
     
     public static func parse(file: URL, errorInfo: inout ParseError?) -> VJson? {
         do {
@@ -607,9 +896,13 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
     /// Create a VJson hierarchy with the contents of the given buffer.
-    /// - Parameter buffer: The buffer containing the data to be parsed.
-    /// - Parameter length: The number of bytes in the buffer that should be parsed.
-    /// - Throws: A VJson.Error.REASON if the parsing failed.
+    ///
+    /// - Parameters:
+    ///   - buffer: The buffer containing the data to be parsed.
+    ///
+    /// - Returns: A VJson hierarchy with the contents of the buffer.
+    ///
+    /// - Throws: A VJson.Error.reason if the parsing failed.
 
     public static func parse(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson {
         return try VJson.vJsonParser(buffer: buffer)
@@ -617,10 +910,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
     /// Create a VJson hierarchy with the contents of the given buffer.
-    /// - Parameter buffer: The buffer containing the data to be parsed.
-    /// - Parameter length: The number of bytes in the buffer that should be parsed.
-    /// - Parameter errorInfo: A (pointer to a) struct that will contain the error infor if an error occured during parsing (i.e. when the result of the function if nil). If the pointer is nil, no such information will be present.
-    /// - Returns: On success the JSON hierarchy. On error a nil for the JSON hierarchy and the structure with error information filled if that structure was present on the call.
+    ///
+    /// - Parameters
+    ///   - buffer: The buffer containing the data to be parsed.
+    ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
+    ///
+    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
 
     public static func parse(buffer: UnsafeBufferPointer<UInt8>, errorInfo: inout ParseError?) -> VJson? {
         do {
@@ -655,8 +950,13 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
 
     
     /// Create a VJson hierarchy with the contents of the given string.
-    /// - Parameter string: The string containing the data to be parsed.
-    /// - Throws: A VJson.Error.REASON if the parsing failed.
+    ///
+    /// - Parameters:
+    ///   - string: The string containing the data to be parsed.
+    ///
+    /// - Returns: A VJson hierarchy with the contents of the buffer.
+    ///
+    /// - Throws: A VJson.Error.reason if the parsing failed.
 
     public static func parse(string: String) throws -> VJson {
         guard var data = string.data(using: String.Encoding.utf8) else {
@@ -667,9 +967,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
     /// Create a VJson hierarchy with the contents of the given buffer.
-    /// - Parameter string: The string containing the data to be parsed.
-    /// - Parameter errorInfo: A (pointer to a) struct that will contain the error infor if an error occured during parsing (i.e. when the result of the function if nil). If the pointer is nil, no such information will be present.
-    /// - Returns: On success the JSON hierarchy. On error a nil for the JSON hierarchy and the structure with error information filled if that structure was present on the call.
+    ///
+    /// - Parameters
+    ///   - string: The string containing the data to be parsed.
+    ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
+    ///
+    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
     
     public static func parse(string: String, errorInfo: inout ParseError?) -> VJson? {
         do {
@@ -703,23 +1006,27 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /**
-     Create a a new JSON hierarchy from the mutable data object and removes the found JSON hierarchy from the mutable data object. If no valid JSON hierarchy was found, the mutable data object will be unchanged.
-     
-     - Returns: The JSON hierarchy.
-     
-     - Throws: A VJson.Exception if no JSON hierarchy could be read.
-     */
+    /// Create a VJson hierarchy with the contents of the given data object.
+    ///
+    /// - Parameters:
+    ///   - data: The data object containing the data to be parsed.
+    ///
+    /// - Returns: A VJson hierarchy with the contents of the data object.
+    ///
+    /// - Throws: A VJson.Error.reason if the parsing failed.
     
     public static func parse(data: inout Data) throws -> VJson {
         return try VJson.vJsonParser(data: &data)
     }
 
     
-    /// Create a a new JSON hierarchy from the mutable data object and removes the found JSON hierarchy from the mutable data object. If no valid JSON hierarchy was found, the mutable data object will be unchanged.
-    /// - Parameter buffer: The mutable data object containing the data to be parsed.
-    /// - Parameter errorInfo: A (pointer to a) struct that will contain the error infor if an error occured during parsing (i.e. when the result of the function if nil). If the pointer is nil, no such information will be present.
-    /// - Returns: On success the JSON hierarchy. On error a nil for the JSON hierarchy and the structure with error information filled if that structure was present on the call.
+    /// Create a VJson hierarchy with the contents of the given data object.
+    ///
+    /// - Parameters
+    ///   - data: The data object containing the data to be parsed.
+    ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
+    ///
+    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
     
     public static func parse(data: inout Data, errorInfo: inout ParseError?) -> VJson? {
         do {
@@ -759,30 +1066,26 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     // The name of this object if it is part of a name/value pair.
     
     fileprivate var name: String?
-    
-    /// - Parameter newValue: The new name for this object. If this object did not have a name, it will turn this object into a name/value pair.
-    /// - Returns: The name part of a name/value pair. Nil if this object does not have a name.
+
+
+    /// The name of this item if it is a name/value pair. Nil otherwise.
     
     public var nameValue: String? {
-        get {
-            return name
-        }
-        set {
-            name = newValue
-        }
+        get { return name }
+        set { name = newValue }
     }
 
-    /// - Returns: True if this object is a name/value pair. False otherwise.
+    
+    /// True if this object is a name/value pair. False otherwise.
     
     public var hasName: Bool { return name != nil }
     
     
     // =================================================================================================================
-    // MARK: - null
+    // MARK: - JSON NULL
 
-    /// - Parameter newValue: Writing (i.e. true or false) will always convert this value into a JSON NULL if it was not. If it was of a different type, old information will be discarded.
-    /// - Returns: True if this is a JSON NULL item, nil otherwise.
-
+    /// True if this item contains a JSON NULL, nil otherwise. Note that conversions to and from NULL are always allowed.
+    
     public var nullValue: Bool? {
         get {
             if type == .null {
@@ -801,33 +1104,36 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: True if the type of this object is .null, false in all other cases.
+    /// True if this object contains a JSON NULL, false otherwise.
     
     public var asNull: Bool { return type == .null }
 
     
-    /// - Returns: A VJson NULL item.
+    /// Creates a VJson item containing a JSON NULL.
+    ///
+    /// - Parameter name: The name for this item (optional)
+    ///
+    /// - Returns: A new VJson NULL item.
     
-    static func null(_ name: String? = nil) -> VJson {
+    public static func null(_ name: String? = nil) -> VJson {
         return VJson(type: VJson.JType.null, name: name)
     }
     
     
     // =================================================================================================================
-    // MARK: - bool
+    // MARK: - JSON BOOL
     
-    // The value if this is a .bool JSON value.
+    // The value if this is a JSON BOOL.
     
     fileprivate var bool: Bool?
     
-    
-    /// - Parameter newValue: The new bool value of this JSON item. Note that it will also convert this object into a JSON BOOL if it was of a different type, discarding old information in the process (if any)
-    /// - Returns: The bool value of this object if the object is a JSON BOOL. Nil if this object is not a JSON BOOL item.
+
+    /// 'true' or 'false' if this item contains a JSON BOOL value, nil otherwise.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non BOOL will result in a fatal error.
     
     public var boolValue: Bool? {
-        get {
-            return bool
-        }
+        get { return bool }
         set {
             if type != .bool {
                 if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to BOOL") }
@@ -838,9 +1144,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         }
     }
     
-    
-    /// - Returns: The bool value of this object if the object is a JSON BOOL. Otherwise it will try to interpret the value as a bool e.g. a NULL will be false, a NUMBER 1(.0) = true, other numbers are false, STRING "true" equals true, all other strings equal false. ARRAY and OBJECT both equal false.
 
+    /// The value of this itme interpreted as a bool.
+    ///
+    /// A NULL reads as false, a NUMBER 1(.0) reads as true, other numbers read as false, STRING "true" reads as true, all other strings read as false. ARRAY and OBJECT both read as false.
+    
     public var asBool: Bool {
         switch type {
         case .null: return false
@@ -853,8 +1161,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson BOOL item with the given values.
-
+    /// Creates a new VJson item with a JSON BOOL with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
+    
     public convenience init(_ value: Bool?, name: String? = nil) {
         self.init(type: VJson.JType.bool, name: name)
         bool = value
@@ -862,20 +1174,19 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
 
     
     // =================================================================================================================
-    // MARK: - number
+    // MARK: - JSON NUMBER
 
-    // The value if this is a .number JSON value.
+    // The value if this is a JSON NUMBER.
     
     fileprivate var number: NSNumber?
     
     
-    /// - Parameter newValue: The doubleValue of this NSNumber will be used to create a new NSNumber for this JSON item. Note that it will also convert this object into a JSON NUMBER if it was of a different type. Discarding old information in the process (if any)
-    /// - Returns: A NSNumber copy of the doubleValue of the NSNumber in this object if this object is a JSON NUMBER. Nil otherwise.
+    /// The number as an NSNumber if this is a JSON NUMBER item, nil otherwise.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
 
     public var numberValue: NSNumber? {
-        get {
-            return number?.copy() as? NSNumber
-        }
+        get { return number?.copy() as? NSNumber }
         set {
             if type != .number {
                 if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to NUMBER") }
@@ -887,7 +1198,9 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: Attempts to interpret the value of this object as a number and then creates a new NSNumber with that value. For a NUMBER it returns a copy of that number, for NULL, OBJECT and ARRAY it returns a NSNumber with the value 0, for STRING it tries to read the string as a number (if that fails, it is regarded as a zero) and for a BOOL it creates a NSNumber with the bool as its value.
+    /// The value of this item interpretated as a number.
+    ///
+    /// For a NUMBER it returns a copy of that number, for NULL, OBJECT and ARRAY it returns a NSNumber with the value 0, for STRING it tries to read the string as a number (if that fails, it is regarded as a zero) and for a BOOL it creates a NSNumber with the bool as its value.
     
     public var asNumber: NSNumber {
         switch type {
@@ -899,53 +1212,99 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Parameter newValue: The value of this int will be used to create a new NSNumber for this JSON item. Note that it will also convert this object into a JSON NUMBER if it was of a different type, discarding old information in the process (if any)
-    /// - Returns: A NSNumber copy of the integerValue of the NSNumber in this object if this object is a JSON NUMBER. Otherwise a value of zero.
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
 
     public var intValue: Int? {
         get { return number?.intValue }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
 
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
+    
     public var int8Value: Int8? {
         get { return number?.int8Value }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
+    
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
     
     public var int16Value: Int16? {
         get { return number?.int16Value }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
     
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
+    
     public var int32Value: Int32? {
         get { return number?.int32Value }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
+    
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
     
     public var int64Value: Int64? {
         get { return number?.int64Value }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
     
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
+    
     public var uintValue: UInt? {
         get { return number?.uintValue }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
+    
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
     
     public var uint8Value: UInt8? {
         get { return number?.uint8Value }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
     
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
+    
     public var uint16Value: UInt16? {
         get { return number?.uint16Value }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
     
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
+    
     public var uint32Value: UInt32? {
         get { return number?.uint32Value }
         set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
+    
+    
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
     
     public var uint64Value: UInt64? {
         get { return number?.uint64Value }
@@ -953,15 +1312,18 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: Attempts to interpret the value of this object as a number and returns its integerValue. For a NUMBER it returns its integer value, for NULL, OBJECT and ARRAY it returns the value 0, for STRING it tries to read the string as a number (if that fails, it is regarded as a zero) and return its integer value and for a BOOL it creates a NSNumber with the bool as its value and returns the integer value of it.
+    /// The integer value of this item interpretated as a number.
+    ///
+    /// For a NUMBER it returns the integer value of that number, for NULL, OBJECT and ARRAY it returns 0, for STRING it tries to read the string as a number (if that fails, it is regarded as a zero) and for a BOOL it is either 0 or 1.
 
     public var asInt: Int {
         return asNumber.intValue
     }
 
     
-    /// - Parameter newValue: The value of this double will be used to create a new NSNumber for this JSON item. Note that it will also convert this object into a JSON NUMBER if it was of a different type, discarding old information in the process (if any)
-    /// - Returns: A NSNumber with the value of the doubleValue of the NSNumber in this object if this object is a JSON NUMBER. Otherwise a NSNumber with a value of zero.
+    /// Convenience accessor if this item is a JSON NUMBER.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
 
     public var doubleValue: Double? {
         get {
@@ -977,22 +1339,32 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: Attempts to interpret the value of this object as a number and returns its doubleValue. For a NUMBER it returns its double value, for NULL, OBJECT and ARRAY it returns the value 0.0, for STRING it tries to read the string as a number (if that fails, it is regarded as a zero) and return its double value and for a BOOL it creates a NSNumber with the bool as its value and returns the double value of it.
+    /// The double value of this item interpretated as a number.
+    ///
+    /// For a NUMBER it returns the double value of that number, for NULL, OBJECT and ARRAY it returns 0, for STRING it tries to read the string as a number (if that fails, it is regarded as a zero) and for a BOOL it is either 0 or 1.
 
     public var asDouble: Double {
         return asNumber.doubleValue
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
-    
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
+
     public convenience init(_ value: Int?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
         intValue = value
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: UInt?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1000,7 +1372,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: Int8?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1008,7 +1384,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: UInt8?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1016,7 +1396,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: Int16?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1024,7 +1408,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: UInt16?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1032,7 +1420,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: Int32?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1040,7 +1432,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: UInt32?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1048,7 +1444,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: Int64?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1056,7 +1456,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: UInt64?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1064,7 +1468,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: Float?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1072,7 +1480,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: Double?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1080,7 +1492,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson NUMBER item with the given values.
+    /// Creates a new VJson item with a JSON NUMBER with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: NSNumber?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
@@ -1089,14 +1505,16 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
 
     
     // =================================================================================================================
-    // MARK: - string
+    // MARK: - JSON STRING
     
-    // The value if this is a .string JSON value.
+    // The value if this is a JSON STRING.
     
     fileprivate var string: String?
     
-    /// - Parameter newValue: The value that will be used to update the string of this JSON item. Note that it will also convert this object into a JSON STRING if it was of a different type, discarding old information in the process (if any). If the newValue contains any double-quotes, these will be escaped.
-    /// - Returns: A string value of this object if this object is a JSON STRING. If the JSON string contained escaped quotes, these escaped sequences will be replaced by a normal double quote. Otherwise nil.
+
+    /// The string value if this is a JSON STRING item, nil otherwise.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non string will result in a fatal error.
 
     public var stringValue: String? {
         get {
@@ -1114,8 +1532,10 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: Attempts to interpret the value of this object as a string and returns it. NUMBER and BOOL return their string representation. NULL it returns "null" for OBJECT and ARRAY it returns an empty string.
-    
+    /// The value of this item interpretated as a string.
+    ///
+    /// NUMBER and BOOL return their string representation. NULL it returns "null" for OBJECT and ARRAY it returns an empty string.
+
     public var asString: String {
         switch type {
         case .null: return "null"
@@ -1127,7 +1547,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A VJson STRING item with the given values.
+    /// Creates a new VJson item with a JSON STRING with the given value.
+    ///
+    /// - Parameters:
+    ///   - value: The value for the new item.
+    ///   - name: The name for the value (optional).
     
     public convenience init(_ value: String?, name: String? = nil) {
         self.init(type: VJson.JType.string, name: name)
@@ -1136,14 +1560,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
 
     
     // =================================================================================================================
-    // MARK: - array/object
+    // MARK: - JSON ARRAY & JSON OBJECT
     
-    // Contains the child elements, be they array elements of name/value pairs.
+    // The child elements, either array values or object name/value pairs.
     
     fileprivate var children: Array<VJson>?
     
     
-    /// - Returns: True if this object contains any childeren, either ARRAY items or OBJECT items. False if this object does not have any children.
+    /// True if this item contains any childeren. False if this item does not have any children.
     
     public var hasChildren: Bool {
         if children == nil { return false }
@@ -1151,7 +1575,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: The number of child objects this object contains. Always returns 0 if this object is neither an OBJECT or an ARRAY.
+    /// The number of child items this object contains.
     
     public var nofChildren: Int {
         if !hasChildren { return 0 }
@@ -1159,8 +1583,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Parameter newValue: Copies of the content of this array will replace the existing children.
-    /// - Returns: An array containing a copy of all children if this is an ARRAY or OBJECT item. For all other types it returns an empty array.
+    /// Returns a copy of the child items in this object if this object contains a JSON ARRAY or JSON OBJECT. Nil for all other JSON types.
     
     public var arrayValue: Array<VJson>? {
         guard type == .array || type == .object else { return nil }
@@ -1172,8 +1595,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Parameter newValue: Copies of the content of this dictionary will replace the existing children.
-    /// - Returns: A dictionary containing a copy of all children if this is an OBJECT item. For all other types it returns an empty array.
+    /// Returns a copy of the children in a dictionary if this object contains a JSON OBJECT. Returns nil for all other JSON types.
 
     public var dictionaryValue: Dictionary<String, VJson>? {
         if type != .object { return nil }
@@ -1185,22 +1607,33 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns an empty JSON ARRAY item with the given name
+    /// Creates an empty JSON ARRAY item with the given name (if any).
+    ///
+    /// - Parameter name: The name for the item (optional).
+    /// - Returns: The new VJson item containing a JSON ARRAY.
     
     public static func array(_ name: String? = nil) -> VJson {
         return VJson([VJson?](), name: name)
     }
     
     
-    /// - Returns an empty JSON OBJECT item with the given name
-    
+    /// Creates an empty JSON OBJECT item with the given name (if any).
+    ///
+    /// - Parameter name: The name for the item (optional).
+    /// - Returns: The new VJson item containing a JSON OBJECT.
+
     public static func object(_ name: String? = nil) -> VJson {
         return VJson([String:VJson](), name: name)
     }
     
     
-    /// - Returns: A JSON ARRAY item with the specified children. Array elements that are 'nil' will not be included unless the "includeNil" parameter is set to 'true'. When 'nil' items are included they are included as NULL items.
-
+    /// Returns a new VJson object with a JSON ARRAY containing the given child items.
+    ///
+    /// - Parameters:
+    ///   - children: An array with VJson objects to be added as children.
+    ///   - name: The name for the JSON ARRAY item.
+    ///   - includeNil: If true (default = false) then nil items in the array will be included as JSON NULL items.
+    
     public convenience init(_ children: [VJson?], name: String? = nil, includeNil: Bool = false) {
         self.init(type: VJson.JType.array, name: name)
         if includeNil {
@@ -1211,14 +1644,23 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A JSON ARRAY item with the specified children. Array elements that are 'nil' will not be included unless the "includeNil" parameter is set to 'true'. When 'nil' items are included they are included as NULL items.
-    
+    /// Returns a new VJson object with a JSON ARRAY containing the given child items.
+    ///
+    /// - Parameters:
+    ///   - children: An array with VJson objects to be added as children.
+    ///   - name: The name for the contained item (optional).
+    ///   - includeNil: If true (default = false) then nil items in the array will be included as JSON NULL items.
+
     public convenience init(_ children: [VJsonSerializable?], name: String? = nil, includeNil: Bool = false) {
         self.init(children.map({$0?.json}), name: name, includeNil: includeNil)
     }
 
     
-    /// - Returns: A JSON OBJECT item with the children from the dictionary.
+    /// Returns a new VJson object with a JSON OBJECT containing the children from the dictionary.
+    ///
+    /// - Parameters:
+    ///   - children: A dictionary with the name/value pairs to be included as children.
+    ///   - name: The name for the contained item (optional).
     
     public convenience init(_ children: [String:VJson], name: String? = nil) {
         self.init(type: VJson.JType.object, name: name)
@@ -1231,8 +1673,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: A JSON OBJECT item with the children from the dictionary.
-    
+    /// Returns a new VJson object with a JSON OBJECT containing the children from the dictionary.
+    ///
+    /// - Parameters:
+    ///   - children: A dictionary with the name/value pairs to be included as children.
+    ///   - name: The name for the contained item (optional).
+
     public convenience init(_ children: [String:VJsonSerializable], name: String? = nil) {
         self.init(type: VJson.JType.object, name: name)
         var newChildren: [VJson] = []
@@ -1245,11 +1691,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: True if self is an ARRAY that could be turned into an OBJECT without information loss. Otherwise false.
-    /// - Note: The prupose of this operation is to turn an array into an object. Which can only succeed if all elements of the array have a name.
+    /// Turns the JSON ARRAY in this object into a JSON OBJECT. Note that this can only succeed if all child items have a name. (I.e. are name/value pairs)
+    ///
+    /// - Returns: true if the conversion was successful. False otherwise.
     
     @discardableResult
-    func arrayToObject() -> Bool {
+    public func arrayToObject() -> Bool {
         if type != .array { return false }
         for c in children! {
             if !c.hasName { return false }
@@ -1259,10 +1706,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// - Returns: Self as a JSON ARRAY item if self was a JSON ARRAY or OBJECT. Otherwise nil.
+    /// Turns the JSON OBJECT in this object into a JSON ARRAY.
+    ///
+    /// Note that the names will be preserved until the array is saved. Then they will be discarded.
+    ///
+    /// - Returns: True if succesful.
     
     @discardableResult
-    func objectToArray() -> Bool {
+    public func objectToArray() -> Bool {
         if type != .object { return false }
         type = .array
         return true
@@ -1271,6 +1722,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     // =================================================================================================================
     // MARK: - Type conversion support
+
     
     // If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
     
@@ -1289,16 +1741,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     // =================================================================================================================
     // MARK: - Child access/management
     
-    /**
-     Inserts the given child at the given index. Self must be a JSON ARRAY item.
-     
-     - Parameter child: The VJson object to be inserted.
-     - Parameter at: The index at which it will be inserted. Must be <= nofChildren to succeed.
-     
-     - Returns: The child if the operation succeeded, nil if nothing was done.
-
-     */
     
+    /// Inserts the given child at the given index. Self must be a JSON ARRAY item.
+    ///
+    /// - Parameters:
+    ///   - child: The VJson object to be inserted.
+    ///   - index: The index at which it will be inserted. Must be <= nofChildren to succeed.
+    /// - Returns: The child if the operation succeeded, nil if nothing was done.
+
     @discardableResult
     public func insert(_ child: VJson?, at index: Int) -> VJson? {
 
@@ -1313,14 +1763,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /**
-     Appends the given object to the end of the array. Self must be a JSON ARRAY item or newly created through a subscript operation.
-     
-     - Parameter child: The VJson object to be appended.
-     
-     - Returns: The child if the operation succeeded, nil if nothing was done.
-     */
-    
+    /// Appends the given object to the end of the array. Self must be a JSON ARRAY item or a JSON NULL.
+    ///
+    /// - Parameter child: The VJson object to be appended.
+    /// - Returns: The child if the operation succeeded, nil if nothing was done.
+
     @discardableResult
     public func append(_ child: VJson?) -> VJson? {
         
@@ -1336,15 +1783,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /**
-     Replaces the child at the given index with the given child. Self must be a JSON ARRAY item.
-     
-     - Parameter childAt: The index of the child to be replaced
-     - Parameter child: The VJson object to be inserted.
-     
-     - Returns: The new child if the operation succeeded, nil if nothing was done.
-     */
-    
+    /// Replaces the child at the given index with the given child. Self must be a JSON ARRAY item.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the child to be replaced.
+    ///   - child: The VJson object to be inserted.
+    ///
+    /// - Returns: The new child if the operation succeeded, nil if nothing was done.
+
     public func replace(at index: Int, with child: VJson? ) -> VJson? {
         
         guard let child = child else { return nil }
@@ -1358,7 +1804,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns the index of the first child with identical contents as the given child. Nil if no comparable child is found. Self must be a JSON ARRAY item.
+    /// The index of the first child with identical contents as the given child. Nil if no comparable child is found. Self must be a JSON ARRAY item.
+    ///
+    /// - Parameter child: The child to compare the content with.
+    ///
+    /// - Returns: The index of the first child with the same content. Nil if none was found.
     
     public func index(of child: VJson?) -> Int? {
         
@@ -1375,8 +1825,10 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
     /// Removes all children with identical contents as the given child from the hierarchy. Self must be a JSON ARRAY item or a JSON OBJECT item.
+    ///
+    /// - Parameter child: The child to compare the content with.
     /// - Returns: True if a child was removed, false if not.
-    
+
     @discardableResult
     public func remove(_ child: VJson?) -> Bool {
         
@@ -1398,16 +1850,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /**
-     Add a new item with the given name or replace a current item with that same name (when "replace" = 'true'). Self must be a JSON OBJECT item or a NULL. If it is a NULL it will be converted into an OBJECT.
-    
-     - Parameter child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "forName". If a name is provided in "forName" then that name will take precedence and replace the name contained in the child item.
-     - Parameter forName: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
-     - Parameter replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
-    
-     - Returns: The child if the operation succeeded, nil if nothing was done.
-    */
- 
+    /// Add a new item with the given name or replace a current item with that same name (when "replace" = 'true'). Self must contain a JSON OBJECT item or a NULL. If it is a NULL it will be converted into an OBJECT.
+    ///
+    /// - Parameters:
+    ///   - child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "forName". If a name is provided in "forName" then that name will take precedence and replace the name contained in the child item.
+    ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
+    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
+    /// - Returns: The child if the operation succeeded, nil if nothing was done.
+
     @discardableResult
     public func add(_ child: VJson?, forName name: String? = nil, replace: Bool = true) -> VJson? {
         
@@ -1428,9 +1878,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    /// Removes all children with the given name. Self must be a JSON OBJECT item.
+    /// Removes all children with the given name. Self must contain a JSON OBJECT.
+    ///
+    /// - Parameter withName: The name of the child items to be removed.
     /// - Returns: True if a child was removed.
-    
+
     @discardableResult
     public func removeChildren(withName: String) -> Bool {
         
@@ -1444,7 +1896,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// Return all childs with the given name. The count will be zero if no child with the given name exists.
+    /// Return all children with the given name. The count will be zero if no child with the given name exists.
 
     public func children(withName: String) -> [VJson] {
         
@@ -1456,19 +1908,26 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
 
     // MARK: - Sequence and Generator protocol
 
+    
+    /// The generator for the VJson object.
+    
     public struct MyGenerator: IteratorProtocol {
         
         public typealias Element = VJson
         
         // The object for which the generator generates
-        let source: VJson
+        private let source: VJson
         
         // The objects already delivered through the generator
-        var sent: Array<VJson> = []
+        private var sent: Array<VJson> = []
         
-        init(source: VJson) {
+        fileprivate init(source: VJson) {
             self.source = source
         }
+        
+        /// Returns the next child item
+        ///
+        /// - Returns: The next child item.
         
         mutating public func next() -> Element? {
             
@@ -1496,15 +1955,30 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             
             // Nothing left to send
             return nil
-
         }
     }
     
+    
+    /// defines the struct used as the iterator
+    
     public typealias Iterator = MyGenerator
+    
+    
+    /// Creates an iterator
+    ///
+    /// - Returns: A new iterator.
+    
     public func makeIterator() -> Iterator { return MyGenerator(source: self) }
     
     
     // MARK: - Subscript accessors
+    
+    
+    /// Assigns/retrieves based on the given index.
+    ///
+    /// Only valid for VJson objects containing a JSON ARRAY. Will try to convert an object to an array.
+    ///
+    /// - Note: Can result in a fatal error if the VJson.fatalErrorOnTypeConversion is set to 'true' (= default)
     
     public subscript(index: Int) -> VJson {
         
@@ -1584,8 +2058,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
-    // Subscript getter/setter for a JSON OBJECT type.
-    
+    /// Assigns/retrieves based on the given key.
+    ///
+    /// Only valid for VJson objects containing a JSON OBJECT. Will try to convert an array to an object.
+    ///
+    /// - Note: Can result in a fatal error if the VJson.fatalErrorOnTypeConversion is set to 'true' (= default)
+
     public subscript(key: String) -> VJson {
         
         set {
@@ -1653,6 +2131,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
     
+    /// Looks for a specific item in the hierachy.
+    ///
+    /// - Parameters:
+    ///   - of: The JSON TYPE of object to look for.
+    ///   - at path: An array of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of ["12"] can refer to the item at index 12 as well as the item for name "12".
     /// - Returns: the item at the given path if it exists and is of the given type. Otherwise nil.
     
     public func item(of: JType, at path: [String]) -> VJson? {
@@ -1699,7 +2182,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /// - Returns: the object at the given path if it exists and is of the given type. Otherwsie nil.
+    /// Looks for a specific item in the hierachy.
+    ///
+    /// - Parameters:
+    ///   - of: The JSON TYPE of object to look for.
+    ///   - at path: A set of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of "12" can refer to the item at index 12 as well as the item for name "12".
+    /// - Returns: the item at the given path if it exists and is of the given type. Otherwise nil.
 
     public func item(of: JType, at path: String ...) -> VJson? {
         return item(of: of, at: path)
@@ -1780,13 +2268,15 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
 
 
-    // MARK: - Auxillary stuff and object management
-    
+    // MARK: - Convert JSON to String
     
     
     /// The custom string convertible protocol.
     
     public var description: String { return code }
+    
+    
+    /// Returns the JSON code that represents the hierarchy of this item.
     
     public var code: String {
         
@@ -1860,10 +2350,10 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
+    // MARK: - Copying
     
-    
-    /// - Returns: A full in-depth copy of this JSON object. I.e. all child elements are also copied.
-    
+    /// Returns a full in-depth copy of this JSON object. I.e. all child elements are also copied.
+
     public var copy: VJson {
         let copy = VJson(type: self.type, name: self.name)
         switch type {
@@ -1881,11 +2371,13 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /**
-     Tries to saves the contents of the JSON hierarchy to the specified file.
-     
-     - Returns: Nil on success, Error description on fail.
-     */
+    // MARK: - Persisting
+    
+    /// Tries to saves the contents of the JSON hierarchy to the specified file.
+    ///
+    /// - Parameter to: The URL of the file location where to save this hierarchy.
+    ///
+    /// - Returns: Nil on success, Error description on fail.
     
     @discardableResult
     public func save(to: URL) -> String? {
@@ -1899,18 +2391,16 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    // MARK: Parser functions
+    // MARK: - Parser functions
     
-    /**
-     Parses the given sequence of bytes (ASCII or UTF8 encoded) according to ECMA-404, 1st edition October 2013. The sequence should contain exactly one JSON hierarchy. Any errors will result in a throw.
     
-     - Parameter buffer: The sequence of bytes to be parsed.
-     - Parameter numberOfBytes: The number of bytes to be parsed.
-    
-     - Returns: On success only, a VJson hierarchy of the parse results.
-    
-     - Throws: If an error is countered during parsing, the VJson.Exception is thrown.
-     */
+    /// Parses the given sequence of bytes (ASCII or UTF8 encoded) according to ECMA-404, 1st edition October 2013. The sequence should contain exactly one JSON hierarchy. Any errors will result in a throw.
+    ///
+    /// - Parameter buffer: A buffer with ASCII or UTF8 formatted data to be parsed.
+    ///
+    /// - Returns: The VJson hierarchy representing the data in the buffer.
+    ///
+    /// - Throws: Error.reason
     
     private static func vJsonParser(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson {
               
@@ -1940,16 +2430,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
-    /**
-     Parses the data in the buffer according to ECMA-404, 1st edition October 2013, and creates a VJson hierarchy from it. On success it will also remove the processed data from (front of) the buffer. On failure the buffer will be unaffected.
-     
-     - Parameter buffer: A buffer containing ASCII or UTF8 characters.
-     
-     - Returns: A VJson hierarchy of the buffer contents up to the end of the first VJson hierarchy encountered. On success the VJson hierarchy will be removed from the buffer. On failure the buffer will remain unaffected.
-     
-     - Throws: If an error is countered during parsing, the VJson.Exception is thrown. This exception contains flag that can be used to determine if the error occured due to an incomplete JSON code. The callee then has the opportunity to add more data before trying again.
-     */
-    
+    /// Parses the data according to ECMA-404, 1st edition October 2013. The sequence should contain exactly one JSON hierarchy. Any errors will result in a throw.
+    ///
+    /// - Parameter data: A data object with ASCII or UTF8 formatted data to be parsed.
+    ///
+    /// - Returns: The VJson hierarchy representing the data in the buffer.
+    ///
+    /// - Throws: Error.reason
+
     private static func vJsonParser(data: inout Data) throws -> VJson {
         
         guard data.count > 0 else { throw Exception.reason(code: 3, incomplete: true, message: "Empty buffer") }
@@ -2424,11 +2912,14 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     
     /// This parser uses the Apple NSJSONSerialization class to parse the given data.
+    ///
     /// - Note: Parser differences: Apple's parser is usually faster (about 2x). However Apple's parser cannot parse multiple key/value pairs with the same name and Apple's parser will create a VJson NUMBER items for BOOL's.
+    ///
     /// - Returns: A VJson hierarchy
-    /// - Throws: Error code 100 or the error thrown by NSJSONSerialization. Error code 100 should be impossible.
+    ///
+    /// - Throws: The error thrown by NSJSONSerialization. Error code 100 should be impossible.
     
-    static func parseUsingAppleParser(_ data: Data) throws -> VJson {
+    public static func parseUsingAppleParser(_ data: Data) throws -> VJson {
         
         let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
         
@@ -2479,16 +2970,20 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
+    // MARK: - Auxillary functions
+    
+    
     /// Scans a memory area for a JSON formatted message as defined by opening and closing braces. Scanning for the opening brace starts at the first byte. Scanning continues until either the closing brace or the end of the range is encountered. Braces inside strings are not evaluated.
     ///
     /// - Note: This function does not guarantee that the JSON code between the braces is valid JSON code.
     ///
     /// - Note: When a buffer is returned, the start of the buffer is the location of the opening brace, which is not necessarily equal to the start-pointer.
     ///
-    /// - Parameter start: A pointer to the start of the area to scan for a JSON message.
-    /// - Parameter count: The number of bytes to scan.
+    /// - Parameters:
+    ///   - start: A pointer to the start of an area that must be scnanned for a JSON message.
+    ///   - count: The number of bytes that must be scanned.
     ///
-    /// - Returns: Nil if no (complete) JSON message was found, otherwise an UnsafeBufferPointer covering the area with the JSON message. Note that the bufer is not copied. Hence make sure to process the JSON message before removing or moving the area.
+    /// - Returns: Nil if no (complete) JSON message was found, otherwise an UnsafeBufferPointer covering the area with the JSON message. Note that the bufer is not copied. Hence make sure to process the JSON message before removing or moving the data in that area.
     
     public static func findPossibleJsonCode(start: UnsafeMutableRawPointer, count: Int) -> UnsafeBufferPointer<UInt8>? {
         
@@ -2537,14 +3032,10 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
                 } else {
                     scanPhase = .inString
                 }
-            case .hex1:
-                scanPhase = .hex2
-            case .hex2:
-                scanPhase = .hex3
-            case .hex3:
-                scanPhase = .hex4
-            case .hex4:
-                scanPhase = .inString
+            case .hex1: scanPhase = .hex2
+            case .hex2: scanPhase = .hex3
+            case .hex3: scanPhase = .hex4
+            case .hex4: scanPhase = .inString
             }
             bytePtr = bytePtr.advanced(by: 1)
             jsonCount += 1

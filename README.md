@@ -1,23 +1,24 @@
 #SwifterJSON / VJson
 
-A single class framework in Swift to read/write & parse the JSON Format.
+A single class framework in Swift to read, write & parse the JSON Format.
 
-SwifterJSON is part of the 4 packages that make up the [Swiftfire](http://swiftfire.nl) webserver:
+SwifterJSON is part of the packages that make up the [Swiftfire](http://swiftfire.nl) webserver:
 
-#####[Swiftfire](https://github.com/Swiftrien/Swiftfire)
+#####[Swiftfire](https://github.com/Balancingrock/Swiftfire)
 
 A GUI application for Swiftfire.
 
-#####[SwifterSockets](https://github.com/Swiftrien/SwifterSockets)
+#####[SwifterSockets](https://github.com/Balancingrock/SwifterSockets)
 
 General purpose socket utilities.
 
-#####[SwifterLog](https://github.com/Swiftrien/SwifterLog)
+#####[SwifterSockets](https://github.com/Balancingrock/SecureSockets)
+
+General purpose secure networking utilities.
+
+#####[SwifterLog](https://github.com/Balancingrock/SwifterLog)
 
 General purpose logging utility.
-
-There is a 5th package called SwiftfireTester that can be used to challenge a webserver (any webserver) and see/verify the response.
-
 
 #Features
 - Creates a fully featured JSON hierarchy from file (or String).
@@ -33,9 +34,20 @@ There is a 5th package called SwiftfireTester that can be used to challenge a we
 - Includes extensive unit tests
 - Use either integrated parser or Apple's NSJSONSerialization parser
 - Added a simple GUI to check if a file can be parsed correctly
+- Builds an SPM package (for use with the Swift Package Manager)
+- Builds as a modular framework (for use in Xcode)
 
 #Usage
-Add the files ASCII.swift and VJson.swift to the project.
+
+Include as a dependency in a Package.swift specification
+
+Or build as a framework:
+
+$ git clone https://github.com/Balancingrock/SwifterJSON
+
+Then open the xcode project and hit 'build'.
+
+In the project that should use SwifterJSON add the generated framework under the target's `general` settings, to the `Embedded binaries`.
 
 ##Full Example
 
@@ -261,7 +273,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-####v0.9.13 (Current)
+####v0.9.14 (Current)
+
+- Updated documentation and minor modifications to the access levels.
+- Moved to package based distribution.
+
+####v0.9.13
 
 - Bugfix: Added missing 'public' to conveniance initializers
 - Added '&=' assignments of VJson to for var's
@@ -351,43 +368,3 @@ Also added unit tests for VJson and performance tests for Apple's JSON, SwifterJ
 ####v0.9.0 (VJson)
 
 - Initial release
-
-######The versions below refer to the older SwifterJSON class (this is no longer updated)
-
-V0.9.5
-
-- Added some throw-ing functions that duplicate existing functions.
-- Changed type inspection functions to var's.
-- Added note about performance.
-
-V0.9.4
-
-- Updated to Swift 2.0 syntax
-
-V0.9.3
-
-- Removed the method "values"
-- Added var dictionary to retrieve and set the Dictionary<String, SwifterJSON> from a json OBJECT.
-- Added var array to retrieve and set the Array<SwifterJSON> from a json ARRAY.
-
-V0.9.2
-
-- Fixed a bug that caused the 'writeJSONHierarchyToFile' to fail when the file already existed
-- Added convenience initialiser to accept Array<SwifterJSON>
-- Added convenience initialiser to accept Dictionary<String, SwifterJSON>
-- Added 'final' to the class definition
-- Re-read all text and comments, updated some of it.
-- Added the Equatable protocol to the SwifterJSON class definition (this was already defacto the case)
-
-V0.9.1
-
-- is used in a shipping application
-- Moved the private definitions inside the class to avoid name collisions
-- Replaced type extensions with static class methods
-- Made pseudo 'static" definitions (Swift 1.0) to real class static definitions (Swift 1.2)
-- Changed logging SOURCE from SwiftON to SwifterJSON
-- Changed to all-caps writing of JSON for public interfaces
-
-V0.9.0
-
-- is not yet real-world tested! But it does pass the unit tests.

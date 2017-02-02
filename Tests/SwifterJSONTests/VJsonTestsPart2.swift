@@ -7,6 +7,10 @@
 //
 
 import XCTest
+@testable import SwifterJSON
+
+infix operator &= // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
+infix operator | : LeftAssociative // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
 
 class VJsonTestsPart2: XCTestCase {
 

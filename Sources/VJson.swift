@@ -113,16 +113,19 @@ import Foundation
 /// For classes and structs that can be converted into a VJson object
 
 public protocol VJsonSerializable {
+    
+    
+    /// Returns the VJson hierachy representing this object.
+    
     var json: VJson { get }
 }
 
-
-// MARK: - VJsonSerializable
+/// Default implementations
 
 public extension VJsonSerializable {
     
     
-    /// Creates or changes the name for the VJson object.
+    /// Creates or changes the name for the VJson hierarchy representing this object.
     ///
     /// Usefull if an implementation creates an unnamed VJson object when a named version is needed.
     ///
@@ -140,6 +143,10 @@ public extension VJsonSerializable {
 /// For classes and structs that can be constructed from a VJson object
 
 public protocol VJsonDeserializable {
+    
+    
+    /// Creates a new object from the VJson hierarchy if possible.
+    
     init?(json: VJson?)
 }
 
@@ -758,20 +765,37 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     // MARK: - JSON Type related operations
 
     /// The JSON types.
-    ///
-    /// - null: A JSON NULL
-    /// - bool: A JSON BOOL
-    /// - number: A JSON NUMBER
-    /// - string: A JSON STRING
-    /// - object: A JSON OBJECT
-    /// - array: A JSON ARRAY
     
     public enum JType: String {
+        
+        
+        /// A JSON NULL
+        
         case null = "NULL"
+        
+        
+        /// A JSON BOOL
+        
         case bool = "BOOL"
+        
+        
+        /// A JSON NUMBER
+        
         case number = "NUMBER"
+        
+        
+        /// A JSON STRING
+        
         case string = "STRING"
+        
+        
+        /// A JSON OBJECT
+        
         case object = "OBJECT"
+        
+        
+        /// A JSON ARRAY
+        
         case array = "ARRAY"
     }
 
@@ -2494,15 +2518,15 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     private static func readTrue(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
 
         if offset >= numberOfBytes { throw Exception.reason(code: 4, incomplete: true, message: "Illegal value, missing 'r' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_r { throw Exception.reason(code: 5, incomplete: false, message: "Illegal value, no 'r' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._r { throw Exception.reason(code: 5, incomplete: false, message: "Illegal value, no 'r' in 'true' at offset \(offset)") }
         offset += 1
         
         if offset >= numberOfBytes { throw Exception.reason(code: 6, incomplete: true, message: "Illegal value, missing 'u' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_u { throw Exception.reason(code: 7, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._u { throw Exception.reason(code: 7, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
         offset += 1
         
         if offset >= numberOfBytes { throw Exception.reason(code: 8, incomplete: true, message: "Illegal value, missing 'e' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_e { throw Exception.reason(code: 9, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._e { throw Exception.reason(code: 9, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
         offset += 1
         
         return VJson(true)
@@ -2514,19 +2538,19 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     private static func readFalse(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
 
         if offset >= numberOfBytes { throw Exception.reason(code: 10, incomplete: true, message: "Illegal value, missing 'a' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_a { throw Exception.reason(code: 11, incomplete: false, message: "Illegal value, no 'a' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._a { throw Exception.reason(code: 11, incomplete: false, message: "Illegal value, no 'a' in 'true' at offset \(offset)") }
         offset += 1
 
         if offset >= numberOfBytes { throw Exception.reason(code: 12, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_l { throw Exception.reason(code: 13, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(code: 13, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
         offset += 1
 
         if offset >= numberOfBytes { throw Exception.reason(code: 14, incomplete: true, message: "Illegal value, missing 's' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_s { throw Exception.reason(code: 15, incomplete: false, message: "Illegal value, no 's' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._s { throw Exception.reason(code: 15, incomplete: false, message: "Illegal value, no 's' in 'true' at offset \(offset)") }
         offset += 1
 
         if offset >= numberOfBytes { throw Exception.reason(code: 16, incomplete: true, message: "Illegal value, missing 'e' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_e { throw Exception.reason(code: 17, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._e { throw Exception.reason(code: 17, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
         offset += 1
 
         return VJson(false)
@@ -2538,15 +2562,15 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     private static func readNull(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
 
         if offset >= numberOfBytes { throw Exception.reason(code: 18, incomplete: true, message: "Illegal value, missing 'u' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_u { throw Exception.reason(code: 19, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._u { throw Exception.reason(code: 19, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
         offset += 1
         
         if offset >= numberOfBytes { throw Exception.reason(code: 20, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_l { throw Exception.reason(code: 21, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(code: 21, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
         offset += 1
         
         if offset >= numberOfBytes { throw Exception.reason(code: 22, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != ASCII_l { throw Exception.reason(code: 23, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(code: 23, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
         offset += 1
         
         return VJson.null()
@@ -2565,23 +2589,23 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         
         while !stringEnd {
             
-            if buffer[offset] == ASCII_DOUBLE_QUOTES {
+            if buffer[offset] == Ascii._DOUBLE_QUOTES {
                 stringEnd = true
             } else {
                 
-                if buffer[offset] == ASCII_BACKSLASH {
+                if buffer[offset] == Ascii._BACKSLASH {
                     
                     offset += 1
                     if offset >= numberOfBytes { throw Exception.reason(code: 25, incomplete: true, message: "Missing end of string at end of buffer") }
                     
                     switch buffer[offset] {
-                    case ASCII_DOUBLE_QUOTES, ASCII_BACKWARD_SLASH, ASCII_FOREWARD_SLASH: strbuf.append(buffer[offset])
-                    case ASCII_b: strbuf.append(ASCII_BACKSPACE)
-                    case ASCII_f: strbuf.append(ASCII_FORMFEED)
-                    case ASCII_n: strbuf.append(ASCII_NEWLINE)
-                    case ASCII_r: strbuf.append(ASCII_CARRIAGE_RETURN)
-                    case ASCII_t: strbuf.append(ASCII_TAB)
-                    case ASCII_u:
+                    case Ascii._DOUBLE_QUOTES, Ascii._BACKWARD_SLASH, Ascii._FOREWARD_SLASH: strbuf.append(buffer[offset])
+                    case Ascii._b: strbuf.append(Ascii._BACKSPACE)
+                    case Ascii._f: strbuf.append(Ascii._FORMFEED)
+                    case Ascii._n: strbuf.append(Ascii._NEWLINE)
+                    case Ascii._r: strbuf.append(Ascii._CARRIAGE_RETURN)
+                    case Ascii._t: strbuf.append(Ascii._TAB)
+                    case Ascii._u:
                         strbuf.append(buffer[offset])
                         offset += 1
                         if offset >= numberOfBytes { throw Exception.reason(code: 26, incomplete: true, message: "Missing second byte after \\u in string") }
@@ -2619,7 +2643,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         var numbuf = Array<UInt8>()
         
         // Sign
-        if buffer[offset] == ASCII_MINUS {
+        if buffer[offset] == Ascii._MINUS {
             numbuf.append(buffer[offset])
             offset += 1
             if offset >= numberOfBytes { throw Exception.reason(code: 32, incomplete: true, message: "Missing number at end of buffer") }
@@ -2648,7 +2672,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         }
         
         // Fraction
-        if buffer[offset] == ASCII_DOT {
+        if buffer[offset] == Ascii._DOT {
             numbuf.append(buffer[offset])
             offset += 1
             if offset >= numberOfBytes { throw Exception.reason(code: 36, incomplete: true, message: "Missing digits (expecting fraction) at offset \(offset - 1)") }
@@ -2675,11 +2699,11 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         }
         
         // Mantissa
-        if buffer[offset] == ASCII_e || buffer[offset] == ASCII_E {
+        if buffer[offset] == Ascii._e || buffer[offset] == Ascii._E {
             numbuf.append(buffer[offset])
             offset += 1
             if offset >= numberOfBytes { throw Exception.reason(code: 40, incomplete: true, message: "Missing mantissa at buffer end") }
-            if buffer[offset] == ASCII_MINUS || buffer[offset] == ASCII_PLUS {
+            if buffer[offset] == Ascii._MINUS || buffer[offset] == Ascii._PLUS {
                 numbuf.append(buffer[offset])
                 offset += 1
                 if offset >= numberOfBytes { throw Exception.reason(code: 41, incomplete: true, message: "Missing mantissa at buffer end") }
@@ -2717,7 +2741,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         
         // Index points at value or end-of-array bracket
         
-        if buffer[offset] == ASCII_SQUARE_BRACKET_CLOSE {
+        if buffer[offset] == Ascii._SQUARE_BRACKET_CLOSE {
             offset += 1
             return result
         }
@@ -2735,10 +2759,10 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             
             if offset >= numberOfBytes { throw Exception.reason(code: 45, incomplete: true, message: "Missing array end at end of buffer") }
             
-            if buffer[offset] == ASCII_COMMA {
+            if buffer[offset] == Ascii._COMMA {
                 result.append(value)
                 offset += 1
-            } else if buffer[offset] == ASCII_SQUARE_BRACKET_CLOSE {
+            } else if buffer[offset] == Ascii._SQUARE_BRACKET_CLOSE {
                 offset += 1
                 result.append(value)
                 return result
@@ -2766,33 +2790,33 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         
         switch buffer[offset] {
         
-        case ASCII_BRACE_OPEN:
+        case Ascii._BRACE_OPEN:
             offset += 1
             val = try readObject(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        case ASCII_SQUARE_BRACKET_OPEN:
+        case Ascii._SQUARE_BRACKET_OPEN:
             offset += 1
             val = try readArray(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        case ASCII_DOUBLE_QUOTES:
+        case Ascii._DOUBLE_QUOTES:
             offset += 1
             val = try readString(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        case ASCII_MINUS:
+        case Ascii._MINUS:
             val = try readNumber(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
-        case ASCII_0...ASCII_9:
+        case Ascii._0...Ascii._9:
             val = try readNumber(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        case ASCII_n:
+        case Ascii._n:
             offset += 1
             val = try readNull(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        case ASCII_f:
+        case Ascii._f:
             offset += 1
             val = try readFalse(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        case ASCII_t:
+        case Ascii._t:
             offset += 1
             val = try readTrue(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
@@ -2816,7 +2840,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         
         // Index points at non-whitespace
         
-        if buffer[offset] == ASCII_BRACE_CLOSE {
+        if buffer[offset] == Ascii._BRACE_CLOSE {
             offset += 1
             return result
         }
@@ -2831,7 +2855,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             
             var name: String
             
-            if buffer[offset] == ASCII_DOUBLE_QUOTES {
+            if buffer[offset] == Ascii._DOUBLE_QUOTES {
             
                 offset += 1
                 let str = try readString(buffer, numberOfBytes: numberOfBytes, offset: &offset)
@@ -2853,7 +2877,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             
             if offset >= numberOfBytes { throw Exception.reason(code: 52, incomplete: true, message: "Missing ':' in name/value pair at offset \(offset - 1)") }
             
-            if buffer[offset] != ASCII_COLON {
+            if buffer[offset] != Ascii._COLON {
                 throw Exception.reason(code: 53, incomplete: false, message: "Missing ':' in name/value pair at offset \(offset)")
             }
             
@@ -2881,12 +2905,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             
             if offset >= numberOfBytes { throw Exception.reason(code: 55, incomplete: true, message: "Missing end of object at buffer end") }
             
-            if buffer[offset] == ASCII_BRACE_CLOSE {
+            if buffer[offset] == Ascii._BRACE_CLOSE {
                 offset += 1
                 return result
             }
                 
-            if buffer[offset] != ASCII_COMMA { throw Exception.reason(code: 56, incomplete: false, message: "Unexpected character, expected comma at offset \(offset)") }
+            if buffer[offset] != Ascii._COMMA { throw Exception.reason(code: 56, incomplete: false, message: "Unexpected character, expected comma at offset \(offset)") }
             
             offset += 1 // Consume the ','
             
@@ -3004,30 +3028,30 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             let byte = bytePtr.pointee
             switch scanPhase {
             case .normal:
-                if byte == ASCII_BRACE_OPEN {
+                if byte == Ascii._BRACE_OPEN {
                     countOpeningBraces += 1
                     if countOpeningBraces == 1 {
                         jsonAreaStart = bytePtr
                         jsonCount = 0
                     }
-                } else if byte == ASCII_BRACE_CLOSE {
+                } else if byte == Ascii._BRACE_CLOSE {
                     countClosingBraces += 1
                     if countOpeningBraces == countClosingBraces {
                         jsonCount += 1
                         let jsonBufferArea = UnsafeBufferPointer<UInt8>(start: jsonAreaStart, count: jsonCount)
                         return jsonBufferArea
                     }
-                } else if byte == ASCII_DOUBLE_QUOTES {
+                } else if byte == Ascii._DOUBLE_QUOTES {
                     scanPhase = .inString
                 }
             case .inString:
-                if byte == ASCII_DOUBLE_QUOTES {
+                if byte == Ascii._DOUBLE_QUOTES {
                     scanPhase = .normal
-                } else if byte == ASCII_BACKWARD_SLASH {
+                } else if byte == Ascii._BACKWARD_SLASH {
                     scanPhase = .escaped
                 }
             case .escaped:
-                if byte == ASCII_u {
+                if byte == Ascii._u {
                     scanPhase = .hex1
                 } else {
                     scanPhase = .inString

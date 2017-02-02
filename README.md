@@ -1,4 +1,4 @@
-#SwifterJSON / VJson
+# SwifterJSON / VJson
 
 A single class framework in Swift to read, write & parse the JSON Format.
 
@@ -20,7 +20,7 @@ General purpose secure networking utilities.
 
 General purpose logging utility.
 
-#Features
+# Features
 - Creates a fully featured JSON hierarchy from file (or String).
 - Intuitive subscript accessors (for creation).
 - Intuitive pipe accessors (for iem interrogation).
@@ -37,7 +37,7 @@ General purpose logging utility.
 - Builds an SPM package (for use with the Swift Package Manager)
 - Builds as a modular framework (for use in Xcode)
 
-#Usage
+# Usage
 
 Include as a dependency in a Package.swift specification
 
@@ -49,7 +49,13 @@ Then open the xcode project and hit 'build'.
 
 In the project that should use SwifterJSON add the generated framework under the target's `general` settings, to the `Embedded binaries`.
 
-##Full Example
+# Documentation
+
+The project itself: [SwifterJSON](http://swiftfire.nl/projects/swifterjson/swifterjson.html)
+
+The reference manual: [reference manual](http://swiftfire.nl/projects/swifterjson/reference/index.html)
+
+## Full Example
 
 This code can be used as is:
 
@@ -71,7 +77,7 @@ This code can be used as is:
         }
     }
 
-##Typical use cases:
+## Typical use cases:
 
 Create an empty top level JSON item:
 
@@ -202,8 +208,8 @@ The above examples all used 'let' variables. If 'var's are used there is another
 	title &= (json|"title")
 
 
-#Notes:
-##Subscript vs pipe operator
+# Notes:
+## Subscript vs pipe operator
 
 The subscript accessors have a side-effect of creating items that are not present to satisfy the full path.
 
@@ -227,7 +233,7 @@ It is possible to use the pipe opertors to assign values to the JSON hierarchy, 
 	(json|"top"|2|"name")? &= 42 		// results in: {}
 	json["top"][2]["name"] &= 42		// results in: {"top":[null, null, {"name":42}]}
 
-##Values with names in an array
+## Values with names in an array
 
 Every object in a VJson JSON Hierarchy is a VJson object. This is very convenient, but also poses somewhat of a challenge: The JSON specification treats values differently depending on whether they are contained in an ARRAY or OBJECT. In an OBJECT the values have names (or key's in NS parlour). In an ARRAY values are simply values without a name. However since VJson provides only one type of object for everything, this object must have a name component. The optionality of this name thus depends on where the VJson object is used.
 What if a VJson VALUE with a specified name is inserted into an array? Well, the name will be ignored. This leads (possibly) to information loss, but the alternative would be to create an extra object in the hierarchy. If this is the preferred behaviour, it is up to the application to create that object explicitly.
@@ -239,7 +245,7 @@ In an example:
 	let json = VJson()
 	json["top"].append(VJson(12, name: "one"))	// results in: {"top":[12]}
 
-##JSON item type changes
+## JSON item type changes
 
 Allowing the use of subscript accessors without optionality necessitates a leniet behaviour towards JSON item type conversions. To prevent that the application code inadvertently changes the type of a JSON item a fatal error will be thrown if that happens.
 
@@ -260,48 +266,48 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 
 If time is an issue, it is advisable to use the "parseUsingAppleParser" instead of any of the other parse functions.
 
-#History:
+# History:
 
 Note: Planned releases are for information only and subject to change without notice.
 
-####v1.1.0 (Open)
+#### v1.1.0 (Open)
 
 - No new features planned. Features and bugfixes will be made on an ad-hoc basis as needed to support Swiftfire development.
 - To request features or bug fixes please contact rien@balancingrock.nl
 
-####v1.0.0 (Planned)
+#### v1.0.0 (Planned)
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-####v0.9.14 (Current)
+#### v0.9.14 (Current)
 
 - Updated documentation and minor modifications to the access levels.
 - Moved to package based distribution.
 
-####v0.9.13
+#### v0.9.13
 
 - Bugfix: Added missing 'public' to conveniance initializers
 - Added '&=' assignments of VJson to for var's
 
-####v0.9.12
+#### v0.9.12
 
 - Added "findPossibleJsonCode'.
 - Fixed bug that failed to skip whitespace characters after a comma. 
 
-####v0.9.11
+#### v0.9.11
 
 - Update for Xcode 8 beta 6 (Swift 3)
 - Added &= operator to add VJson objects
 
-####v0.9.10
+#### v0.9.10
 
 - Update for Xcode 8 beta 3 (Swift 3)
 
-####v0.9.9
+#### v0.9.9
 
 - Added NSJSONSerialization parsing
 
-####v0.9.8 (Major overhaul!)
+#### v0.9.8 (Major overhaul!)
 
 - Preparations for Swift 3 (name changes)
 - Added functions: stringOrNull, integerOrNull, doubleOrNull, boolOrNull and numberOrNull.
@@ -317,27 +323,26 @@ Note: Planned releases are for information only and subject to change without no
 - Improved iterator: will no longer generates items that are deleted while in the itteration loop
 - Changed operation 'object' to 'item'
 
-####v0.9.7
+#### v0.9.7
 
 - Added protocol definition VJsonSerializable
 - Added createJsonHierarchy(string)
 
-####v0.9.6
+#### v0.9.6
 
 - Header update to include new website: [swiftfire.nl](http://swiftfire.nl)
 
-####v0.9.5
+#### v0.9.5
 
 - Added "pipe" functions ("|") to allow for better testing of paths. The pipe functions greatly improve the readability when used in 'guard' statements.
 
-
-####v0.9.4
+#### v0.9.4
 
 - Changed target to a (shared) framework
 - Added 'public' definitions to support the framework target
 - Added release tags
 
-####v0.9.3 (VJson)
+#### v0.9.3
 
 - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
 - Added conveniance operation "addChild" that does not need the name of the child to be added.
@@ -347,11 +352,11 @@ Note: Planned releases are for information only and subject to change without no
 - Removed dependency on SwifterLog
 - Updated for changes in ASCII.swift (added hexLookUp, changed is___ functions to var's)
 
-####v0.9.2 (VJson)
+#### v0.9.2
 
 - Fixed a problem where a named NULL object was removed from the hierarchy upon fetching the description.
 
-####v0.9.1 (VJson)
+#### v0.9.1
 
 - Changed parameter to 'addChild' to an optional.
 - Fixed a problem where an object without a leading brace in an array would not be thrown as an error
@@ -365,6 +370,6 @@ Note: Planned releases are for information only and subject to change without no
 
 Also added unit tests for VJson and performance tests for Apple's JSON, SwifterJSON and VJson.
 
-####v0.9.0 (VJson)
+#### v0.9.0
 
 - Initial release

@@ -10,7 +10,6 @@
 		OBJ_25 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* ASCII.swift */; };
 		OBJ_26 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* VJson.swift */; };
 		OBJ_33 /* ParseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* ParseTests.swift */; };
-		OBJ_34 /* SwifterJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* SwifterJSONTests.swift */; };
 		OBJ_35 /* VJsonTestsPart1.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* VJsonTestsPart1.swift */; };
 		OBJ_36 /* VJsonTestsPart2.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* VJsonTestsPart2.swift */; };
 		OBJ_38 /* SwifterJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* SwifterJSON.framework */; };
@@ -29,7 +28,6 @@
 /* Begin PBXFileReference section */
 		OBJ_10 /* VJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
 		OBJ_13 /* ParseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseTests.swift; sourceTree = "<group>"; };
-		OBJ_14 /* SwifterJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwifterJSONTests.swift; sourceTree = "<group>"; };
 		OBJ_15 /* VJsonTestsPart1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart1.swift; sourceTree = "<group>"; };
 		OBJ_16 /* VJsonTestsPart2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart2.swift; sourceTree = "<group>"; };
 		OBJ_18 /* SwifterJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwifterJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,7 +67,6 @@
 			isa = PBXGroup;
 			children = (
 				OBJ_13 /* ParseTests.swift */,
-				OBJ_14 /* SwifterJSONTests.swift */,
 				OBJ_15 /* VJsonTestsPart1.swift */,
 				OBJ_16 /* VJsonTestsPart2.swift */,
 			);
@@ -192,7 +189,6 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_33 /* ParseTests.swift in Sources */,
-				OBJ_34 /* SwifterJSONTests.swift in Sources */,
 				OBJ_35 /* VJsonTestsPart1.swift in Sources */,
 				OBJ_36 /* VJsonTestsPart2.swift in Sources */,
 			);

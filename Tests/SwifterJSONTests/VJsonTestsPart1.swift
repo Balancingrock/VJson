@@ -9,7 +9,7 @@
 // Note: These test have been developped while inspecting the source code. I.e. white box testing. Goal has been to test all possible conditions such that a high percentage of code coverage is achieved. However some explicit tests have been omitted if the part to test is already tested excessively in other test cases.
 
 import XCTest
-@testable import VJson
+@testable import SwifterJSON
 
 infix operator &= // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
 infix operator | : LeftAssociative // Needs to be repeated here, the one defined in vjson.swift somehow is not included at this level
@@ -116,7 +116,7 @@ class VJsonTests: XCTestCase {
         // Execute the assignment with a non-nil argument
         i = false
         json &= i
-        XCTAssertEqual(json!.boolValue!, true)
+        XCTAssertEqual(json!.boolValue!, false)
     }
     
     

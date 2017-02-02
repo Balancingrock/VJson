@@ -23,7 +23,7 @@ General purpose logging utility.
 # Features
 - Creates a fully featured JSON hierarchy from file (or String).
 - Intuitive subscript accessors (for creation).
-- Intuitive pipe accessors (for iem interrogation).
+- Intuitive pipe accessors (for item interrogation).
 - Interpret items as other types (eg read a Bool as a String or vice-versa).
 - Allows multiple values with identical names in an OBJECT.
 - Allows ARRAYs with different JSON types.

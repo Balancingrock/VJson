@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.14
+//  Version:    0.9.15
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,7 @@
 //
 // History
 //
+// v0.9.15 - Bigfix: Removed the redefinition of the operators
 // v0.9.14 - Organizational and documentary changes for SPM and jazzy.
 // v0.9.13 - Added missing 'public' to conveniance initializers
 //         - Added '&=' assignments of Vjson to for var's
@@ -154,18 +155,6 @@ public protocol VJsonDeserializable {
 /// For classes and structs that can be converted into and constructed from a VJson object
 
 public protocol VJsonConvertible: VJsonSerializable, VJsonDeserializable {}
-
-
-/// Interrogate a JSON object for the existence of a child object without side effects
-
-precedencegroup LeftAssociative { associativity: left }
-
-infix operator | : LeftAssociative
-
-
-/// Assign an item to a JSON object. Will change the object into the JSON type necessary
-
-infix operator &=
 
 
 // MARK: - Test for existence of child items

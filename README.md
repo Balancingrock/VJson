@@ -279,7 +279,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.9.14 (Current)
+#### v0.9.15 (Current)
+
+- Bugfix: Removed the redefinition of the custom operators.
+
+#### v0.9.14
 
 - Updated documentation and minor modifications to the access levels.
 - Moved to package based distribution.

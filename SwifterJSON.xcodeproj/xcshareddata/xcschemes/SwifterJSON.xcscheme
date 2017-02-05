@@ -14,7 +14,21 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "OBJ_20"
+               BlueprintIdentifier = "OBJ_23"
+               BuildableName = "Ascii.framework"
+               BlueprintName = "Ascii"
+               ReferencedContainer = "container:SwifterJSON.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "OBJ_30"
                BuildableName = "SwifterJSON.framework"
                BlueprintName = "SwifterJSON"
                ReferencedContainer = "container:SwifterJSON.xcodeproj">
@@ -32,7 +46,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "OBJ_28"
+               BlueprintIdentifier = "OBJ_40"
                BuildableName = "SwifterJSONTests.xctest"
                BlueprintName = "SwifterJSONTests"
                ReferencedContainer = "container:SwifterJSON.xcodeproj">
@@ -55,9 +69,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "OBJ_20"
-            BuildableName = "SwifterJSON.framework"
-            BlueprintName = "SwifterJSON"
+            BlueprintIdentifier = "OBJ_23"
+            BuildableName = "Ascii.framework"
+            BlueprintName = "Ascii"
             ReferencedContainer = "container:SwifterJSON.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

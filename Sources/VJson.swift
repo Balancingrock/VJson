@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.15
+//  Version:    0.9.16
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,7 @@
 //
 // History
 //
+// v0.9.16 - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
 // v0.9.15 - Bigfix: Removed the redefinition of the operators
 // v0.9.14 - Organizational and documentary changes for SPM and jazzy.
 // v0.9.13 - Added missing 'public' to conveniance initializers
@@ -109,6 +110,7 @@
 // =====================================================================================================================
 
 import Foundation
+import Ascii
 
 
 /// For classes and structs that can be converted into a VJson object

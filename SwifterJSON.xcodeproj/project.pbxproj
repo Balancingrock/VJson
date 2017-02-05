@@ -7,37 +7,55 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		OBJ_25 /* ASCII.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* ASCII.swift */; };
-		OBJ_26 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* VJson.swift */; };
-		OBJ_33 /* ParseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* ParseTests.swift */; };
-		OBJ_35 /* VJsonTestsPart1.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* VJsonTestsPart1.swift */; };
-		OBJ_36 /* VJsonTestsPart2.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* VJsonTestsPart2.swift */; };
-		OBJ_38 /* SwifterJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_18 /* SwifterJSON.framework */; };
+		OBJ_28 /* Ascii.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Ascii.swift */; };
+		OBJ_36 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* VJson.swift */; };
+		OBJ_38 /* Ascii.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* Ascii.framework */; };
+		OBJ_45 /* ParseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* ParseTests.swift */; };
+		OBJ_46 /* VJsonTestsPart1.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* VJsonTestsPart1.swift */; };
+		OBJ_47 /* VJsonTestsPart2.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* VJsonTestsPart2.swift */; };
+		OBJ_49 /* Ascii.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* Ascii.framework */; };
+		OBJ_50 /* SwifterJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_21 /* SwifterJSON.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		863F7EDB1E431ECE00656AC2 /* PBXContainerItemProxy */ = {
+		86C571C41E46501600119224 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = OBJ_1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = OBJ_20;
+			remoteGlobalIDString = OBJ_23;
+			remoteInfo = Ascii;
+		};
+		86C571C51E46501600119224 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = OBJ_23;
+			remoteInfo = Ascii;
+		};
+		86C571C61E46501600119224 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = OBJ_1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = OBJ_30;
 			remoteInfo = SwifterJSON;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		OBJ_10 /* VJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
-		OBJ_13 /* ParseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseTests.swift; sourceTree = "<group>"; };
-		OBJ_15 /* VJsonTestsPart1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart1.swift; sourceTree = "<group>"; };
-		OBJ_16 /* VJsonTestsPart2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart2.swift; sourceTree = "<group>"; };
-		OBJ_18 /* SwifterJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwifterJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		OBJ_19 /* SwifterJSONTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = SwifterJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_12 /* VJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
+		OBJ_15 /* ParseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseTests.swift; sourceTree = "<group>"; };
+		OBJ_16 /* VJsonTestsPart1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart1.swift; sourceTree = "<group>"; };
+		OBJ_17 /* VJsonTestsPart2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart2.swift; sourceTree = "<group>"; };
+		OBJ_18 /* build */ = {isa = PBXFileReference; lastKnownFileType = folder; path = build; sourceTree = SOURCE_ROOT; };
+		OBJ_20 /* Ascii.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Ascii.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_21 /* SwifterJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwifterJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		OBJ_22 /* SwifterJSONTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SwifterJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		OBJ_9 /* ASCII.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASCII.swift; sourceTree = "<group>"; };
+		OBJ_9 /* Ascii.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ascii.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		OBJ_27 /* Frameworks */ = {
+		OBJ_29 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
@@ -48,37 +66,56 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_38 /* SwifterJSON.framework in Frameworks */,
+				OBJ_38 /* Ascii.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_48 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_49 /* Ascii.framework in Frameworks */,
+				OBJ_50 /* SwifterJSON.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		OBJ_11 /* Tests */ = {
+		OBJ_10 /* SwifterJSON */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_12 /* SwifterJSONTests */,
+				OBJ_12 /* VJson.swift */,
+			);
+			name = SwifterJSON;
+			path = Sources;
+			sourceTree = SOURCE_ROOT;
+		};
+		OBJ_13 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				OBJ_14 /* SwifterJSONTests */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
 		};
-		OBJ_12 /* SwifterJSONTests */ = {
+		OBJ_14 /* SwifterJSONTests */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_13 /* ParseTests.swift */,
-				OBJ_15 /* VJsonTestsPart1.swift */,
-				OBJ_16 /* VJsonTestsPart2.swift */,
+				OBJ_15 /* ParseTests.swift */,
+				OBJ_16 /* VJsonTestsPart1.swift */,
+				OBJ_17 /* VJsonTestsPart2.swift */,
 			);
 			name = SwifterJSONTests;
 			path = Tests/SwifterJSONTests;
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_17 /* Products */ = {
+		OBJ_19 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_18 /* SwifterJSON.framework */,
-				OBJ_19 /* SwifterJSONTests.xctest */,
+				OBJ_20 /* Ascii.framework */,
+				OBJ_21 /* SwifterJSON.framework */,
+				OBJ_22 /* SwifterJSONTests.xctest */,
 			);
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -88,8 +125,9 @@
 			children = (
 				OBJ_6 /* Package.swift */,
 				OBJ_7 /* Sources */,
-				OBJ_11 /* Tests */,
-				OBJ_17 /* Products */,
+				OBJ_13 /* Tests */,
+				OBJ_18 /* build */,
+				OBJ_19 /* Products */,
 			);
 			name = "";
 			sourceTree = "<group>";
@@ -97,45 +135,45 @@
 		OBJ_7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_8 /* SwifterJSON */,
+				OBJ_8 /* Ascii */,
+				OBJ_10 /* SwifterJSON */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		OBJ_8 /* SwifterJSON */ = {
+		OBJ_8 /* Ascii */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_9 /* ASCII.swift */,
-				OBJ_10 /* VJson.swift */,
+				OBJ_9 /* Ascii.swift */,
 			);
-			name = SwifterJSON;
-			path = Sources;
+			name = Ascii;
+			path = "Packages/Ascii-1.0.0/Sources";
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		OBJ_20 /* SwifterJSON */ = {
+		OBJ_23 /* Ascii */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_21 /* Build configuration list for PBXNativeTarget "SwifterJSON" */;
+			buildConfigurationList = OBJ_24 /* Build configuration list for PBXNativeTarget "Ascii" */;
 			buildPhases = (
-				OBJ_24 /* Sources */,
-				OBJ_27 /* Frameworks */,
+				OBJ_27 /* Sources */,
+				OBJ_29 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = SwifterJSON;
-			productName = SwifterJSON;
-			productReference = OBJ_18 /* SwifterJSON.framework */;
+			name = Ascii;
+			productName = Ascii;
+			productReference = OBJ_20 /* Ascii.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		OBJ_28 /* SwifterJSONTests */ = {
+		OBJ_30 /* SwifterJSON */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_29 /* Build configuration list for PBXNativeTarget "SwifterJSONTests" */;
+			buildConfigurationList = OBJ_31 /* Build configuration list for PBXNativeTarget "SwifterJSON" */;
 			buildPhases = (
-				OBJ_32 /* Sources */,
+				OBJ_34 /* Sources */,
 				OBJ_37 /* Frameworks */,
 			);
 			buildRules = (
@@ -143,9 +181,27 @@
 			dependencies = (
 				OBJ_39 /* PBXTargetDependency */,
 			);
+			name = SwifterJSON;
+			productName = SwifterJSON;
+			productReference = OBJ_21 /* SwifterJSON.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		OBJ_40 /* SwifterJSONTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OBJ_41 /* Build configuration list for PBXNativeTarget "SwifterJSONTests" */;
+			buildPhases = (
+				OBJ_44 /* Sources */,
+				OBJ_48 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				OBJ_51 /* PBXTargetDependency */,
+				OBJ_52 /* PBXTargetDependency */,
+			);
 			name = SwifterJSONTests;
 			productName = SwifterJSONTests;
-			productReference = OBJ_19 /* SwifterJSONTests.xctest */;
+			productReference = OBJ_22 /* SwifterJSONTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -164,33 +220,41 @@
 				en,
 			);
 			mainGroup = OBJ_5 /*  */;
-			productRefGroup = OBJ_17 /* Products */;
+			productRefGroup = OBJ_19 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				OBJ_20 /* SwifterJSON */,
-				OBJ_28 /* SwifterJSONTests */,
+				OBJ_23 /* Ascii */,
+				OBJ_30 /* SwifterJSON */,
+				OBJ_40 /* SwifterJSONTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		OBJ_24 /* Sources */ = {
+		OBJ_27 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_25 /* ASCII.swift in Sources */,
-				OBJ_26 /* VJson.swift in Sources */,
+				OBJ_28 /* Ascii.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		OBJ_32 /* Sources */ = {
+		OBJ_34 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 0;
 			files = (
-				OBJ_33 /* ParseTests.swift in Sources */,
-				OBJ_35 /* VJsonTestsPart1.swift in Sources */,
-				OBJ_36 /* VJsonTestsPart2.swift in Sources */,
+				OBJ_36 /* VJson.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		OBJ_44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 0;
+			files = (
+				OBJ_45 /* ParseTests.swift in Sources */,
+				OBJ_46 /* VJsonTestsPart1.swift in Sources */,
+				OBJ_47 /* VJsonTestsPart2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,13 +263,23 @@
 /* Begin PBXTargetDependency section */
 		OBJ_39 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = OBJ_20 /* SwifterJSON */;
-			targetProxy = 863F7EDB1E431ECE00656AC2 /* PBXContainerItemProxy */;
+			target = OBJ_23 /* Ascii */;
+			targetProxy = 86C571C41E46501600119224 /* PBXContainerItemProxy */;
+		};
+		OBJ_51 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = OBJ_23 /* Ascii */;
+			targetProxy = 86C571C51E46501600119224 /* PBXContainerItemProxy */;
+		};
+		OBJ_52 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = OBJ_30 /* SwifterJSON */;
+			targetProxy = 86C571C61E46501600119224 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		OBJ_22 /* Debug */ = {
+		OBJ_25 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEFINES_MODULE = YES;
@@ -215,18 +289,18 @@
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSON_Info.plist;
+				INFOPLIST_FILE = SwifterJSON.xcodeproj/Ascii_Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = SwifterJSON;
+				PRODUCT_BUNDLE_IDENTIFIER = Ascii;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				TARGET_NAME = SwifterJSON;
+				TARGET_NAME = Ascii;
 			};
 			name = Debug;
 		};
-		OBJ_23 /* Release */ = {
+		OBJ_26 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEFINES_MODULE = YES;
@@ -236,14 +310,14 @@
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSON_Info.plist;
+				INFOPLIST_FILE = SwifterJSON.xcodeproj/Ascii_Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = SwifterJSON;
+				PRODUCT_BUNDLE_IDENTIFIER = Ascii;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				TARGET_NAME = SwifterJSON;
+				TARGET_NAME = Ascii;
 			};
 			name = Release;
 		};
@@ -269,37 +343,45 @@
 			};
 			name = Debug;
 		};
-		OBJ_30 /* Debug */ = {
+		OBJ_32 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				DEFINES_MODULE = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSONTests_Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSON_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				TARGET_NAME = SwifterJSONTests;
+				PRODUCT_BUNDLE_IDENTIFIER = SwifterJSON;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = SwifterJSON;
 			};
 			name = Debug;
 		};
-		OBJ_31 /* Release */ = {
+		OBJ_33 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				DEFINES_MODULE = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSONTests_Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSON_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				TARGET_NAME = SwifterJSONTests;
+				PRODUCT_BUNDLE_IDENTIFIER = SwifterJSON;
+				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				TARGET_NAME = SwifterJSON;
 			};
 			name = Release;
 		};
@@ -323,6 +405,40 @@
 			};
 			name = Release;
 		};
+		OBJ_42 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSONTests_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				TARGET_NAME = SwifterJSONTests;
+			};
+			name = Debug;
+		};
+		OBJ_43 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = SwifterJSON.xcodeproj/SwifterJSONTests_Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				OTHER_LDFLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				TARGET_NAME = SwifterJSONTests;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -335,20 +451,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		OBJ_21 /* Build configuration list for PBXNativeTarget "SwifterJSON" */ = {
+		OBJ_24 /* Build configuration list for PBXNativeTarget "Ascii" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_22 /* Debug */,
-				OBJ_23 /* Release */,
+				OBJ_25 /* Debug */,
+				OBJ_26 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		OBJ_29 /* Build configuration list for PBXNativeTarget "SwifterJSONTests" */ = {
+		OBJ_31 /* Build configuration list for PBXNativeTarget "SwifterJSON" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				OBJ_30 /* Debug */,
-				OBJ_31 /* Release */,
+				OBJ_32 /* Debug */,
+				OBJ_33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		OBJ_41 /* Build configuration list for PBXNativeTarget "SwifterJSONTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OBJ_42 /* Debug */,
+				OBJ_43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

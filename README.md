@@ -279,7 +279,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.9.15 (Current)
+#### v0.9.16 (Current)
+
+- Moved Ascii into its own package.
+- Removed custom operator definitions from tests.
+
+#### v0.9.15
 
 - Bugfix: Removed the redefinition of the custom operators.
 

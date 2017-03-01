@@ -1293,7 +1293,7 @@ class VJsonTests: XCTestCase {
         num = nil
         json.numberValue = num
         exp = NSNumber(value: 0)
-        XCTAssertTrue(json.isNumber)
+        XCTAssertTrue(json.isNull)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertNil(json.numberValue)
         
@@ -1311,7 +1311,7 @@ class VJsonTests: XCTestCase {
         var inum: Int?
         json.intValue = inum
         exp = NSNumber(value: 0)
-        XCTAssertTrue(json.isNumber)
+        XCTAssertTrue(json.isNull)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.asInt, 0)
         XCTAssertNil(json.intValue)
@@ -1331,7 +1331,7 @@ class VJsonTests: XCTestCase {
         var dnum: Double?
         json.doubleValue = dnum
         exp = NSNumber(value: 0)
-        XCTAssertTrue(json.isNumber)
+        XCTAssertTrue(json.isNull)
         XCTAssertEqual(json.asNumber, exp)
         XCTAssertEqual(json.asDouble, 0.0)
         XCTAssertNil(json.doubleValue)
@@ -1495,7 +1495,7 @@ class VJsonTests: XCTestCase {
         // Assign nil
         json = VJson("qwerty")
         json.stringValue = nil
-        XCTAssertTrue(json.isString)
+        XCTAssertTrue(json.isNull)
         XCTAssertEqual(json.asString, "null")
         XCTAssertNil(json.stringValue)
         XCTAssertFalse(json.hasName)

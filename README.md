@@ -262,6 +262,7 @@ Do note however that the operations "add" and "append" are not lenient. I.e. it 
 The advantage of Apple's parser is that it is faster, about twice as fast as the standard parser on the MacBook Pro and PowerMac. However Apple's parser has at least two drawbacks:
 
 - It cannot handle multiple name/value pairs with identical names. I.e. {"test":1,"test":2} will fail. With the standard VJson parser this will result in an object with two childeren with identical names. Accessable through the "arrayValue" accessor.
+
 - JSON BOOL items are parsed as an NSNumber and hence must be interrogated as a JSON NUMBER item. This results in a symmetry break when json code with a bool in it is converted into a VJson hierarchy and that hierachy is then translated back into code. (The in- and output code will not be the same)
 
 If time is an issue, it is advisable to use the "parseUsingAppleParser" instead of any of the other parse functions.
@@ -279,7 +280,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.9.16 (Current)
+#### v0.9.17 (Current)
+
+- Bugfix: Assigning a nil to a ...Value did not cause an auto-converion to NULL.
+
+#### v0.9.16
 
 - Moved Ascii into its own package.
 - Removed custom operator definitions from tests.

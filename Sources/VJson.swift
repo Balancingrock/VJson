@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.9.16
+//  Version:    0.9.17
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -11,7 +11,7 @@
 //  Blog:       http://swiftrien.blogspot.com
 //  Git:        https://github.com/Balancingrock/SwifterJSON
 //
-//  Copyright:  (c) 2014-2016 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -56,21 +56,22 @@
 //
 // History
 //
-// v0.9.16 - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
-// v0.9.15 - Bigfix: Removed the redefinition of the operators
-// v0.9.14 - Organizational and documentary changes for SPM and jazzy.
-// v0.9.13 - Added missing 'public' to conveniance initializers
+// 0.9.17  - Bugfix: Assigning nil to ...Value did not result in an auto conversion to NULL.
+// 0.9.16  - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
+// 0.9.15  - Bigfix: Removed the redefinition of the operators
+// 0.9.14  - Organizational and documentary changes for SPM and jazzy.
+// 0.9.13  - Added missing 'public' to conveniance initializers
 //         - Added '&=' assignments of Vjson to for var's
-// v0.9.12 - Added "findPossibleJsonCode'.
+// 0.9.12  - Added "findPossibleJsonCode'.
 //         - Fixed bug that failed to skip whitespace characters after a comma.
-// v0.9.11 - Updated to Xcode 8 beta 6
+// 0.9.11  - Updated to Xcode 8 beta 6
 //         - Added convenience func to VJsonSerializable to name nameless VJson objects.
 //         - Added &= operator for adding/appending VJson objects
 //         - Added "code" to replace "description" ("description" remains available)
-// v0.9.10 - Updated and harmonized for Swift 3 beta
+// 0.9.10  - Updated and harmonized for Swift 3 beta
 //         - added int flavor accessors
-// v0.9.9  - Added "parseUsingAppleParser"
-// v0.9.8  - Preparations for Swift 3 (name changes)
+// 0.9.9   - Added "parseUsingAppleParser"
+// 0.9.8   - Preparations for Swift 3 (name changes)
 //         - Added functions: stringOrNull, integerOrNull, doubleOrNull, boolOrNull and numberOrNull.
 //         - Fixed problem where appendChild would not convert a non-array into an array.
 //         - Added "&=" operators
@@ -83,21 +84,21 @@
 //         - Added static option fatalErrorOnTypeConversion (for use during debugging)
 //         - Improved iterator: will no longer generates items that are deleted while in the itteration loop
 //         - Changed operations "object" to "item"
-// v0.9.7  - Added protocol definition VJsonSerializable
+// 0.9.7   - Added protocol definition VJsonSerializable
 //         - Added createJsonHierarchy(string)
-// v0.9.6  - Header update
-// v0.9.5  - Added "pipe" functions to allow for guard constructs when testing for item existence without side effect
-// v0.9.4  - Changed target to a shared framework
+// 0.9.6   - Header update
+// 0.9.5   - Added "pipe" functions to allow for guard constructs when testing for item existence without side effect
+// 0.9.4   - Changed target to a shared framework
 //         - Added 'public' declarations to support use as framework
-// v0.9.3  - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
+// 0.9.3   - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
 //         - Added conveniance operation "addChild" that does not need the name of the child to be added.
 //         - Changed behaviour of "addChild:name" to change the item into an OBJECT if it is'nt one.
 //         - Changed behaviour of "appendChild" to change the item into an ARRAY if it is'nt one.
 //         - Upgraded to Swift 2.2
 //         - Removed dependency on SwifterLog
 //         - Updated for changes in ASCII.swift
-// v0.9.2  - Fixed a problem where an assigned NULL object was removed from the hierarchy
-// v0.9.1  - Changed parameter to 'addChild' to an optional.
+// 0.9.2   - Fixed a problem where an assigned NULL object was removed from the hierarchy
+// 0.9.1   - Changed parameter to 'addChild' to an optional.
 //         - Fixed a problem where an object without a leading brace in an array would not be thrown as an error
 //         - Changed 'makeCopy()' to 'copy' for constency with other projects
 //         - Fixed the asString for BOOL types
@@ -106,7 +107,7 @@
 //         - Removed 'set' access from arrayValue and dictionaryValue as it could potentially lead to an invalid JSON hierarchy
 //         - Fixed subscript accessors, array can now be used on top-level with an implicit name of "array"
 //         - Fixed missing braces around named objects in an array
-// v0.9.0  - Initial release
+// 0.9.0   - Initial release
 // =====================================================================================================================
 
 import Foundation
@@ -1150,12 +1151,18 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     public var boolValue: Bool? {
         get { return bool }
         set {
-            if type != .bool {
-                if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to BOOL") }
+            if newValue == nil {
                 neutralize()
-                type = .bool
+                nullValue = true
+                type = .null
+            } else {
+                if type != .bool {
+                    if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to BOOL") }
+                    neutralize()
+                    type = .bool
+                }
+                bool = newValue
             }
-            bool = newValue
         }
     }
     
@@ -1203,12 +1210,18 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     public var numberValue: NSNumber? {
         get { return number?.copy() as? NSNumber }
         set {
-            if type != .number {
-                if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to NUMBER") }
+            if newValue == nil {
                 neutralize()
-                type = .number
+                nullValue = true
+                type = .null
+            } else {
+                if type != .number {
+                    if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to NUMBER") }
+                    neutralize()
+                    type = .number
+                }
+                number = newValue?.copy() as? NSNumber
             }
-            number = newValue?.copy() as? NSNumber
         }
     }
 
@@ -1341,16 +1354,8 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non number will result in a fatal error.
 
     public var doubleValue: Double? {
-        get {
-            return number?.doubleValue
-        }
-        set {
-            if newValue == nil {
-                numberValue = nil
-            } else {
-                numberValue = NSNumber(value: newValue!)
-            }
-        }
+        get { return number?.doubleValue }
+        set { numberValue = newValue == nil ? nil : NSNumber(value: newValue!) }
     }
 
     
@@ -1537,12 +1542,18 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             return self.string!.replacingOccurrences(of: "\\\"", with: "\"")
         }
         set {
-            if type != .string {
-                if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to STRING") }
+            if newValue == nil {
                 neutralize()
-                type = .string
+                nullValue = true
+                type = .null
+            } else {
+                if type != .string {
+                    if VJson.fatalErrorOnTypeConversion && type != .null { fatalError("Type conversion error from \(type) to STRING") }
+                    neutralize()
+                    type = .string
+                }
+                string = newValue?.replacingOccurrences(of: "\"", with: "\\\"")
             }
-            string = newValue?.replacingOccurrences(of: "\"", with: "\\\"")
         }
     }
 

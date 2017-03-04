@@ -57,6 +57,7 @@
 // History
 //
 // 0.9.17  - Bugfix: Assigning nil to ...Value did not result in an auto conversion to NULL.
+//         - Changed several fileprivate accessors to public fileprivate(set) to allow support for outline views.
 // 0.9.16  - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
 // 0.9.15  - Bigfix: Removed the redefinition of the operators
 // 0.9.14  - Organizational and documentary changes for SPM and jazzy.
@@ -794,7 +795,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     /// The JSON type of this object.
     
-    fileprivate var type: JType
+    public fileprivate(set) var type: JType
     
     
     /// True if this object contains a JSON NULL object.
@@ -1081,7 +1082,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     // The name of this object if it is part of a name/value pair.
     
-    fileprivate var name: String?
+    public fileprivate(set) var name: String?
 
 
     /// The name of this item if it is a name/value pair. Nil otherwise.
@@ -1141,7 +1142,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     // The value if this is a JSON BOOL.
     
-    fileprivate var bool: Bool?
+    public fileprivate(set) var bool: Bool?
     
 
     /// 'true' or 'false' if this item contains a JSON BOOL value, nil otherwise.
@@ -1200,7 +1201,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
 
     // The value if this is a JSON NUMBER.
     
-    fileprivate var number: NSNumber?
+    public fileprivate(set) var number: NSNumber?
     
     
     /// The number as an NSNumber if this is a JSON NUMBER item, nil otherwise.
@@ -1529,7 +1530,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     // The value if this is a JSON STRING.
     
-    fileprivate var string: String?
+    public fileprivate(set) var string: String?
     
 
     /// The string value if this is a JSON STRING item, nil otherwise.
@@ -1590,7 +1591,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     // The child elements, either array values or object name/value pairs.
     
-    fileprivate var children: Array<VJson>?
+    public fileprivate(set) var children: Array<VJson>?
     
     
     /// True if this item contains any childeren. False if this item does not have any children.

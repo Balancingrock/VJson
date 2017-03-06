@@ -97,7 +97,7 @@ class ParseTests: XCTestCase {
         self.measure {
             var json: VJson?
             do {
-                for _ in 1 ... 1000 {
+                for _ in 1 ... 100 {
                     json = try VJson.parse(string: jcode)
                 }
             } catch let error as VJson.ParseError {
@@ -127,7 +127,7 @@ class ParseTests: XCTestCase {
         self.measure {
             var json: VJson?
             do {
-                for _ in 1 ... 1000 {
+                for _ in 1 ... 100 {
                     json = try VJson.parseUsingAppleParser(jcode)
                 }
             } catch let error as VJson.ParseError {
@@ -139,5 +139,110 @@ class ParseTests: XCTestCase {
         }
     }
 
+    func testCachingDisabledPerformance1() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3}", errorInfo: &error)
+        json?.enableCacheForObjects = false
+        
+        self.measure {
+            for _ in 1 ... 1000 {
+                for _ in 1 ... 2 {
+                    let _ = json|"three"
+                }
+            }
+        }
+    }
+    
+    func testCachingDisabledPerformance2() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"oneone\":1,\"twotwo\":2,\"three\":3}", errorInfo: &error)
+        json?.enableCacheForObjects = false
+        
+        self.measure {
+            for _ in 1 ... 10000 {
+                let _ = json|"three"
+            }
+        }
+    }
+    
+    func testCachingDisabledPerformance3() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"three\":3}", errorInfo: &error)
+        json?.enableCacheForObjects = false
+        
+        self.measure {
+            for _ in 1 ... 10000 {
+                let _ = json|"three"
+            }
+        }
+    }
+    
+    func testCachingDisabledPerformance4() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3,\"four\":1,\"five\":2,\"six\":3}", errorInfo: &error)
+        json?.enableCacheForObjects = false
+        
+        self.measure {
+            for _ in 1 ... 10000 {
+                let _ = json|"six"
+            }
+        }
+    }
+
+
+    func testCachingEnabledPerformance1() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3}", errorInfo: &error)
+        
+        self.measure {
+            for _ in 1 ... 1000 {
+                for _ in 1 ... 2 {
+                    let _ = json|"three"
+                }
+                json?.enableCacheForObjects = true
+            }
+        }
+    }
+    
+    func testCachingEnabledPerformance2() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"oneone\":1,\"twotwo\":2,\"three\":3}", errorInfo: &error)
+        
+        self.measure {
+            for _ in 1 ... 10000 {
+                let _ = json|"three"
+            }
+        }
+    }
+    
+    func testCachingEnabledPerformance3() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"three\":3}", errorInfo: &error)
+        
+        self.measure {
+            for _ in 1 ... 10000 {
+                let _ = json|"three"
+            }
+        }
+    }
+
+    func testCachingEnabledPerformance4() {
+        
+        var error: VJson.ParseError?
+        let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3,\"four\":1,\"five\":2,\"six\":3}", errorInfo: &error)
+        
+        self.measure {
+            for _ in 1 ... 10000 {
+                let _ = json|"six"
+            }
+        }
+    }
 
 }

@@ -60,6 +60,7 @@
 //         - Changed several fileprivate accessors to public fileprivate(set) to allow support for outline views.
 //         - Added merge capability
 //         - Bugfix: Duplicate named items would not result in mutiple items of an object.
+//         - Added 'caching' of object members in an internal dictionary, by default 'on', set "enableCacheForObjects" to 'false' to disable.
 // 0.9.16  - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
 // 0.9.15  - Bigfix: Removed the redefinition of the operators
 // 0.9.14  - Organizational and documentary changes for SPM and jazzy.
@@ -176,9 +177,13 @@ public protocol VJsonConvertible: VJsonSerializable, VJsonDeserializable {}
 public func | (lhs: VJson?, rhs: String?) -> VJson? {
     guard let lhs = lhs else { return nil }
     guard let rhs = rhs else { return nil }
-    let arr = lhs.children(withName: rhs)
-    if arr.count == 0 { return nil }
-    return arr[0]
+    if let result = lhs.cached(rhs) {
+        return result
+    } else {
+        let arr = lhs.children(withName: rhs)
+        if arr.count == 0 { return nil }
+        return arr[0]
+    }
 }
 
 
@@ -1593,9 +1598,42 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     // The child elements, either array values or object name/value pairs.
     
-    public fileprivate(set) var children: Array<VJson>?
+    public fileprivate(set) var children: Array<VJson>? {
+        didSet {
+            objectCache = nil
+        }
+    }
     
     
+    // A cache that can be enabled/disabled for objects
+    
+    private var objectCache: Dictionary<String, VJson>? = nil
+    
+    
+    /// Controls the status of the dictionary cache for JSON OBJECTs. The dictionary cache can be used to speed up subscript access.
+    ///
+    /// Note: The dictionary cache will speed up access for OBJECT members, but will "lose" members with duplicate names.
+    /// I.e. a {"one":1, "one":2} object will only contain {"one":2} when caching is enabled. However the lost member is still present in the "children" array and will be saved (or be part of the generated code).
+    
+    public var enableCacheForObjects: Bool = true {
+        didSet {
+            if enableCacheForObjects { objectCache = nil }
+        }
+    }
+
+    
+    // Return the item in the dictionary if it has one, and if the cache is enabled.
+    
+    public func cached(_ key: String) -> VJson? {
+        if !enableCacheForObjects { return nil }
+        if objectCache == nil {
+            objectCache = [:]
+            children?.forEach( { if $0.name != nil { objectCache![$0.name!] = $0 } } )
+        }
+        return objectCache![key]
+    }
+
+
     /// True if this item contains any childeren. False if this item does not have any children.
     
     public var hasChildren: Bool {
@@ -1731,6 +1769,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             if !c.hasName { return false }
         }
         self.type = .object
+        self.objectCache = nil
         return true
     }
 
@@ -1764,6 +1803,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         bool = nil
         number = nil
         string = nil
+        objectCache = nil
     }
 
     
@@ -1868,7 +1908,12 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         
         self.children = self.children?.filter(){ $0 != child }
         
-        return children!.count != preCount
+        if children!.count != preCount {
+            objectCache = nil
+            return true
+        } else {
+            return false
+        }
     }
     
     
@@ -1876,6 +1921,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     
     public func removeAll() {
         if children != nil { children!.removeAll() }
+        objectCache = nil
     }
     
     
@@ -1902,6 +1948,8 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         if replace { removeChildren(withName: child.name!) }
 
         children!.append(child)
+        
+        objectCache = nil
 
         return child
     }
@@ -1920,6 +1968,8 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         let count = children!.count
         
         self.children = self.children!.filter(){ $0.name != withName }
+
+        objectCache = nil
         
         return count != children!.count
     }
@@ -2111,6 +2161,8 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             }
 
             add(newValue, forName: key)
+            
+            objectCache = nil
         }
         
         get {
@@ -2130,6 +2182,8 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             
 
             // If the requested object exist, return it
+            
+            if let result = objectCache?[key] { return result } // Try the cache
             
             let arr = children(withName: key)
             
@@ -2157,6 +2211,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         neutralize()
         children = Array<VJson>()
         type = .object
+        objectCache = nil
     }
 
     
@@ -2474,6 +2529,8 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
         case .object:
             
             // If self is not an object, then make self the same as other
+            
+            self.objectCache = nil // Invalidate the cache
             
             switch self.type {
             

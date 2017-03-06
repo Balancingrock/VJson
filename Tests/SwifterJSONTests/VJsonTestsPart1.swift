@@ -67,7 +67,7 @@ class VJsonTests: XCTestCase {
         
         // Execute the string pipe operator with a multiple matched path
         json!.add(VJson(17), forName: "top", replace: false)
-        XCTAssertEqual((json|"top")!.intValue!, 13)
+        XCTAssertEqual(json!.nofChildren, 3)
     }
     
     

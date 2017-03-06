@@ -36,6 +36,8 @@ General purpose logging utility.
 - Added a simple GUI to check if a file can be parsed correctly
 - Builds an SPM package (for use with the Swift Package Manager)
 - Builds as a modular framework (for use in Xcode)
+- Merge function is NSOutlineView compatible
+- Caching of named members for higher performance (usable in most cases)
 
 # Usage
 
@@ -283,6 +285,9 @@ Note: Planned releases are for information only and subject to change without no
 #### v0.9.17 (Current)
 
 - Bugfix: Assigning a nil to a ...Value did not cause an auto-converion to NULL.
+- Bugfix: Corrected a bug that would ignore duplicate member names in an object.
+- Added "merge" function to update a VJson hierarchy in-place
+- Added caching mechanism for object members
 
 #### v0.9.16
 

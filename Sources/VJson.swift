@@ -58,6 +58,8 @@
 //
 // 0.9.17  - Bugfix: Assigning nil to ...Value did not result in an auto conversion to NULL.
 //         - Changed several fileprivate accessors to public fileprivate(set) to allow support for outline views.
+//         - Added merge capability
+//         - Bugfix: Duplicate named items would not result in mutiple items of an object.
 // 0.9.16  - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
 // 0.9.15  - Bigfix: Removed the redefinition of the operators
 // 0.9.14  - Organizational and documentary changes for SPM and jazzy.
@@ -2418,6 +2420,139 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
     }
     
     
+    // MARK: - Merging
+    
+    /// Updates the content of this object with the content of the object to be merged. Child members with the same name in self as in other will be made identical to the member in other.
+    ///
+    /// This merge function was designed to support the outline view. When members are merged the original member will remain, only its data content will change. This also applies to array items.
+    ///
+    /// After merging the two hierarchies will not share objects, i.e. all shared data is duplicated.
+    ///
+    /// - Note: This operation can change the types of the content in self.
+    ///
+    /// - Note: If other has two children with the same name, the order in which they appear will be preserved
+    ///
+    /// - Parameters
+    ///   - with: The object to be merged into self.
+    
+    public func merge(with other: VJson) {
+        
+        
+        // Copy the name
+        
+        self.name = other.name
+        
+        
+        // The other type drives the merge, for the simple types (non-array non-object) the other is simply copied.
+        
+        switch other.type {
+        
+        case .null:
+            neutralize()
+            self.type = .null
+            self.nullValue = other.nullValue
+            return
+            
+        case .bool:
+            neutralize()
+            self.type = .bool
+            self.bool = other.bool
+            return
+            
+        case .string:
+            neutralize()
+            self.type = .string
+            self.string = other.string
+            return
+            
+        case .number:
+            neutralize()
+            self.type = .number
+            self.number = other.number!.copy() as? NSNumber // Note: other.number should never be nil
+            return
+            
+        case .object:
+            
+            // If self is not an object, then make self the same as other
+            
+            switch self.type {
+            
+            case .null, .bool, .number, .string, .array:
+                neutralize()
+                self.type = .object
+                other.children?.forEach(){ self.children?.append($0.copy) }
+                return
+                
+            case .object:
+                
+                // Override children with the same name as in others, add those that are not present.
+                
+                struct CheckBoxed<T> {
+                    var checked: Bool = false
+                    let value: T
+                    init(_ value: T) { self.value = value }
+                }
+
+                
+                // Create a list of all self children with a marker for each
+                
+                var selfChildren: Array<CheckBoxed<VJson>> = []
+                self.children?.forEach({ selfChildren.append(CheckBoxed($0))})
+                
+                
+                // Any other children that are not contained in self children will be added in this array before adding them to self.
+                
+                var newChildren: Array<VJson> = []
+                
+                
+                // Merge self children with same name as other children
+                
+                for oc in other.children! {
+                    var sc: VJson?
+                    for index in 0 ..< selfChildren.count {
+                        if !selfChildren[index].checked && (selfChildren[index].value.name == oc.name) {
+                            sc = selfChildren[index].value
+                            selfChildren[index].checked = true
+                            break
+                        }
+                    }
+                    if sc == nil {
+                        newChildren.append(oc)
+                    } else {
+                        sc!.merge(with: oc)
+                    }
+                }
+                
+                
+                // Add the new children in other to self
+                
+                self.children?.append(contentsOf: newChildren)
+            }
+        
+            
+        case .array:
+            
+            switch self.type {
+            case .null, .bool, .number, .string, .object:
+                neutralize()
+                self.type = .array
+                other.children?.forEach(){ self.children?.append($0.copy) }
+                return
+                
+            case .array:
+                
+                for index in 0 ..< other.children!.count {
+                    if index < self.children!.count {
+                        self.children![index].merge(with: other.children![index])
+                    } else {
+                        self.children?.append(other.children![index])
+                    }
+                }
+            }
+        }
+    }
+    
+    
     // MARK: - Parser functions
     
     
@@ -2899,7 +3034,7 @@ public final class VJson: Equatable, CustomStringConvertible, Sequence {
             // Add the name/value pair to this object
             
             val.name = name
-            result.add(val, forName: name)
+            result.add(val, forName: name, replace: false)
             
             
             // A comma or brace end should be next

@@ -120,6 +120,9 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n == b)
     }
     
+/*
+     These test are only possible when type conversions are allowed
+     
     func testMergeBoolNumber() {
         
         let n = VJson(true)
@@ -169,7 +172,7 @@ class VJsonTestsPart3: XCTestCase {
         
         n.merge(with: o)
         XCTAssert(n == o)
-    }
+    }*/
 
     func testMergeNumberNull() {
         
@@ -182,6 +185,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n2.isNull)
     }
     
+/*
     func testMergeNumberBool() {
         
         let n = VJson(13)
@@ -192,7 +196,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n.isBool)
         XCTAssert(n.boolValue == true)
         XCTAssert(n == b)
-    }
+    }*/
     
     func testMergeNumberNumber() {
         
@@ -206,6 +210,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n == b)
     }
     
+/*
     func testMergeNumberString() {
         
         let n = VJson(14)
@@ -247,7 +252,7 @@ class VJsonTestsPart3: XCTestCase {
         
         n.merge(with: o)
         XCTAssert(n == o)
-    }
+    }*/
 
     func testMergeStringNull() {
         
@@ -260,6 +265,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n2.isNull)
     }
     
+/*
     func testMergeStringBool() {
         
         let n = VJson("str", name: "yes")
@@ -282,7 +288,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n.isNumber)
         XCTAssert(n.intValue == 12)
         XCTAssert(n == b)
-    }
+    }*/
     
     func testMergeStringString() {
         
@@ -296,6 +302,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n == s)
     }
     
+/*
     func testMergeStringArray() {
         
         var n = VJson("str")
@@ -325,7 +332,7 @@ class VJsonTestsPart3: XCTestCase {
         
         n.merge(with: o)
         XCTAssert(n == o)
-    }
+    }*/
 
     func testMergeArrayNull() {
         
@@ -339,6 +346,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n2.isNull)
     }
     
+/*
     func testMergeArrayBool() {
         
         let n = VJson.array()
@@ -376,7 +384,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n.isString)
         XCTAssert(n.stringValue == "str")
         XCTAssert(n == s)
-    }
+    }*/
     
     func testMergeArrayArray() {
         
@@ -418,7 +426,8 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n[2].intValue! == 10)
         XCTAssert(n[3].intValue! == 11)
     }
-    
+
+/*
     func testMergeArrayObject() {
         
         let n = VJson.null()
@@ -430,7 +439,7 @@ class VJsonTestsPart3: XCTestCase {
         
         n.merge(with: o)
         XCTAssert(n == o)
-    }
+    }*/
 
     
     func testMergeObjectNull() {
@@ -444,6 +453,7 @@ class VJsonTestsPart3: XCTestCase {
         XCTAssert(n2.isNull)
     }
     
+/*
     func testMergeObjectBool() {
         
         let n = VJson.object()
@@ -497,7 +507,7 @@ class VJsonTestsPart3: XCTestCase {
         
         XCTAssert(n.isArray)
         XCTAssert(n == a)
-    }
+    }*/
     
     func testMergeObjectObject() {
         

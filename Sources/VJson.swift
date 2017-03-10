@@ -940,6 +940,11 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
     extension VJson {
         
         public override func setValue(_ value: Any?, forKey key: String) {
+            let v1 = value as? Bool
+            let v2 = value as? String
+            let v3 = value as? NSNumber
+            let v4 = value as? Int
+            print("\(v1)\(v2)\(v3)\(v4)")
             if let item = self|key {
                 switch item.type {
                 case .null:

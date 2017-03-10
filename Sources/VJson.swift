@@ -939,23 +939,47 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
     
     extension VJson {
         
-        public func createBoolFromString(_ enhanced: String) -> Bool? {
-            if enhanced == "0" { return false }
-            else if enhanced == "1" { return true }
-            else if enhanced.compare("true", options: [.diacriticInsensitive, .caseInsensitive], range: nil, locale: nil) == ComparisonResult.orderedSame { return true }
-            else if enhanced.compare("false", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
-            else if enhanced.compare("yes", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return true }
-            else if enhanced.compare("no", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
+        
+        /// Create a bool from a string.
+        ///
+        /// - Parameter str: The string to be converted.
+        ///
+        /// - Returns: Either 'true', 'false' or nil if the string could not be converted.
+        
+        private func stringToBool(_ str: String) -> Bool? {
+            if str == "0" { return false }
+            else if str == "1" { return true }
+            else if str.compare("true", options: [.diacriticInsensitive, .caseInsensitive], range: nil, locale: nil) == ComparisonResult.orderedSame { return true }
+            else if str.compare("false", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
+            else if str.compare("yes", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return true }
+            else if str.compare("no", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
+            else if str.compare("t", options: [.diacriticInsensitive, .caseInsensitive], range: nil, locale: nil) == ComparisonResult.orderedSame { return true }
+            else if str.compare("f", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
+            else if str.compare("y", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return true }
+            else if str.compare("n", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
             else { return nil }
         }
 
+        
+        /// Converts Any? into a Bool.
+        ///
+        /// - Parameter any: The value to convert.
+        ///
+        /// - Returns: Either 'true', 'false' or nil if any could not be converted.
+        
         private func boolFromAny(_ any: Any?) -> Bool? {
             if let b = any as? Bool { return b }
             if let i = any as? Int { return i == 1 }
-            if let s = any as? String { return createBoolFromString(s) }
+            if let s = any as? String { return stringToBool(s) }
             if let n = any as? NSNumber { return n.boolValue }
             return nil
         }
+        
+        /// Converts Any? into a NSNumber.
+        ///
+        /// - Parameter any: The value to convert.
+        ///
+        /// - Returns: Either 'true', 'false' or nil if any could not be converted.
         
         private func numberFromAny(_ any: Any?) -> NSNumber? {
             if let b = any as? Bool { return NSNumber(value: b) }
@@ -965,6 +989,12 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             return nil
         }
         
+        /// Converts Any? into a String.
+        ///
+        /// - Parameter any: The value to convert.
+        ///
+        /// - Returns: Either 'true', 'false' or nil if any could not be converted.
+        
         private func stringFromAny(_ any: Any?) -> String? {
             if let b = any as? Bool { return b ? "true" : "false" }
             if let i = any as? Int { return i.description }
@@ -973,9 +1003,18 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             return nil
         }
 
+        
+        /// Override the KVO 'setValue' to update the members.
+        ///
+        /// If an update is made, the KVO_VALUE_UPDATE notification is sent for the VJson item that was updated.
+        
         public override func setValue(_ value: Any?, forKey key: String) {
+
             if let item = self|key {
+            
                 switch item.type {
+                
+                // While a NULL may be changed into other types, this probably won't ever happen.
                 case .null:
                     if let b = boolFromAny(value) {
                         item.boolValue = b
@@ -992,7 +1031,8 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
                         NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
                     }
-                    
+                
+                // Update a bool
                 case .bool:
                     if let b = boolFromAny(value) {
                         item.boolValue = b
@@ -1000,6 +1040,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
                         return
                     }
                     
+                // Update a number
                 case .number:
                     if let n = numberFromAny(value) {
                         item.numberValue = n
@@ -1007,6 +1048,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
                         return
                     }
                     
+                // Update a string
                 case .string:
                     if let s = stringFromAny(value) {
                         item.stringValue = s
@@ -1014,6 +1056,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
                         return
                     }
                     
+                // Not supported (yet?)
                 case .array, .object: break
                 }
             }
@@ -1024,7 +1067,11 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
          
         }*/
         
+        
+        /// Retrieves the value from a child item.
+        
         public override func value(forKey key: String) -> Any? {
+        
             if let item = self|key {
                 switch item.type {
                 case .null: return nil

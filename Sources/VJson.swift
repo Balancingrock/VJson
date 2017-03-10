@@ -67,6 +67,7 @@
 //         - Removed optionality from some return values
 //         - Removed most of the force-unwrap operations (!)
 //         - prepared support for linux os
+//         - added key/value coding support
 // 0.9.16  - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
 // 0.9.15  - Bigfix: Removed the redefinition of the operators
 // 0.9.14  - Organizational and documentary changes for SPM and jazzy.
@@ -751,182 +752,242 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
 
 #if os(Linux)
     
-public final class VJson: Equatable, CustomStringConvertible {
-
-    
-    /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
-    ///
-    /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
-    ///
-    /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
-    
-    public static var fatalErrorOnTypeConversion = true
-
-    
-    /// The JSON type of this object.
-    
-    public fileprivate(set) var type: JType
-    
-    
-    /// The name of this object if it is part of a name/value pair.
-    
-    public fileprivate(set) var name: String?
-
-
-    /// The value if this is a JSON BOOL.
-    
-    public fileprivate(set) var bool: Bool?
-
-    
-    /// The value if this is a JSON NUMBER.
-    
-    public fileprivate(set) var number: NSNumber?
-
-    
-    /// The value if this is a JSON STRING.
-    
-    public fileprivate(set) var string: String?
-
-    
-    /// The container for all children if self is .array or .object.
-    
-    public fileprivate(set) var children: Children?
-    
-    
-    /// The parent of a child
-    ///
-    /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
-    
-    public fileprivate(set) var parent: VJson?
-
-    
-    /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
-    
-    fileprivate var createdBySubscript: Bool = false
-
-    
-    /// Default initializer
-    
-    fileprivate init(type: JType, name: String? = nil) {
+    public final class VJson: Equatable, CustomStringConvertible {
         
-        self.type = type
-        self.name = name
         
-        switch type {
-        case .object, .array: children = Children(parent: self)
-        default: break
+        /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
+        ///
+        /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
+        ///
+        /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
+        
+        public static var fatalErrorOnTypeConversion = true
+        
+        
+        /// The JSON type of this object.
+        
+        public fileprivate(set) var type: JType
+        
+        
+        /// The name of this object if it is part of a name/value pair.
+        
+        public fileprivate(set) var name: String?
+        
+        
+        /// The value if this is a JSON BOOL.
+        
+        public fileprivate(set) var bool: Bool?
+        
+        
+        /// The value if this is a JSON NUMBER.
+        
+        public fileprivate(set) var number: NSNumber?
+        
+        
+        /// The value if this is a JSON STRING.
+        
+        public fileprivate(set) var string: String?
+        
+        
+        /// The container for all children if self is .array or .object.
+        
+        public fileprivate(set) var children: Children?
+        
+        
+        /// The parent of a child
+        ///
+        /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
+        
+        public fileprivate(set) var parent: VJson?
+        
+        
+        /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
+        
+        fileprivate var createdBySubscript: Bool = false
+        
+        
+        /// Default initializer
+        
+        fileprivate init(type: JType, name: String? = nil) {
+            
+            self.type = type
+            self.name = name
+            
+            switch type {
+            case .object, .array: children = Children(parent: self)
+            default: break
+            }
         }
+        
+        
+        /// Creates an empty VJson hierarchy
+        
+        public convenience init() {
+            self.init(type: .object)
+        }
+        
+        
+        /// Copying
+        
+        public func copy() -> Any { return duplicate }
+        
+        
+        /// The custom string convertible protocol.
+        
+        public var description: String { return code }
     }
-
-    
-    /// Creates an empty VJson hierarchy
-    
-    public convenience init() {
-        self.init(type: .object)
-    }
-    
-    
-    /// Copying
-    
-    public func copy() -> Any { return duplicate }
-    
-    
-    /// The custom string convertible protocol.
-    
-    public var description: String { return code }
-}
 
 #else
 
-public final class VJson: NSObject {
-    
-    
-    /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
-    ///
-    /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
-    ///
-    /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
-    
-    public static var fatalErrorOnTypeConversion = true
-    
-    
-    /// The JSON type of this object.
-    
-    public fileprivate(set) var type: JType
-    
-    
-    /// The name of this object if it is part of a name/value pair.
-    
-    public fileprivate(set) var name: String?
-    
-    
-    /// The value if this is a JSON BOOL.
-    
-    public fileprivate(set) var bool: Bool?
-    
-    
-    /// The value if this is a JSON NUMBER.
-    
-    public fileprivate(set) var number: NSNumber?
-    
-    
-    /// The value if this is a JSON STRING.
-    
-    public fileprivate(set) var string: String?
-    
-    
-    /// The container for all children if self is .array or .object.
-    
-    public fileprivate(set) var children: Children?
-    
-    
-    /// The parent of a child
-    ///
-    /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
-    
-    public fileprivate(set) var parent: VJson?
-    
-    
-    /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
-    
-    fileprivate var createdBySubscript: Bool = false
-    
-    
-    /// Default initializer
-    
-    fileprivate init(type: JType, name: String? = nil) {
+    public final class VJson: NSObject {
         
-        self.type = type
-        self.name = name
         
-        super.init()
+        /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
+        ///
+        /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
+        ///
+        /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
         
-        switch type {
-        case .object, .array: children = Children(parent: self)
-        default: break
+        public static var fatalErrorOnTypeConversion = true
+        
+        
+        /// The JSON type of this object.
+        
+        public fileprivate(set) var type: JType
+        
+        
+        /// The name of this object if it is part of a name/value pair.
+        
+        public fileprivate(set) var name: String?
+        
+        
+        /// The value if this is a JSON BOOL.
+        
+        public fileprivate(set) var bool: Bool?
+        
+        
+        /// The value if this is a JSON NUMBER.
+        
+        public fileprivate(set) var number: NSNumber?
+        
+        
+        /// The value if this is a JSON STRING.
+        
+        public fileprivate(set) var string: String?
+        
+        
+        /// The container for all children if self is .array or .object.
+        
+        public fileprivate(set) var children: Children?
+        
+        
+        /// The parent of a child
+        ///
+        /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
+        
+        public fileprivate(set) var parent: VJson?
+        
+        
+        /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
+        
+        fileprivate var createdBySubscript: Bool = false
+        
+        
+        /// Default initializer
+        
+        fileprivate init(type: JType, name: String? = nil) {
+            
+            self.type = type
+            self.name = name
+            
+            super.init()
+            
+            switch type {
+            case .object, .array: children = Children(parent: self)
+            default: break
+            }
         }
+        
+        
+        /// Creates an empty VJson hierarchy
+        
+        public convenience override init() {
+            self.init(type: .object)
+        }
+        
+        
+        public override func isEqual(_ object: Any?) -> Bool {
+            guard let object = object as? VJson else { return false }
+            return self == object
+        }
+        
+        public override func copy() -> Any { return duplicate }
+        
+        
+        /// The custom string convertible protocol.
+        
+        override public var description: String { return code }
     }
     
     
-    /// Creates an empty VJson hierarchy
+    // MARK: - Key/Value coding support
     
-    public convenience override init() {
-        self.init(type: .object)
+    extension VJson {
+        
+        public override func setValue(_ value: Any?, forKey key: String) {
+            if let item = self|key {
+                switch item.type {
+                case .null:
+                    if let b = value as? Bool {
+                        item.boolValue = b
+                        return
+                    } else if let n = value as? NSNumber {
+                        item.numberValue = n
+                        return
+                    } else if let s = value as? String {
+                        item.stringValue = s
+                        return
+                    }
+                    
+                case .bool:
+                    item.boolValue = value as? Bool
+                    return
+                    
+                case .number:
+                    item.numberValue = value as? NSNumber
+                    return
+                    
+                case .string:
+                    item.stringValue = value as? String
+                    return
+                    
+                case .array, .object: break
+                }
+            }
+            super.setValue(value, forKey: key)
+        }
+        
+        /*public override func setValue(_ value: Any?, forKeyPath keyPath: String) {
+         
+        }*/
+        
+        public override func value(forKey key: String) -> Any? {
+            if let item = self|key {
+                switch item.type {
+                case .null: return nil
+                case .bool: return item.boolValue
+                case .number: return item.numberValue
+                case .string: return item.stringValue
+                case .array, .object: break
+                }
+            }
+            return super.value(forKey: key)
+        }
+        
+        /*public override func value(forKeyPath keyPath: String) -> Any? {
+            
+        }*/
     }
-    
-    
-    public override func isEqual(_ object: Any?) -> Bool {
-        guard let object = object as? VJson else { return false }
-        return self == object
-    }
-    
-    public override func copy() -> Any { return duplicate }
-    
-    
-    /// The custom string convertible protocol.
-    
-    override public var description: String { return code }
-}
 
 #endif
 
@@ -2785,6 +2846,13 @@ extension VJson {
 extension VJson {
     
     
+    /// A general purpose wrapper for function results that return ParseFunctionResult's
+    ///
+    /// Recommended use: let json = VJson.parse(data(from: myJsonCode)){ ... error handler ... }
+    
+    public typealias parseErrorSignature = (_ code: Int, _ incomplete: Bool, _ message: String) -> Void
+    
+    
     /// This error type gets thrown if errors are found during parsing.
     ///
     /// - reason: The details of the error.
@@ -2859,6 +2927,26 @@ extension VJson {
     }
 
     
+    /// Parsing a JSON hierarchy stored in a file
+    ///
+    /// - Parameter from: The URL of a file.
+    ///
+    /// - Returns: A ParseFunctionResult
+    
+    public static func parse(file: URL, onError: parseErrorSignature) -> VJson? {
+        do {
+            return try parse(file: file)
+            
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            onError(code, incomplete, message)
+            
+        } catch let error {
+            onError(-1, false, "\(error)")
+        }
+        return nil
+    }
+    
+    
     /// Create a VJson hierarchy from the contents of the given file.
     ///
     /// - Parameter file: The URL that designates the file to be read.
@@ -2886,27 +2974,38 @@ extension VJson {
         do {
             return try parse(file: file)
             
-        } catch let error as VJson.Exception {
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            errorInfo?.code = code
+            errorInfo?.incomplete = incomplete
+            errorInfo?.message = message
             
-            if case let .reason(code, incomplete, message) = error {
-                errorInfo?.code = code
-                errorInfo?.incomplete = incomplete
-                errorInfo?.message = message
-            } else {
-                errorInfo?.code = -1
-                errorInfo?.incomplete = false
-                errorInfo?.message = "Could not retrieve error info from parse exception"
-            }
-            return nil
-            
-        } catch {
-            
+        } catch let error {
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
-            
-            return nil
         }
+        return nil
+    }
+    
+    
+    /// Parsing a JSON hierarchy stored in a buffer
+    ///
+    /// - Parameter from: The buffer to parse.
+    ///
+    /// - Returns: A ParseFunctionResult
+    
+    public static func parse(buffer: UnsafeBufferPointer<UInt8>, onError: parseErrorSignature) -> VJson? {
+        
+        do {
+            return try VJson.vJsonParser(buffer: buffer)
+            
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            onError(code, incomplete, message)
+            
+        } catch let error {
+            onError(-1, false, "\(error)")
+        }
+        return nil
     }
     
     
@@ -2933,32 +3032,43 @@ extension VJson {
     /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
     
     public static func parse(buffer: UnsafeBufferPointer<UInt8>, errorInfo: inout ParseError?) -> VJson? {
+        
         do {
             return try parse(buffer: buffer)
             
-        } catch let error as VJson.Exception {
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            errorInfo?.code = code
+            errorInfo?.incomplete = incomplete
+            errorInfo?.message = message
             
-            if case let .reason(code, incomplete, message) = error {
-                errorInfo?.code = code
-                errorInfo?.incomplete = incomplete
-                errorInfo?.message = message
-            } else {
-                errorInfo?.code = -1
-                errorInfo?.incomplete = false
-                errorInfo?.message = "Could not retrieve error info from parse exception"
-            }
-            return nil
-            
-        } catch {
-            
+        } catch let error {
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
-
-            return nil
         }
+        return nil
     }
     
+    
+    /// Parsing a JSON hierarchy stored in a string.
+    ///
+    /// - Parameter from: The string to parse.
+    ///
+    /// - Returns: A ParseFunctionResult
+    
+    public static func parse(string: String, onError: parseErrorSignature) -> VJson? {
+        do {
+            return try VJson.parse(string: string)
+            
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            onError(code, incomplete, message)
+            
+        } catch let error {
+            onError(-1, false, "\(error)")
+        }
+        return nil
+    }
+
     
     /// Create a VJson hierarchy with the contents of the given string.
     ///
@@ -2990,30 +3100,40 @@ extension VJson {
         do {
             return try parse(string: string)
             
-        } catch let error as VJson.Exception {
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            errorInfo?.code = code
+            errorInfo?.incomplete = incomplete
+            errorInfo?.message = message
             
-            if case let .reason(code, incomplete, message) = error {
-                errorInfo?.code = code
-                errorInfo?.incomplete = incomplete
-                errorInfo?.message = message
-            } else {
-                errorInfo?.code = -1
-                errorInfo?.incomplete = false
-                errorInfo?.message = "Could not retrieve error info from parse exception"
-            }
-            return nil
-            
-        } catch {
-
+        } catch let error {
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
-
-            return nil
         }
+        return nil
     }
     
     
+    /// Parsing a JSON hierarchy stored in a Data object
+    ///
+    /// - Parameter from: The data to parse.
+    ///
+    /// - Returns: A ParseFunctionResult
+    
+    public static func parse(data: inout Data, onError: parseErrorSignature) -> VJson? {
+        do {
+            return try VJson.vJsonParser(data: &data)
+            
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            onError(code, incomplete, message)
+        
+        } catch let error {
+            onError(-1, false, "\(error)")
+        }
+        return nil
+    }
+
+
     /// Create a VJson hierarchy with the contents of the given data object.
     ///
     /// - Parameters:
@@ -3040,27 +3160,17 @@ extension VJson {
         do {
             return try VJson.vJsonParser(data: &data)
             
-        } catch let error as VJson.Exception {
+        } catch let .reason(code, incomplete, message) as VJson.Exception {
+            errorInfo?.code = code
+            errorInfo?.incomplete = incomplete
+            errorInfo?.message = message
             
-            if case let .reason(code, incomplete, message) = error {
-                errorInfo?.code = code
-                errorInfo?.incomplete = incomplete
-                errorInfo?.message = message
-            } else {
-                errorInfo?.code = -1
-                errorInfo?.incomplete = false
-                errorInfo?.message = "Could not retrieve error info from parse exception"
-            }
-            return nil
-            
-        } catch {
-
+        } catch let error {
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
-
-            return nil
         }
+        return nil
     }
 }
 

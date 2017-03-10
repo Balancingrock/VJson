@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		86AE1CFE1E6C5DDD000ED53A /* VJsonTestsPart3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AE1CFD1E6C5DDD000ED53A /* VJsonTestsPart3.swift */; };
+		86E7E2941E72BAD40004E99D /* VJsonTestPart4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E7E2931E72BAD40004E99D /* VJsonTestPart4.swift */; };
 		OBJ_28 /* Ascii.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* Ascii.swift */; };
 		OBJ_36 /* VJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* VJson.swift */; };
 		OBJ_38 /* Ascii.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = OBJ_20 /* Ascii.framework */; };
@@ -44,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		86AE1CFD1E6C5DDD000ED53A /* VJsonTestsPart3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart3.swift; sourceTree = "<group>"; };
+		86E7E2931E72BAD40004E99D /* VJsonTestPart4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VJsonTestPart4.swift; sourceTree = "<group>"; };
 		OBJ_12 /* VJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJson.swift; sourceTree = "<group>"; };
 		OBJ_15 /* ParseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseTests.swift; sourceTree = "<group>"; };
 		OBJ_16 /* VJsonTestsPart1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VJsonTestsPart1.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				OBJ_16 /* VJsonTestsPart1.swift */,
 				OBJ_17 /* VJsonTestsPart2.swift */,
 				86AE1CFD1E6C5DDD000ED53A /* VJsonTestsPart3.swift */,
+				86E7E2931E72BAD40004E99D /* VJsonTestPart4.swift */,
 			);
 			name = SwifterJSONTests;
 			path = Tests/SwifterJSONTests;
@@ -255,6 +258,7 @@
 			buildActionMask = 0;
 			files = (
 				OBJ_45 /* ParseTests.swift in Sources */,
+				86E7E2941E72BAD40004E99D /* VJsonTestPart4.swift in Sources */,
 				86AE1CFE1E6C5DDD000ED53A /* VJsonTestsPart3.swift in Sources */,
 				OBJ_46 /* VJsonTestsPart1.swift in Sources */,
 				OBJ_47 /* VJsonTestsPart2.swift in Sources */,

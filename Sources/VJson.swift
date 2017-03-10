@@ -939,45 +939,80 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
     
     extension VJson {
         
+        public func createBoolFromString(_ enhanced: String) -> Bool? {
+            if enhanced == "0" { return false }
+            else if enhanced == "1" { return true }
+            else if enhanced.compare("true", options: [.diacriticInsensitive, .caseInsensitive], range: nil, locale: nil) == ComparisonResult.orderedSame { return true }
+            else if enhanced.compare("false", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
+            else if enhanced.compare("yes", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return true }
+            else if enhanced.compare("no", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
+            else { return nil }
+        }
+
+        private func boolFromAny(_ any: Any?) -> Bool? {
+            if let b = any as? Bool { return b }
+            if let i = any as? Int { return i == 1 }
+            if let s = any as? String { return createBoolFromString(s) }
+            if let n = any as? NSNumber { return n.boolValue }
+            return nil
+        }
+        
+        private func numberFromAny(_ any: Any?) -> NSNumber? {
+            if let b = any as? Bool { return NSNumber(value: b) }
+            if let i = any as? Int { return NSNumber(value: i) }
+            if let s = any as? String { return NSNumber(value: Double(s) ?? 0) }
+            if let n = any as? NSNumber { return n }
+            return nil
+        }
+        
+        private func stringFromAny(_ any: Any?) -> String? {
+            if let b = any as? Bool { return b ? "true" : "false" }
+            if let i = any as? Int { return i.description }
+            if let s = any as? String { return s }
+            if let n = any as? NSNumber { return n.description }
+            return nil
+        }
+
         public override func setValue(_ value: Any?, forKey key: String) {
-            let v1 = value as? Bool
-            let v2 = value as? String
-            let v3 = value as? NSNumber
-            let v4 = value as? Int
-            print("\(v1)\(v2)\(v3)\(v4)")
             if let item = self|key {
                 switch item.type {
                 case .null:
-                    if let b = value as? Bool {
+                    if let b = boolFromAny(value) {
                         item.boolValue = b
                         NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
                         
-                    } else if let n = value as? NSNumber {
+                    } else if let n = numberFromAny(value) {
                         item.numberValue = n
                         NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
                         
-                    } else if let s = value as? String {
+                    } else if let s = stringFromAny(value) {
                         item.stringValue = s
                         NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
                     }
                     
                 case .bool:
-                    item.boolValue = value as? Bool
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
+                    if let b = boolFromAny(value) {
+                        item.boolValue = b
+                        NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
+                        return
+                    }
                     
                 case .number:
-                    item.numberValue = value as? NSNumber
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
+                    if let n = numberFromAny(value) {
+                        item.numberValue = n
+                        NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
+                        return
+                    }
                     
                 case .string:
-                    item.stringValue = value as? String
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
+                    if let s = stringFromAny(value) {
+                        item.stringValue = s
+                        NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
+                        return
+                    }
                     
                 case .array, .object: break
                 }

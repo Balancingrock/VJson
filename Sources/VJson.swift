@@ -842,6 +842,11 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
     public final class VJson: NSObject {
         
         
+        /// This notification is posted when the value of an item was updated due to a key/value update cycle.
+        
+        public static let KVO_VALUE_UPDATE = Notification.Name(rawValue: "KVO_ValueUpdateNotification")
+
+        
         /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
         ///
         /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
@@ -940,25 +945,33 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
                 case .null:
                     if let b = value as? Bool {
                         item.boolValue = b
+                        NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
+                        
                     } else if let n = value as? NSNumber {
                         item.numberValue = n
+                        NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
+                        
                     } else if let s = value as? String {
                         item.stringValue = s
+                        NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
                     }
                     
                 case .bool:
                     item.boolValue = value as? Bool
+                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                     return
                     
                 case .number:
                     item.numberValue = value as? NSNumber
+                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                     return
                     
                 case .string:
                     item.stringValue = value as? String
+                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                     return
                     
                 case .array, .object: break

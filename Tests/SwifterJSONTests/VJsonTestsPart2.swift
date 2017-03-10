@@ -561,7 +561,7 @@ class VJsonTestsPart2: XCTestCase {
         }
         
         // Itterate over OBJECT with two item
-        json = VJson(["one":VJson(1), "two":VJson(2)])
+        json = VJson(items: ["one":VJson(1), "two":VJson(2)])
         found1 = false
         found2 = false
         loopCount = 0
@@ -655,7 +655,7 @@ class VJsonTestsPart2: XCTestCase {
         XCTAssertTrue(json[1].isNumber)
 
         // Check type conversion from OBJECT
-        json = VJson(["one" : VJson(1), "two" : VJson(2)])
+        json = VJson(items: ["one" : VJson(1), "two" : VJson(2)])
         json[2] &= true
         XCTAssertEqual(json.nofChildren, 3)
         XCTAssertTrue(json.arrayValue[0].isNull)
@@ -975,12 +975,12 @@ class VJsonTestsPart2: XCTestCase {
         
         // NULL
         var json = VJson.null()
-        var cp = json.copy
+        var cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isNull)
         
         json = VJson.null("qwerty")
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isNull)
         XCTAssertEqual(cp.nameValue!, "qwerty")
@@ -988,13 +988,13 @@ class VJsonTestsPart2: XCTestCase {
         
         // BOOL
         json = VJson(true)
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isBool)
         XCTAssertTrue(cp.boolValue!)
         
         json = VJson(false, name: "qwerty")
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isBool)
         XCTAssertFalse(cp.boolValue!)
@@ -1003,13 +1003,13 @@ class VJsonTestsPart2: XCTestCase {
         
         // NUMBER
         json = VJson(45.67)
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isNumber)
         XCTAssertEqual(cp.doubleValue!, 45.67)
         
         json = VJson(45.67, name: "qwerty")
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isNumber)
         XCTAssertEqual(cp.doubleValue!, 45.67)
@@ -1018,13 +1018,13 @@ class VJsonTestsPart2: XCTestCase {
         
         // STRING
         json = VJson("string")
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isString)
         XCTAssertEqual(cp.stringValue!, "string")
         
         json = VJson("string", name: "qwerty")
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isString)
         XCTAssertEqual(cp.stringValue!, "string")
@@ -1033,18 +1033,18 @@ class VJsonTestsPart2: XCTestCase {
         
         // ARRAY
         json = VJson.array()
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isArray)
         
         json = VJson.array("qwerty")
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isArray)
         XCTAssertEqual(cp.nameValue!, "qwerty")
 
         json.append(VJson(2))
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isArray)
         XCTAssertEqual(cp.nameValue!, "qwerty")
@@ -1055,18 +1055,18 @@ class VJsonTestsPart2: XCTestCase {
         
         // OBJECT
         json = VJson.object()
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isObject)
         
         json = VJson.object("qwerty")
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isObject)
         XCTAssertEqual(cp.nameValue!, "qwerty")
         
         json.add(VJson(2, name: "str"))
-        cp = json.copy
+        cp = json.duplicate
         XCTAssertFalse(cp === json)
         XCTAssertTrue(cp.isObject)
         XCTAssertEqual(cp.nameValue!, "qwerty")

@@ -66,6 +66,7 @@
 //         - A couple of harmonization changes.
 //         - Removed optionality from some return values
 //         - Removed most of the force-unwrap operations (!)
+//         - prepared support for linux os
 // 0.9.16  - Updated for dependency on Ascii, removed Ascii from SwifterJSON project.
 // 0.9.15  - Bigfix: Removed the redefinition of the operators
 // 0.9.14  - Organizational and documentary changes for SPM and jazzy.
@@ -748,7 +749,9 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
 
 /// Implements the JSON specification as found on: http://json.org (2015.01.01)
 
-public final class VJson {
+#if os(Linux)
+    
+public final class VJson: Equatable, CustomStringConvertible {
 
     
     /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
@@ -758,116 +761,6 @@ public final class VJson {
     /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
     
     public static var fatalErrorOnTypeConversion = true
-
-    
-    /// This error type gets thrown if errors are found during parsing.
-    ///
-    /// - reason: The details of the error.
-    
-    public enum Exception: Error, CustomStringConvertible {
-        
-        
-        /// The details of the error
-        ///
-        /// - code: An integer number that references the error location
-        /// - incomplete: When true, the error occured because the parser ran out of characters.
-        /// - message: A textual description of the error.
-        
-        case reason(code: Int, incomplete: Bool, message: String)
-        
-        
-        /// The textual description of the exception.
-        
-        public var description: String {
-            if case let .reason(code, incomplete, message) = self { return "[\(code), Incomplete:\(incomplete)] \(message)" }
-            return "VJson: Error in Exception enum"
-        }
-    }
-    
-    
-    /// Error info from the parser for the parse operations that do not throw.
-    
-    public struct ParseError {
-        
-        
-        /// An integer number that references the error location
-
-        public var code: Int
-        
-        
-        /// When true, the error occured because the parser ran out of characters.
-
-        public var incomplete: Bool
-        
-        
-        /// A textual description of the error.
-
-        public var message: String
-        
-        
-        /// Create a new ParseError
-        ///
-        /// - Parameters:
-        ///   - code: An integer number that references the error location
-        ///   - incomplete: True if the error occured because the parser ran out of characters.
-        ///   - message: A textual description of the error.
-        
-        public init(code: Int, incomplete: Bool, message: String) {
-            self.code = code
-            self.incomplete = incomplete
-            self.message = message
-        }
-        
-        
-        /// Creates an empty ParseError
-        
-        public init() {
-            self.init(code: -1, incomplete: false, message: "")
-        }
-        
-        
-        /// The textual description of the ParseError
-        
-        public var description: String {
-            return "[\(code), Incomplete:\(incomplete)] \(message)"
-        }
-    }
-    
-    
-    /// The JSON types.
-    
-    public enum JType {
-        
-        
-        /// A JSON NULL
-        
-        case null
-        
-        
-        /// A JSON BOOL
-        
-        case bool
-        
-        
-        /// A JSON NUMBER
-        
-        case number
-        
-        
-        /// A JSON STRING
-        
-        case string
-        
-        
-        /// A JSON OBJECT
-        
-        case object
-        
-        
-        /// A JSON ARRAY
-        
-        case array
-    }
 
     
     /// The JSON type of this object.
@@ -933,264 +826,114 @@ public final class VJson {
     }
     
     
-    /// A wrapper for the child items, used only for ARRAYs and OBJECTs
+    /// Copying
     
-    public class Children {
-        
-        
-        // May only be created internally
-        
-        fileprivate init(parent: VJson) { self.parent = parent }
-        
-        
-        // The parent of the children (which will always be the enclosing VJson item)
-        
-        private let parent: VJson
-        
-        
-        // A chache that is used to speed up access to OBJECT items
-        
-        private var objectMemberCache: Dictionary<String, VJson>?
-        
-        
-        // Enables or disables the cache
-        
-        fileprivate var cacheEnabled: Bool = false {
-            didSet { objectMemberCache = nil }
-        }
-        
-        
-        /// The child items under management
-        
-        public fileprivate(set) var items: Array<VJson> = [] {
-            didSet { objectMemberCache = nil }
-        }
-        
-        
-        /// Subscript access to the child items
-        
-        fileprivate private(set) subscript(index: Int) -> VJson? {
-            get {
-                guard index < items.count else { return nil }
-                guard index >= 0 else { return nil }
-                return items[index]
-            }
-            set {
-                guard let child = newValue else { return }
-                guard index < items.count else { return }
-                guard index >= 0 else { return }
-                
-                
-                // Ensures the child's parent is always set
-                
-                child.parent = parent
-                
-                
-                // Remove the parent from the child to be replaced
-                
-                items[index].parent = nil
-                
-                
-                // Replace the child
-                
-                items[index] = child
-            }
-        }
-        
-        
-        /// A shortcut to the c=count of the array of children
-        
-        public var count: Int { return items.count }
-        
-        
-        /// Returns the index of the given child item.
-        ///
-        /// - Parameter of: The child to be found.
-        ///
-        /// - Returns: The index of the requested child, or nil if not found.
-        
-        fileprivate func index(ofChild child: VJson?) -> Int? {
-            guard let child = child else { return nil }
-            for (index, item) in items.enumerated() {
-                if item === child { return index } // Compare and break if the child is found
-            }
-            return nil
-        }
-        
-        
-        /// Returns an array with the indicies of all items that are equal to the given child.
-        ///
-        /// - Parameter ofChildrenEqualTo: The child to compare the items to.
-        ///
-        /// - Returns: An array with the indicies of the items that match the child.
-        
-        fileprivate func index(ofChildrenEqualTo child: VJson?) -> [Int] {
-            guard let child = child else { return [] }
-            var result: Array<Int> = []
-            for (index, item) in items.enumerated() {
-                if item == child { result.append(index) }
-            }
-            return result
-        }
-
-        
-        /// Add the given child item to the end of the existing children
-        ///
-        /// - Parameter child: The child to be added.
-        ///
-        /// - Returns: The child that was added.
-        
-        @discardableResult
-        fileprivate func append(_ child: VJson?) -> VJson? {
-            guard let child = child else { return parent }
-
-            child.parent = parent // Ensures the child's parent is always set
-            items.append(child)
-            return child
-        }
-        
-        
-        /// Add the given child items to the end of the existing children
-        ///
-        /// - Parameter array: The array with new child items.
-        
-        @discardableResult
-        fileprivate func append(_ array: Array<VJson>) {
-            array.forEach() { append($0) }
-        }
-
-        
-        /// Inserts the given child item at the specified position.
-        ///
-        /// - Parameters:
-        ///   - child: The item to be inserted.
-        ///   - at: The index where to insert the child.
-        ///
-        /// - Returns: The inserted item.
-        
-        @discardableResult
-        fileprivate func insert(_ child: VJson?, at index: Int) -> VJson? {
-            guard let child = child else { return parent }
-            guard index < items.count else { return nil }
-            guard index >= 0 else { return nil }
-            
-            child.parent = parent // Ensures the child's parent is always set
-            items.insert(child, at: index)
-            return child
-        }
-        
-        
-        /// Replaces the child at the specified index with the new child.
-        ///
-        /// - Parameters:
-        ///   - childAt: The index of the child to be replaced.
-        ///   - with: The child item to be placed at the specified index.
-        ///
-        /// - Returns: The inserted child.
-        
-        @discardableResult
-        fileprivate func replace(childAt index: Int, with child: VJson?) -> VJson? {
-            guard let child = child else { return parent }
-            guard index < items.count else { return nil }
-            guard index >= 0 else { return nil }
-            
-            items[index].parent = nil // The child at the index will no longer be a child
-            child.parent = parent // Ensures the child's parent is always set
-            items[index] = child
-            return child
-        }
-        
-        
-        /// Removes the child at the specified index.
-        ///
-        /// - Parameter childAt: The index of the child item to be removed.
-        ///
-        /// - Returns: The child that was removed, or nil if the index did not exist.
-        
-        @discardableResult
-        fileprivate func remove(childAt index: Int) -> VJson? {
-            guard index < items.count else { return nil }
-            guard index >= 0 else { return nil }
-            
-            items[index].parent = nil // Make sure it is decoupled from the parent
-            return items.remove(at: index)
-        }
-        
-        
-        /// Removes the specified child.
-        ///
-        /// - Parameter child: The child to be removed.
-        ///
-        /// - Returns: The child that was removed, nil if nothing was removed.
-        
-        @discardableResult
-        fileprivate func remove(_ child: VJson?) -> VJson? {
-            guard let child = child else { return parent }
-            
-            if let index = index(ofChild: child) {
-                items[index].parent = nil // Make sure it is decoupled from the parent
-                return items.remove(at: index)
-            } else {
-                return nil
-            }
-        }
-
-        
-        /// Remove all child items that are identical to the specified child item.
-        ///
-        /// - Parameter childrenWith: The child against which to compare the internal items.
-        ///
-        /// - Returns: The number of children removed.
-        
-        @discardableResult
-        fileprivate func remove(childrenWith name: String?) -> Int {
-            guard let name = name else { return 0 }
-            
-            var result = 0
-            for i in (0 ..< items.count).reversed() {
-                if items[i].name == name {
-                    remove(childAt: i)
-                    result += 1 // Count the number of removed children
-                }
-            }
-            return result
-        }
-
-        
-        /// Removes all children.
-        
-        fileprivate func removeAll() {
-            items.forEach(){ $0.parent = nil }
-            items.removeAll()
-        }
-
-        
-        /// Returns a cached value if chaching is enabled.
-        ///
-        /// It will also build the cache if the cache is not present, but enabled.
-        
-        fileprivate func cached(_ key: String) -> VJson? {
-            if !cacheEnabled { return nil }
-            if objectMemberCache == nil {
-                objectMemberCache = [:]
-                for child in items {
-                    guard let name = child.name else {
-                        objectMemberCache = nil
-                        return nil
-                    }
-                    objectMemberCache?[name] = child
-                }
-            }
-            return objectMemberCache?[key]
-        }
-    }
+    public func copy() -> Any { return duplicate }
+    
+    
+    /// The custom string convertible protocol.
+    
+    public var description: String { return code }
 }
 
+#else
+
+public final class VJson: NSObject {
+    
+    
+    /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
+    ///
+    /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
+    ///
+    /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
+    
+    public static var fatalErrorOnTypeConversion = true
+    
+    
+    /// The JSON type of this object.
+    
+    public fileprivate(set) var type: JType
+    
+    
+    /// The name of this object if it is part of a name/value pair.
+    
+    public fileprivate(set) var name: String?
+    
+    
+    /// The value if this is a JSON BOOL.
+    
+    public fileprivate(set) var bool: Bool?
+    
+    
+    /// The value if this is a JSON NUMBER.
+    
+    public fileprivate(set) var number: NSNumber?
+    
+    
+    /// The value if this is a JSON STRING.
+    
+    public fileprivate(set) var string: String?
+    
+    
+    /// The container for all children if self is .array or .object.
+    
+    public fileprivate(set) var children: Children?
+    
+    
+    /// The parent of a child
+    ///
+    /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
+    
+    public fileprivate(set) var parent: VJson?
+    
+    
+    /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
+    
+    fileprivate var createdBySubscript: Bool = false
+    
+    
+    /// Default initializer
+    
+    fileprivate init(type: JType, name: String? = nil) {
+        
+        self.type = type
+        self.name = name
+        
+        super.init()
+        
+        switch type {
+        case .object, .array: children = Children(parent: self)
+        default: break
+        }
+    }
+    
+    
+    /// Creates an empty VJson hierarchy
+    
+    public convenience override init() {
+        self.init(type: .object)
+    }
+    
+    
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? VJson else { return false }
+        return self == object
+    }
+    
+    public override func copy() -> Any { return duplicate }
+    
+    
+    /// The custom string convertible protocol.
+    
+    override public var description: String { return code }
+}
+
+#endif
 
 
 // MARK: - The Equatable protocol
 
-extension VJson: Equatable {
+extension VJson {
 
 
     /// Implementation note: does not check the parent and the createdBySubscript members.
@@ -1219,6 +962,42 @@ extension VJson: Equatable {
 
 extension VJson {
     
+    
+    /// The JSON types.
+    
+    public enum JType {
+        
+        
+        /// A JSON NULL
+        
+        case null
+        
+        
+        /// A JSON BOOL
+        
+        case bool
+        
+        
+        /// A JSON NUMBER
+        
+        case number
+        
+        
+        /// A JSON STRING
+        
+        case string
+        
+        
+        /// A JSON OBJECT
+        
+        case object
+        
+        
+        /// A JSON ARRAY
+        
+        case array
+    }
+
     
     /// True if this object contains a JSON NULL object.
     
@@ -1725,9 +1504,9 @@ extension VJson {
     ///   - value: The value for the new item.
     ///   - name: The name for the value (optional).
     
-    public convenience init(_ value: NSNumber?, name: String? = nil) {
+    public convenience init(number: NSNumber?, name: String? = nil) {
         self.init(type: VJson.JType.number, name: name)
-        numberValue = value
+        numberValue = number
     }
 }
 
@@ -1778,9 +1557,9 @@ extension VJson {
     ///   - value: The value for the new item.
     ///   - name: The name for the value (optional).
     
-    public convenience init(_ value: String?, name: String? = nil) {
+    public convenience init(_ string: String?, name: String? = nil) {
         self.init(type: VJson.JType.string, name: name)
-        string = value
+        self.string = string
     }
 }
 
@@ -1789,13 +1568,266 @@ extension VJson {
 
 extension VJson {
 
+    
+    /// A wrapper for the child items, used only for ARRAYs and OBJECTs
+    
+    public class Children {
+        
+        
+        // May only be created internally
+        
+        fileprivate init(parent: VJson) { self.parent = parent }
+        
+        
+        // The parent of the children (which will always be the enclosing VJson item)
+        
+        private let parent: VJson
+        
+        
+        // A chache that is used to speed up access to OBJECT items
+        
+        private var objectMemberCache: Dictionary<String, VJson>?
+        
+        
+        // Enables or disables the cache
+        
+        fileprivate var cacheEnabled: Bool = false {
+            didSet { objectMemberCache = nil }
+        }
+        
+        
+        /// The child items under management
+        
+        public fileprivate(set) var items: Array<VJson> = [] {
+            didSet { objectMemberCache = nil }
+        }
+        
+        
+        /// Subscript access to the child items
+        
+        fileprivate private(set) subscript(index: Int) -> VJson? {
+            get {
+                guard index < items.count else { return nil }
+                guard index >= 0 else { return nil }
+                return items[index]
+            }
+            set {
+                guard let child = newValue else { return }
+                guard index < items.count else { return }
+                guard index >= 0 else { return }
+                
+                
+                // Ensures the child's parent is always set
+                
+                child.parent = parent
+                
+                
+                // Remove the parent from the child to be replaced
+                
+                items[index].parent = nil
+                
+                
+                // Replace the child
+                
+                items[index] = child
+            }
+        }
+        
+        
+        /// A shortcut to the c=count of the array of children
+        
+        public var count: Int { return items.count }
+        
+        
+        /// Returns the index of the given child item.
+        ///
+        /// - Parameter of: The child to be found.
+        ///
+        /// - Returns: The index of the requested child, or nil if not found.
+        
+        fileprivate func index(ofChild child: VJson?) -> Int? {
+            guard let child = child else { return nil }
+            for (index, item) in items.enumerated() {
+                if item === child { return index } // Compare and break if the child is found
+            }
+            return nil
+        }
+        
+        
+        /// Returns an array with the indicies of all items that are equal to the given child.
+        ///
+        /// - Parameter ofChildrenEqualTo: The child to compare the items to.
+        ///
+        /// - Returns: An array with the indicies of the items that match the child.
+        
+        fileprivate func index(ofChildrenEqualTo child: VJson?) -> [Int] {
+            guard let child = child else { return [] }
+            var result: Array<Int> = []
+            for (index, item) in items.enumerated() {
+                if item == child { result.append(index) }
+            }
+            return result
+        }
+        
+        
+        /// Add the given child item to the end of the existing children
+        ///
+        /// - Parameter child: The child to be added.
+        ///
+        /// - Returns: The child that was added.
+        
+        @discardableResult
+        fileprivate func append(_ child: VJson?) -> VJson? {
+            guard let child = child else { return parent }
+            
+            child.parent = parent // Ensures the child's parent is always set
+            items.append(child)
+            return child
+        }
+        
+        
+        /// Add the given child items to the end of the existing children
+        ///
+        /// - Parameter array: The array with new child items.
+        
+        @discardableResult
+        fileprivate func append(_ array: Array<VJson>) {
+            array.forEach() { append($0) }
+        }
+        
+        
+        /// Inserts the given child item at the specified position.
+        ///
+        /// - Parameters:
+        ///   - child: The item to be inserted.
+        ///   - at: The index where to insert the child.
+        ///
+        /// - Returns: The inserted item.
+        
+        @discardableResult
+        fileprivate func insert(_ child: VJson?, at index: Int) -> VJson? {
+            guard let child = child else { return parent }
+            guard index < items.count else { return nil }
+            guard index >= 0 else { return nil }
+            
+            child.parent = parent // Ensures the child's parent is always set
+            items.insert(child, at: index)
+            return child
+        }
+        
+        
+        /// Replaces the child at the specified index with the new child.
+        ///
+        /// - Parameters:
+        ///   - childAt: The index of the child to be replaced.
+        ///   - with: The child item to be placed at the specified index.
+        ///
+        /// - Returns: The inserted child.
+        
+        @discardableResult
+        fileprivate func replace(childAt index: Int, with child: VJson?) -> VJson? {
+            guard let child = child else { return parent }
+            guard index < items.count else { return nil }
+            guard index >= 0 else { return nil }
+            
+            items[index].parent = nil // The child at the index will no longer be a child
+            child.parent = parent // Ensures the child's parent is always set
+            items[index] = child
+            return child
+        }
+        
+        
+        /// Removes the child at the specified index.
+        ///
+        /// - Parameter childAt: The index of the child item to be removed.
+        ///
+        /// - Returns: The child that was removed, or nil if the index did not exist.
+        
+        @discardableResult
+        fileprivate func remove(childAt index: Int) -> VJson? {
+            guard index < items.count else { return nil }
+            guard index >= 0 else { return nil }
+            
+            items[index].parent = nil // Make sure it is decoupled from the parent
+            return items.remove(at: index)
+        }
+        
+        
+        /// Removes the specified child.
+        ///
+        /// - Parameter child: The child to be removed.
+        ///
+        /// - Returns: The child that was removed, nil if nothing was removed.
+        
+        @discardableResult
+        fileprivate func remove(_ child: VJson?) -> VJson? {
+            guard let child = child else { return parent }
+            
+            if let index = index(ofChild: child) {
+                items[index].parent = nil // Make sure it is decoupled from the parent
+                return items.remove(at: index)
+            } else {
+                return nil
+            }
+        }
+        
+        
+        /// Remove all child items that are identical to the specified child item.
+        ///
+        /// - Parameter childrenWith: The child against which to compare the internal items.
+        ///
+        /// - Returns: The number of children removed.
+        
+        @discardableResult
+        fileprivate func remove(childrenWith name: String?) -> Int {
+            guard let name = name else { return 0 }
+            
+            var result = 0
+            for i in (0 ..< items.count).reversed() {
+                if items[i].name == name {
+                    remove(childAt: i)
+                    result += 1 // Count the number of removed children
+                }
+            }
+            return result
+        }
+        
+        
+        /// Removes all children.
+        
+        fileprivate func removeAll() {
+            items.forEach(){ $0.parent = nil }
+            items.removeAll()
+        }
+        
+        
+        /// Returns a cached value if chaching is enabled.
+        ///
+        /// It will also build the cache if the cache is not present, but enabled.
+        
+        fileprivate func cached(_ key: String) -> VJson? {
+            if !cacheEnabled { return nil }
+            if objectMemberCache == nil {
+                objectMemberCache = [:]
+                for child in items {
+                    guard let name = child.name else {
+                        objectMemberCache = nil
+                        return nil
+                    }
+                    objectMemberCache?[name] = child
+                }
+            }
+            return objectMemberCache?[key]
+        }
+    }
+
 
     /// Returns a copy of the child items in this object if this object contains a JSON ARRAY or JSON OBJECT. An empty array for all other JSON types.
     
     public var arrayValue: Array<VJson> {
         guard type == .array || type == .object else { return [] }
         var arr: Array<VJson> = []
-        children?.items.forEach(){ arr.append($0.copy) }
+        children?.items.forEach(){ arr.append($0.duplicate) }
         return arr
     }
     
@@ -1807,7 +1839,7 @@ extension VJson {
         var dict: Dictionary<String, VJson> = [:]
         children?.items.forEach(){
             if let name = $0.name {
-                dict[name] = $0.copy
+                dict[name] = $0.duplicate
             }
         }
         return dict
@@ -1954,7 +1986,7 @@ extension VJson {
     ///   - items: A dictionary with the name/value pairs to be included as children.
     ///   - name: The name for the contained item (optional).
     
-    public convenience init(_ items: [String:VJson], name: String? = nil) {
+    public convenience init(items: [String:VJson], name: String? = nil) {
         self.init(type: .object, name: name)
         var newItems: Array<VJson> = []
         let parentIsNilItems = items.filter(){ return $0.value.parent == nil }
@@ -2684,17 +2716,17 @@ extension VJson {
     
     /// Returns a full in-depth copy of this JSON object. I.e. all child elements are also copied.
     
-    public var copy: VJson {
-        let copy = VJson(type: self.type, name: self.name)
-        copy.type = self.type
-        copy.bool = self.bool
-        copy.string = self.string
-        copy.number = self.numberValue // Creates a copy of the NSNumber
-        copy.createdBySubscript = self.createdBySubscript
+    public var duplicate: VJson {
+        let other = VJson(type: self.type, name: self.name)
+        other.type = self.type
+        other.bool = self.bool
+        other.string = self.string
+        other.number = self.numberValue // Creates a copy of the NSNumber
+        other.createdBySubscript = self.createdBySubscript
         for c in self.children?.items ?? [] {
-            _ = copy.children?.append(c.copy)
+            _ = other.children?.append(c.duplicate)
         }
-        return copy
+        return other
     }
 
     
@@ -2752,6 +2784,80 @@ extension VJson {
 
 extension VJson {
     
+    
+    /// This error type gets thrown if errors are found during parsing.
+    ///
+    /// - reason: The details of the error.
+    
+    public enum Exception: Error, CustomStringConvertible {
+        
+        
+        /// The details of the error
+        ///
+        /// - code: An integer number that references the error location
+        /// - incomplete: When true, the error occured because the parser ran out of characters.
+        /// - message: A textual description of the error.
+        
+        case reason(code: Int, incomplete: Bool, message: String)
+        
+        
+        /// The textual description of the exception.
+        
+        public var description: String {
+            if case let .reason(code, incomplete, message) = self { return "[\(code), Incomplete:\(incomplete)] \(message)" }
+            return "VJson: Error in Exception enum"
+        }
+    }
+
+    
+    /// Error info from the parser for the parse operations that do not throw.
+    
+    public struct ParseError {
+        
+        
+        /// An integer number that references the error location
+        
+        public var code: Int
+        
+        
+        /// When true, the error occured because the parser ran out of characters.
+        
+        public var incomplete: Bool
+        
+        
+        /// A textual description of the error.
+        
+        public var message: String
+        
+        
+        /// Create a new ParseError
+        ///
+        /// - Parameters:
+        ///   - code: An integer number that references the error location
+        ///   - incomplete: True if the error occured because the parser ran out of characters.
+        ///   - message: A textual description of the error.
+        
+        public init(code: Int, incomplete: Bool, message: String) {
+            self.code = code
+            self.incomplete = incomplete
+            self.message = message
+        }
+        
+        
+        /// Creates an empty ParseError
+        
+        public init() {
+            self.init(code: -1, incomplete: false, message: "")
+        }
+        
+        
+        /// The textual description of the ParseError
+        
+        public var description: String {
+            return "[\(code), Incomplete:\(incomplete)] \(message)"
+        }
+    }
+
     
     /// Create a VJson hierarchy from the contents of the given file.
     ///
@@ -2961,13 +3067,8 @@ extension VJson {
 
 // MARK: - Create code from the json hierarchy
 
-extension VJson: CustomStringConvertible {
+extension VJson {
 
-    
-    /// The custom string convertible protocol.
-    
-    public var description: String { return code }
-    
     
     /// Returns the JSON code that represents the hierarchy of this item.
     
@@ -3108,7 +3209,7 @@ extension VJson {
             
         } else if let num = o as? NSNumber {
             
-            return VJson(num)
+            return VJson(number: num)
             
         } else if o is NSNull {
             

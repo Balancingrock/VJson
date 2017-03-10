@@ -33,11 +33,13 @@ General purpose logging utility.
 - Build with Swift 3 (Xcode 8)
 - Includes extensive unit tests
 - Use either integrated parser or Apple's NSJSONSerialization parser
-- Added a simple GUI to check if a file can be parsed correctly
 - Builds an SPM package (for use with the Swift Package Manager)
 - Builds as a modular framework (for use in Xcode)
 - Merge function is NSOutlineView compatible
+- Limited KVO support to provide easier integration with -for example- an NSOutlineView
+- Notifications are isued for KVO updates.
 - Caching of named members for higher performance (usable in most cases)
+- Prepared for use under Linux (not tested yet)
 
 # Usage
 
@@ -282,12 +284,15 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.9.17 (Current)
+#### v0.10.0 (Current)
 
 - Bugfix: Assigning a nil to a ...Value did not cause an auto-converion to NULL.
 - Bugfix: Corrected a bug that would ignore duplicate member names in an object.
 - Added "merge" function to update a VJson hierarchy in-place
 - Added caching mechanism for object members
+- Added limited KVO support
+- Reorganised the code for linux support
+- Added conditional code for linux (not tested yet)
 
 #### v0.9.16
 

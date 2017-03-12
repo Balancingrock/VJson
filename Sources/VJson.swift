@@ -1795,7 +1795,7 @@ extension VJson {
         }
         
         
-        /// A shortcut to the c=count of the array of children
+        /// A shortcut to the count of the array of children
         
         public var count: Int { return items.count }
         
@@ -2697,7 +2697,7 @@ extension VJson {
     
     /// Assigns/retrieves based on the given index.
     ///
-    /// Only valid for VJson objects containing a JSON ARRAY. Will try to convert an object to an array.
+    /// Only valid for VJson objects containing a JSON ARRAY.
     ///
     /// - Note: Can result in a fatal error if the VJson.fatalErrorOnTypeConversion is set to 'true' (= default)
     
@@ -2749,7 +2749,7 @@ extension VJson {
     
     /// Assigns/retrieves based on the given key.
     ///
-    /// Only valid for VJson objects containing a JSON OBJECT. Will try to convert an array to an object.
+    /// Only valid for VJson objects containing a JSON OBJECT.
     ///
     /// - Note: Can result in a fatal error if the VJson.fatalErrorOnTypeConversion is set to 'true' (= default)
     

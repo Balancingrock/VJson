@@ -41,25 +41,29 @@ General purpose logging utility.
 - Caching of named members for higher performance (usable in most cases)
 - Prepared for use under Linux (but not tested yet)
 
-# Usage
+# Installation
 
 ## With SPM
 
-Include as a dependency in a Package.swift specification:
+To use SwifterJSON with a SPM project, make it part of the dependencies in the file Package.swift:
 
 ~~~~
-.Package(url: "https://github.com/Balancingrock/SwifterJSON", "0.10.0")
+   dependencies: [
+      ...
+      .Package(url: "https://github.com/Balancingrock/SwifterJSON", "0.10.0")
+      ...
+   ]
 ~~~~
+
+Building the project will then automatically install SwifterJSON as needed.
 
 ## Xcode (Framework)
 
-~~~~
-$ git clone https://github.com/Balancingrock/SwifterJSON
-~~~~
+To use SwifterJSON in a macOS application using Xcode it is necessary to create a framework.
 
-Then open the Xcode project and build the target.
+These are the steps to create a framework:
 
-or
+In a terminal window type on the console line:
 
 ~~~~
 $ git clone https://github.com/Balancingrock/SwifterJSON
@@ -67,9 +71,21 @@ $ cd SwifterJSON
 $ swift package generate-xcodeproj
 ~~~~
 
-Then open the xcode project, select the target and make sure that under the `Build settings` in the `Packaging` options the `Defines Module` is set to 'yes' and then build the target.
+Then navigate to the SwifterJSON folder using the Finder and double click the xcode project file.
+
+In Xcode select the target frameworks and make sure that under the `Build settings` in the `Packaging` options the `Defines Module` is set to 'yes'.
+
+Then build the target.
 
 In the project that should use SwifterJSON add the generated framework's (Ascii & SwifterJSON) under the target's `general` settings, to the `Embedded binaries`.
+
+(Note: to find out where the frameworks are located, select the framework and show the file inspector, that will show the path)
+
+Then import the framework where you need it by:
+
+"import SwifterJSON"
+
+at the top of the source code files.
 
 # Documentation
 

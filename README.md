@@ -2,23 +2,7 @@
 
 A single class framework in Swift to read, write & parse the JSON Format.
 
-SwifterJSON is part of the packages that make up the [Swiftfire](http://swiftfire.nl) webserver:
-
-#####[Swiftfire](https://github.com/Balancingrock/Swiftfire)
-
-A GUI application for Swiftfire.
-
-#####[SwifterSockets](https://github.com/Balancingrock/SwifterSockets)
-
-General purpose socket utilities.
-
-#####[SecureSockets](https://github.com/Balancingrock/SecureSockets)
-
-General purpose secure networking utilities.
-
-#####[SwifterLog](https://github.com/Balancingrock/SwifterLog)
-
-General purpose logging utility.
+SwifterJSON is part of the [Swiftfire](http://swiftfire.nl), the next generation personal webserver.
 
 # Features
 - Creates a fully featured JSON hierarchy from file (Data, Buffer or String).

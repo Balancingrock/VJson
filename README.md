@@ -320,7 +320,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.10.0 (Current)
+#### v0.10.1 (Current)
+
+- Removed the xcode project from git
+
+#### v0.10.0
 
 - Bugfix: Assigning a nil to a ...Value did not cause an auto-converion to NULL.
 - Bugfix: Corrected a bug that would ignore duplicate member names in an object.

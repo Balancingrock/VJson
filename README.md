@@ -304,7 +304,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.10.1 (Current)
+#### v0.10.2 (Current)
+
+- Removed unnecessary @discardableresult declaration
+- Fixed the sequence of type extractions for key/value coding
+
+#### v0.10.1
 
 - Removed the xcode project from git
 

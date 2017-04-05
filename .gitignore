@@ -5,3 +5,5 @@ build
 /Packages
 xcuserdata
 build
+/DerivedData
+Package.pins

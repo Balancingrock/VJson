@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.10.0
+//  Version:    0.10.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,8 @@
 //
 // History
 //
+// 0.10.2  - Removed superfluous discardableresult definitions
+//         - Fixed sequence of type conversion in key/value coding
 // 0.10.0  - Bugfix: Assigning nil to ...Value did not result in an auto conversion to NULL.
 //         - Changed several fileprivate accessors to public fileprivate(set) to allow support for outline views.
 //         - Added merge capability
@@ -221,7 +223,6 @@ public func | (lhs: VJson?, rhs: Int?) -> VJson? {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: Int?) {
     guard let lhs = lhs else { return }
     lhs.intValue = rhs
@@ -246,7 +247,6 @@ public func &= (lhs: inout Int?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: UInt?) {
     guard let lhs = lhs else { return }
     lhs.uintValue = rhs
@@ -272,7 +272,6 @@ public func &= (lhs: inout UInt?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: Int8?) {
     guard let lhs = lhs else { return }
     lhs.int8Value = rhs
@@ -298,7 +297,6 @@ public func &= (lhs: inout Int8?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: UInt8?) {
     guard let lhs = lhs else { return }
     lhs.uint8Value = rhs
@@ -324,7 +322,6 @@ public func &= (lhs: inout UInt8?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: Int16?) {
     guard let lhs = lhs else { return }
     lhs.int16Value = rhs
@@ -350,7 +347,6 @@ public func &= (lhs: inout Int16?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: UInt16?) {
     guard let lhs = lhs else { return }
     lhs.uint16Value = rhs
@@ -376,7 +372,6 @@ public func &= (lhs: inout UInt16?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: Int32?) {
     guard let lhs = lhs else { return }
     lhs.int32Value = rhs
@@ -402,7 +397,6 @@ public func &= (lhs: inout Int32?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: UInt32?) {
     guard let lhs = lhs else { return }
     lhs.uint32Value = rhs
@@ -428,7 +422,6 @@ public func &= (lhs: inout UInt32?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: Int64?) {
     guard let lhs = lhs else { return }
     lhs.int64Value = rhs
@@ -454,7 +447,6 @@ public func &= (lhs: inout Int64?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: UInt64?)  {
     guard let lhs = lhs else { return }
     lhs.uint64Value = rhs
@@ -480,7 +472,6 @@ public func &= (lhs: inout UInt64?, rhs: VJson?) {
 ///   - lhs: The JSON item to assign to.
 ///   - rhs: The value to be assigned.
 
-@discardableResult
 public func &= (lhs: VJson?, rhs: Float?) {
     guard let lhs = lhs else { return }
     lhs.doubleValue = rhs == nil ? nil : Double(rhs!) // Force unwrap tested before use
@@ -969,9 +960,9 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         
         private func boolFromAny(_ any: Any?) -> Bool? {
             if let b = any as? Bool { return b }
-            if let i = any as? Int { return i == 1 }
-            if let s = any as? String { return stringToBool(s) }
             if let n = any as? NSNumber { return n.boolValue }
+            if let s = any as? String { return stringToBool(s) }
+            if let i = any as? Int { return i == 1 }
             return nil
         }
         
@@ -982,10 +973,10 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         /// - Returns: Either 'true', 'false' or nil if any could not be converted.
         
         private func numberFromAny(_ any: Any?) -> NSNumber? {
+            if let n = any as? NSNumber { return n }
             if let b = any as? Bool { return NSNumber(value: b) }
             if let i = any as? Int { return NSNumber(value: i) }
             if let s = any as? String { return NSNumber(value: Double(s) ?? 0) }
-            if let n = any as? NSNumber { return n }
             return nil
         }
         
@@ -996,10 +987,10 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         /// - Returns: Either 'true', 'false' or nil if any could not be converted.
         
         private func stringFromAny(_ any: Any?) -> String? {
-            if let b = any as? Bool { return b ? "true" : "false" }
-            if let i = any as? Int { return i.description }
             if let s = any as? String { return s }
             if let n = any as? NSNumber { return n.description }
+            if let b = any as? Bool { return b ? "true" : "false" }
+            if let i = any as? Int { return i.description }
             return nil
         }
 
@@ -1851,7 +1842,6 @@ extension VJson {
         ///
         /// - Parameter array: The array with new child items.
         
-        @discardableResult
         fileprivate func append(_ array: Array<VJson>) {
             array.forEach() { append($0) }
         }
@@ -2310,7 +2300,6 @@ extension VJson {
     ///   - children: The items to add.
     ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
     
-    @discardableResult
     public func append(children items: [VJson?]?, includeNil: Bool = false) {
         guard let items = items else { return }
         items.forEach() {
@@ -2329,7 +2318,6 @@ extension VJson {
     ///   - children: The items to add.
     ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
 
-    @discardableResult
     public func append(children items: [VJsonSerializable?]?, includeNil: Bool = false) {
         guard let items = items else { return }
         let newItems = items.map() { $0?.json }

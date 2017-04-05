@@ -29,7 +29,11 @@ class VJsonTestPart4: XCTestCase {
         
         XCTAssertEqual(a, 12)
         
-        json?.setValue(NSNumber(value: 78), forKey: "one")
+        let num = NSNumber(value: 78)
+        
+        XCTAssert(num.intValue == 78)
+        
+        json?.setValue(num, forKey: "one")
         
         XCTAssertEqual(json?.code, "{\"one\":78}")
     }

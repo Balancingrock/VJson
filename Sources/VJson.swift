@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.10.2
+//  Version:    0.10.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,7 @@
 //
 // History
 //
+// 0.10.3  - Bugfix: Made 'parent' weak resp unowned to prevent retain cycles (and leaks)
 // 0.10.2  - Removed superfluous discardableresult definitions
 //         - Fixed sequence of type conversion in key/value coding
 // 0.10.0  - Bugfix: Assigning nil to ...Value did not result in an auto conversion to NULL.
@@ -789,7 +790,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         ///
         /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
         
-        public fileprivate(set) var parent: VJson?
+        public fileprivate(set) weak var parent: VJson?
         
         
         /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
@@ -881,7 +882,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         ///
         /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
         
-        public fileprivate(set) var parent: VJson?
+        public fileprivate(set) weak var parent: VJson?
         
         
         /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
@@ -1733,7 +1734,7 @@ extension VJson {
         
         // The parent of the children (which will always be the enclosing VJson item)
         
-        private let parent: VJson
+        private unowned let parent: VJson
         
         
         // A chache that is used to speed up access to OBJECT items

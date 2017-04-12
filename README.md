@@ -304,7 +304,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.10.2 (Current)
+#### v0.10.3 (Current)
+
+- Bugfix: removed the 'parent' retain cycle. (Caused a memory leak)
+
+#### v0.10.2
 
 - Removed unnecessary @discardableresult declaration
 - Fixed the sequence of type extractions for key/value coding

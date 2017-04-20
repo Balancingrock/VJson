@@ -56,6 +56,8 @@
 //
 // History
 //
+// 0.10.4  - Added CustomStringConvertible to JType.
+//         - Added setter to "asString".
 // 0.10.3  - Bugfix: Made 'parent' weak resp unowned to prevent retain cycles (and leaks)
 // 0.10.2  - Removed superfluous discardableresult definitions
 //         - Fixed sequence of type conversion in key/value coding
@@ -126,6 +128,7 @@
 
 import Foundation
 import Ascii
+import BRUtils
 
 
 /// For classes and structs that can be converted into a VJson object
@@ -1118,7 +1121,7 @@ extension VJson {
     
     /// The JSON types.
     
-    public enum JType {
+    public enum JType: CustomStringConvertible {
         
         
         /// A JSON NULL
@@ -1149,6 +1152,22 @@ extension VJson {
         /// A JSON ARRAY
         
         case array
+        
+        
+        /// Return the string for the case
+        ///
+        /// Note: This approach has a slight performance edge over 'enum JType: String'
+        
+        public var description: String {
+            switch self {
+            case .null: return "Null"
+            case .bool: return "Bool"
+            case .number: return "Number"
+            case .string: return "String"
+            case .object: return "Object"
+            case .array: return "Array"
+            }
+        }
     }
 
     
@@ -1694,12 +1713,22 @@ extension VJson {
     /// NUMBER and BOOL return their string representation. NULL it returns "null" for OBJECT and ARRAY it returns an empty string.
     
     public var asString: String {
-        switch type {
-        case .null: return "null"
-        case .bool: return bool == nil ? "null" : "\(bool ?? false)"
-        case .string: return stringValue ?? "null"
-        case .number: return number == nil ? "null" : (number ?? NSNumber(value: 0)).stringValue
-        case .array, .object: return ""
+        get {
+            switch type {
+            case .null: return "null"
+            case .bool: return bool == nil ? "null" : "\(bool ?? false)"
+            case .string: return stringValue ?? "null"
+            case .number: return number == nil ? "null" : (number ?? NSNumber(value: 0)).stringValue
+            case .array, .object: return ""
+            }
+        }
+        set {
+            switch type {
+            case .null, .array, .object: break
+            case .bool: if let b = Bool(newValue) { boolValue = b }
+            case .string: stringValue = newValue
+            case .number: numberValue = NSNumber.factory(boolIntDouble: newValue)
+            }
         }
     }
     

@@ -58,6 +58,7 @@
 //
 // 0.10.4  - Added CustomStringConvertible to JType.
 //         - Added setter to "asString".
+//         - Added 'item(at path)' methods.
 // 0.10.3  - Bugfix: Made 'parent' weak resp unowned to prevent retain cycles (and leaks)
 // 0.10.2  - Removed superfluous discardableresult definitions
 //         - Fixed sequence of type conversion in key/value coding
@@ -1005,7 +1006,9 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         
         public override func setValue(_ value: Any?, forKey key: String) {
 
-            if let item = self|key {
+            let pathKeys = key.components(separatedBy: ".")
+            
+            if let item = item(at: pathKeys) {
             
                 switch item.type {
                 
@@ -1057,17 +1060,15 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             }
             super.setValue(value, forKey: key)
         }
-        
-        /*public override func setValue(_ value: Any?, forKeyPath keyPath: String) {
-         
-        }*/
-        
+    
         
         /// Retrieves the value from a child item.
         
         public override func value(forKey key: String) -> Any? {
         
-            if let item = self|key {
+            let pathKeys = key.components(separatedBy: ".")
+
+            if let item = item(at: pathKeys) {
                 switch item.type {
                 case .null: return nil
                 case .bool: return item.boolValue
@@ -1078,10 +1079,6 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             }
             return super.value(forKey: key)
         }
-        
-        /*public override func value(forKeyPath keyPath: String) -> Any? {
-            
-        }*/
     }
 
 #endif
@@ -2439,20 +2436,18 @@ extension VJson {
 extension VJson {
     
     
-    /// Looks for a specific item in the hierachy.
+    /// Looks for an item in the hierachy.
     ///
     /// - Parameters:
-    ///   - of: The JSON TYPE of object to look for.
-    ///   - at path: An array of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of ["12"] can refer to the item at index 12 as well as the item for name "12".
+    ///   - at: An array of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of ["12"] can refer to the item at index 12 as well as the item for name "12".
     ///
-    /// - Returns: the item at the given path if it exists and is of the given type. Otherwise nil.
-    
-    public func item(of type: JType, at path: [String]) -> VJson? {
+    /// - Returns: the item at the given path if it exists. Otherwise nil.
+
+    public func item(at path: [String]) -> VJson? {
         
         if path.count == 0 {
             
-            if self.type == type { return self }
-            return nil
+            return self
             
         } else {
             
@@ -2467,7 +2462,7 @@ extension VJson {
                 var reducedPath = path
                 reducedPath.removeFirst()
                 
-                return children?.items[i].item(of: type, at: reducedPath)
+                return children?.items[i].item(at: reducedPath)
                 
                 
             case .object:
@@ -2479,7 +2474,7 @@ extension VJson {
                         var reducedPath = path
                         reducedPath.removeFirst()
                         
-                        return child.item(of: type, at: reducedPath)
+                        return child.item(at: reducedPath)
                     }
                 }
                 return nil
@@ -2488,6 +2483,33 @@ extension VJson {
             default: return nil
             }
         }
+    }
+
+    /// Looks for a specific item in the hierachy.
+    ///
+    /// - Parameters:
+    ///   - at: A set of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of "12" can refer to the item at index 12 as well as the item for name "12".
+    ///
+    /// - Returns: the item at the given path if it exists. Otherwise nil.
+    
+    public func item(at path: String ...) -> VJson? {
+        return item(at: path)
+    }
+
+    
+    /// Looks for a specific item in the hierachy.
+    ///
+    /// - Parameters:
+    ///   - of: The JSON TYPE of object to look for.
+    ///   - at path: An array of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of ["12"] can refer to the item at index 12 as well as the item for name "12".
+    ///
+    /// - Returns: the item at the given path if it exists and is of the given type. Otherwise nil.
+    
+    public func item(of type: JType, at path: [String]) -> VJson? {
+        
+        if let item = item(at: path), item.type == type { return item }
+        
+        return nil
     }
     
     

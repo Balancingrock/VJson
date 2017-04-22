@@ -37,4 +37,15 @@ class VJsonTestPart4: XCTestCase {
         
         XCTAssertEqual(json?.code, "{\"one\":78}")
     }
+    
+    func testKeyValueCodingDeeper() {
+        
+        let json = VJson.parse(string: "{\"one\":{\"two\":\"three\"}}") { _,_,_ in XCTFail() }
+        
+        let a = json?.value(forKey: "one.two") as? String
+        
+        XCTAssertNotNil(a)
+        XCTAssertEqual(a!, "three")
+    }
+
 }

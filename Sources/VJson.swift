@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    SwifterJSON
 //
-//  Version:    0.10.3
+//  Version:    0.10.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl

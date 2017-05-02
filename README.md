@@ -295,35 +295,35 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 
 Note: Planned releases are for information only and subject to change without notice.
 
-#### v1.1.0 (Open)
+#### 1.1.0 (Open)
 
 - No new features planned. Features and bugfixes will be made on an ad-hoc basis as needed to support Swiftfire development.
 - To request features or bug fixes please contact rien@balancingrock.nl
 
-#### v1.0.0 (Planned)
+#### 1.0.0 (Planned)
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.10.4 (Current)
+#### 0.10.4 (Current)
 
 - Added CustomStringConvertible to JType
 - Added setter to "asString"
 - Added item(at path) methods
 
-#### v0.10.3
+#### 0.10.3
 
 - Bugfix: removed the 'parent' retain cycle. (Caused a memory leak)
 
-#### v0.10.2
+#### 0.10.2
 
 - Removed unnecessary @discardableresult declaration
 - Fixed the sequence of type extractions for key/value coding
 
-#### v0.10.1
+#### 0.10.1
 
 - Removed the xcode project from git
 
-#### v0.10.0
+#### 0.10.0
 
 - Bugfix: Assigning a nil to a ...Value did not cause an auto-converion to NULL.
 - Bugfix: Corrected a bug that would ignore duplicate member names in an object.
@@ -333,16 +333,16 @@ Note: Planned releases are for information only and subject to change without no
 - Reorganised the code
 - Added conditional compilation for linux (not tested yet)
 
-#### v0.9.16
+#### 0.9.16
 
 - Moved Ascii into its own package.
 - Removed custom operator definitions from tests.
 
-#### v0.9.15
+#### 0.9.15
 
 - Bugfix: Removed the redefinition of the custom operators.
 
-#### v0.9.14
+#### 0.9.14
 
 - Updated documentation and minor modifications to the access levels.
 - Moved to package based distribution.
@@ -352,25 +352,25 @@ Note: Planned releases are for information only and subject to change without no
 - Bugfix: Added missing 'public' to conveniance initializers
 - Added '&=' assignments of VJson to for var's
 
-#### v0.9.12
+#### 0.9.12
 
 - Added "findPossibleJsonCode'.
 - Fixed bug that failed to skip whitespace characters after a comma. 
 
-#### v0.9.11
+#### 0.9.11
 
 - Update for Xcode 8 beta 6 (Swift 3)
 - Added &= operator to add VJson objects
 
-#### v0.9.10
+#### 0.9.10
 
 - Update for Xcode 8 beta 3 (Swift 3)
 
-#### v0.9.9
+#### 0.9.9
 
 - Added NSJSONSerialization parsing
 
-#### v0.9.8 (Major overhaul!)
+#### 0.9.8 (Major overhaul!)
 
 - Preparations for Swift 3 (name changes)
 - Added functions: stringOrNull, integerOrNull, doubleOrNull, boolOrNull and numberOrNull.
@@ -386,26 +386,26 @@ Note: Planned releases are for information only and subject to change without no
 - Improved iterator: will no longer generates items that are deleted while in the itteration loop
 - Changed operation 'object' to 'item'
 
-#### v0.9.7
+#### 0.9.7
 
 - Added protocol definition VJsonSerializable
 - Added createJsonHierarchy(string)
 
-#### v0.9.6
+#### 0.9.6
 
 - Header update to include new website: [swiftfire.nl](http://swiftfire.nl)
 
-#### v0.9.5
+#### 0.9.5
 
 - Added "pipe" functions ("|") to allow for better testing of paths. The pipe functions greatly improve the readability when used in 'guard' statements.
 
-#### v0.9.4
+#### 0.9.4
 
 - Changed target to a (shared) framework
 - Added 'public' definitions to support the framework target
 - Added release tags
 
-#### v0.9.3
+#### 0.9.3
 
 - Changed "removeChild:atIndex" to "removeChildAtIndex:withChild"
 - Added conveniance operation "addChild" that does not need the name of the child to be added.
@@ -415,11 +415,11 @@ Note: Planned releases are for information only and subject to change without no
 - Removed dependency on SwifterLog
 - Updated for changes in ASCII.swift (added hexLookUp, changed is___ functions to var's)
 
-#### v0.9.2
+#### 0.9.2
 
 - Fixed a problem where a named NULL object was removed from the hierarchy upon fetching the description.
 
-#### v0.9.1
+#### 0.9.1
 
 - Changed parameter to 'addChild' to an optional.
 - Fixed a problem where an object without a leading brace in an array would not be thrown as an error
@@ -433,6 +433,6 @@ Note: Planned releases are for information only and subject to change without no
 
 Also added unit tests for VJson and performance tests for Apple's JSON, SwifterJSON and VJson.
 
-#### v0.9.0
+#### 0.9.0
 
 - Initial release

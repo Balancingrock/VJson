@@ -304,7 +304,13 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### v0.10.3 (Current)
+#### v0.10.4 (Current)
+
+- Added CustomStringConvertible to JType
+- Added setter to "asString"
+- Added item(at path) methods
+
+#### v0.10.3
 
 - Bugfix: removed the 'parent' retain cycle. (Caused a memory leak)
 

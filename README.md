@@ -304,7 +304,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.10.4 (Current)
+#### 0.10.5 (Current)
+
+- Upped BRUtils to 0.4.0
+
+#### 0.10.4
 
 - Added CustomStringConvertible to JType
 - Added setter to "asString"

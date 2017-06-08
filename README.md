@@ -304,7 +304,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.10.5 (Current)
+#### 0.10.6 (Current)
+
+- Upped BRUtils to 0.5.0
+
+#### 0.10.5
 
 - Upped BRUtils to 0.4.0
 

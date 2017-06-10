@@ -1,11 +1,11 @@
-# SwifterJSON document generator jazzy settings
+# VJson document generator jazzy settings
 
 copyright: Copyright 2016-2017 Rien van der Lugt
 author: Rien van der Lugt
-module: SwifterJSON
+module: VJson
 hide_documentation_coverage: true
-xcodebuild_arguments: [-target, SwifterJSON]
-github_url: https://github.com/Balancingrock/SwifterJSON
-output: ~/Documents/Websites/sf/projects/swifterjson/reference
+xcodebuild_arguments: [-target, VJson]
+github_url: https://github.com/Balancingrock/VJson
+output: ~/Documents/Websites/sf/projects/vjson/reference
 clean: true
 theme: fullwidth

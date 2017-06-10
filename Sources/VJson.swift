@@ -1,9 +1,9 @@
 // =====================================================================================================================
 //
 //  File:       VJson.swift
-//  Project:    SwifterJSON
+//  Project:    VJson
 //
-//  Version:    0.10.4
+//  Version:    0.10.7
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,7 @@
 //
 // History
 //
+// 0.10.7  - Renamed project to VJson
 // 0.10.4  - Added CustomStringConvertible to JType.
 //         - Added setter to "asString".
 //         - Added 'item(at path)' methods.
@@ -2823,7 +2824,7 @@ extension VJson {
             
             
             // If the request value does not exist, create it
-            // This allows object creation for 'object["key1"]["key2"]["key3"] = SwifterJSON(12)' constructs.
+            // This allows object creation for 'object["key1"]["key2"]["key3"] = VJson(12)' constructs.
             
             let new = VJson.null()
             new.createdBySubscript = true

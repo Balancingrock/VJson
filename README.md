@@ -1,8 +1,8 @@
-# SwifterJSON / VJson
+# VJson
 
 A single class framework in Swift to read, write & parse the JSON Format.
 
-SwifterJSON is part of the [Swiftfire](http://swiftfire.nl), the next generation personal webserver.
+VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver framework.
 
 # Features
 - Creates a fully featured JSON hierarchy from file (Data, Buffer or String).
@@ -29,53 +29,53 @@ SwifterJSON is part of the [Swiftfire](http://swiftfire.nl), the next generation
 
 ## With SPM
 
-To use SwifterJSON with a SPM project, make it part of the dependencies in the file Package.swift:
+To use VJson with a SPM project, make it part of the dependencies in the file Package.swift:
 
 ~~~~
    dependencies: [
       ...
-      .Package(url: "https://github.com/Balancingrock/SwifterJSON", "0.10.0")
+      .Package(url: "https://github.com/Balancingrock/VJson", "0.10.0")
       ...
    ]
 ~~~~
 
-Building the project will then automatically install SwifterJSON as needed.
+Building the project will then automatically install VJson as needed.
 
 ## Xcode (Framework)
 
-To use SwifterJSON in a macOS application using Xcode it is necessary to create a framework.
+To use VJson in a macOS application using Xcode it is necessary to create a framework.
 
 These are the steps to create a framework:
 
 In a terminal window type on the console line:
 
 ~~~~
-$ git clone https://github.com/Balancingrock/SwifterJSON
-$ cd SwifterJSON
+$ git clone https://github.com/Balancingrock/VJson
+$ cd VJson
 $ swift package generate-xcodeproj
 ~~~~
 
-Then navigate to the SwifterJSON folder using the Finder and double click the xcode project file.
+Then navigate to the VJson folder using the Finder and double click the xcode project file.
 
 In Xcode select the target frameworks and make sure that under the `Build settings` in the `Packaging` options the `Defines Module` is set to 'yes'.
 
 Then build the target.
 
-In the project that should use SwifterJSON add the generated framework's (Ascii & SwifterJSON) under the target's `general` settings, to the `Embedded binaries`.
+In the project that should use VJson add the generated framework's (Ascii & VJson) under the target's `general` settings, to the `Embedded binaries`.
 
 (Note: to find out where the frameworks are located, select the framework and show the file inspector, that will show the path)
 
 Then import the framework where you need it by:
 
-"import SwifterJSON"
+"import VJson"
 
 at the top of the source code files.
 
 # Documentation
 
-The project itself: [SwifterJSON](http://swiftfire.nl/projects/swifterjson/swifterjson.html)
+The project itself: [VJson](http://swiftfire.nl/projects/vjson/vjson.html)
 
-The reference manual: [reference manual](http://swiftfire.nl/projects/swifterjson/reference/index.html)
+The reference manual: [reference manual](http://swiftfire.nl/projects/vjson/reference/index.html)
 
 ## Full Example
 
@@ -304,7 +304,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.10.6 (Current)
+#### 0.10.7 (Current)
+
+- Renamed from SwifterJSON to VJson
+
+#### 0.10.6
 
 - Upped BRUtils to 0.5.0
 
@@ -439,7 +443,7 @@ Note: Planned releases are for information only and subject to change without no
 - Fixed subscript accessors, array can now be used on top-level with an implicit name of "array"
 - Fixed missing braces around named objects in an array
 
-Also added unit tests for VJson and performance tests for Apple's JSON, SwifterJSON and VJson.
+Also added unit tests for VJson and performance tests for Apple's JSON and VJson.
 
 #### 0.9.0
 

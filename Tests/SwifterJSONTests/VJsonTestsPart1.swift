@@ -9,10 +9,10 @@
 // Note: These test have been developped while inspecting the source code. I.e. white box testing. Goal has been to test all possible conditions such that a high percentage of code coverage is achieved. However some explicit tests have been omitted if the part to test is already tested excessively in other test cases.
 
 import XCTest
-@testable import SwifterJSON
+@testable import VJson
 
 
-class VJsonTests: XCTestCase {
+class VJsonTests1: XCTestCase {
     
     override func setUp() {
         super.setUp()

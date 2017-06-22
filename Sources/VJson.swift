@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    VJson
 //
-//  Version:    0.10.7
+//  Version:    0.10.8
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -56,6 +56,15 @@
 //
 // History
 //
+// 0.10.8  - Added undo/redo support
+//         - Undo/redo: made children completely internal otherwise undo/redo would become unnecessarily complicated
+//         - Harmonized operation & argument names with Foundation types
+//         - Bugfix: Name changes for cached objects were not correctly registered in the cache
+//         - Bugfix: It is no longer possible to nil a name for a child contained in an OBJECT
+//         - Relaxed child access rules, it is now possible to access children as either dictionary or array.
+//         - Converting an array to object will insert the index as the name (only in absence of a name).
+//         - Added move(from:to:)
+//         - Added remove()
 // 0.10.7  - Renamed project to VJson
 // 0.10.4  - Added CustomStringConvertible to JType.
 //         - Added setter to "asString".
@@ -131,6 +140,10 @@
 import Foundation
 import Ascii
 import BRUtils
+
+#if os(OSX)
+    import Cocoa
+#endif
 
 
 /// For classes and structs that can be converted into a VJson object
@@ -643,7 +656,7 @@ public func &= (lhs: VJson?, rhs: VJson?) -> VJson? {
     // if rhs has a parent then nothing will be done, lhs is returned unchanged.
     
     guard rhs.parent == nil else { return lhs }
-
+    
     
     // if lhs is nil then nothing will be done, nil is returned.
     
@@ -737,11 +750,30 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
     
     // If lhs is a NULL, then lhs will be replaced by rhs, but the name of lhs -if present- will be preserved as will the parent of lhs. Note that lhs will be replaced in the parent as well!.
     
-    VJson.fatalIfTypeChangeNotAllowed(from: llhs.type, to: rhs.type)
+    //    VJson.fatalIfTypeChangeNotAllowed(from: llhs.type, to: rhs.type)
     
-    lhs = rhs
-    
+    if VJson.typeConversionIsAllowed(from: llhs.type, to: rhs.type) {
+        lhs = rhs
+    } else {
+        if VJson.typeConversion == .fatalError {
+            fatalError("Type change from \(llhs.type) to \(rhs.type) is not allowed")
+        }
+    }
     return lhs
+}
+
+
+/// An undo/redo action
+
+fileprivate typealias UndoAction = (VJson) -> Void
+
+
+/// The update mode for any change made to self.
+
+fileprivate enum UpdateMode {
+    case normal
+    case undo
+    case redo
 }
 
 
@@ -752,13 +784,30 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
     public final class VJson: Equatable, CustomStringConvertible {
         
         
-        /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
-        ///
-        /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
-        ///
-        /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
+        /// A parameter of this type is used to control type conversion behaviour.
         
-        public static var fatalErrorOnTypeConversion = true
+        public enum TypeConversion {
+            
+            
+            /// Allow all kind of type conversions
+            
+            case allowed
+            
+            
+            /// Disallow type conversions (except to/from NULL) but fail silently
+            
+            case disallow
+            
+            
+            /// Disallow type conversions (except to/from NULL) and fail with a fatal error if it happens
+            
+            case fatalError
+        }
+        
+        
+        /// This parameter controls how type conversions are handled
+        
+        public static var typeConversion: TypeConversion = .fatalError
         
         
         /// The JSON type of this object.
@@ -801,6 +850,21 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
         
         fileprivate var createdBySubscript: Bool = false
+        
+        
+        /// The stack of undo actions
+        
+        fileprivate var undoActions: Array<UndoAction> = []
+        
+        
+        /// The stack of redo actions
+        
+        fileprivate var redoActions: Array<UndoAction> = []
+        
+        
+        /// The update mode for any change made to the object
+        
+        fileprivate var updateMode: UpdateMode = .normal
         
         
         /// Default initializer
@@ -833,24 +897,41 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         
         public var description: String { return code }
     }
-
+    
 #else
-
+    
     public final class VJson: NSObject {
         
         
         /// This notification is posted when the value of an item was updated due to a key/value update cycle.
         
         public static let KVO_VALUE_UPDATE = Notification.Name(rawValue: "KVO_ValueUpdateNotification")
-
         
-        /// Set this option to 'true' to help find unwanted type conversions (in the debugging phase?).
-        ///
-        /// A type conversion occures if -for example- a string is assigned to a JSON item that contains a BOOL. If this flag is set to 'true', such a conversion will result in a fatal error. If this flag is set to 'false', the conversion will happen silently.
-        ///
-        /// Conversion to and from NULL are always possible, if it is necessary to force a type change irrespective of the value of this flag make two changes, first to NULL then to the desired type.
         
-        public static var fatalErrorOnTypeConversion = true
+        /// A parameter of this type is used to control type conversion behaviour.
+        
+        public enum TypeConversion {
+            
+            
+            /// Allow all kind of type conversions
+            
+            case allowed
+            
+            
+            /// Disallow type conversions (except to/from NULL) but fail silently
+            
+            case disallow
+            
+            
+            /// Disallow type conversions (except to/from NULL) and fail with a fatal error if it happens
+            
+            case fatalError
+        }
+        
+        
+        /// This parameter controls how type conversions are handled
+        
+        public static var typeConversion: TypeConversion = .fatalError
         
         
         /// The JSON type of this object.
@@ -880,7 +961,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         
         /// The container for all children if self is .array or .object.
         
-        public fileprivate(set) var children: Children?
+        fileprivate var children: Children?
         
         
         /// The parent of a child
@@ -893,6 +974,11 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
         /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
         
         fileprivate var createdBySubscript: Bool = false
+        
+        
+        /// The undo manage
+        
+        public var undoManager: UndoManager?
         
         
         /// Default initializer
@@ -956,7 +1042,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             else if str.compare("n", options: [.diacriticInsensitive, .caseInsensitive]) == ComparisonResult.orderedSame { return false }
             else { return nil }
         }
-
+        
         
         /// Converts Any? into a Bool.
         ///
@@ -999,20 +1085,20 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             if let i = any as? Int { return i.description }
             return nil
         }
-
+        
         
         /// Override the KVO 'setValue' to update the members.
         ///
         /// If an update is made, the KVO_VALUE_UPDATE notification is sent for the VJson item that was updated.
         
         public override func setValue(_ value: Any?, forKey key: String) {
-
+            
             let pathKeys = key.components(separatedBy: ".")
             
             if let item = item(at: pathKeys) {
-            
-                switch item.type {
                 
+                switch item.type {
+                    
                 // While a NULL may be changed into other types, this probably won't ever happen.
                 case .null:
                     if let b = boolFromAny(value) {
@@ -1030,7 +1116,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
                         NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
                         return
                     }
-                
+                    
                 // Update a bool
                 case .bool:
                     if let b = boolFromAny(value) {
@@ -1061,14 +1147,14 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             }
             super.setValue(value, forKey: key)
         }
-    
+        
         
         /// Retrieves the value from a child item.
         
         public override func value(forKey key: String) -> Any? {
-        
+            
             let pathKeys = key.components(separatedBy: ".")
-
+            
             if let item = item(at: pathKeys) {
                 switch item.type {
                 case .null: return nil
@@ -1081,15 +1167,15 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
             return super.value(forKey: key)
         }
     }
-
+    
 #endif
 
 
 // MARK: - The Equatable protocol
 
 extension VJson {
-
-
+    
+    
     /// Implementation note: does not check the parent and the createdBySubscript members.
     
     public static func == (lhs: VJson, rhs: VJson) -> Bool {
@@ -1167,7 +1253,7 @@ extension VJson {
             }
         }
     }
-
+    
     
     /// True if this object contains a JSON NULL object.
     
@@ -1201,61 +1287,21 @@ extension VJson {
     /// True if this object contains a JSON OBJECT object.
     
     public var isObject: Bool { return self.type == JType.object }
-
     
-    /// Checks if a type change is allowed.
+    
+    /// Checks if a type conversion is allowed.
     ///
     /// - Parameters:
     ///   - from: The type to change from.
     ///   - to: The type to change to
     ///
-    /// - Returns: True when the type change is allowed false otherwise.
-
-    public static func typeChangeIsAllowed(from old: JType, to new: JType) -> Bool {
-        if !VJson.fatalErrorOnTypeConversion { return true }
+    /// - Returns: True when the type conversion is allowed false otherwise.
+    
+    public static func typeConversionIsAllowed(from old: JType, to new: JType) -> Bool {
         if old == .null { return true }
         if new == .null { return true }
         if old == new { return true }
-        return false
-    }
-    
-    
-    /// Raises a fatal error is a type change is not allowed.
-    ///
-    /// - Parameters:
-    ///   - from: The type to change from.
-    ///   - to: The type to change to
-    ///
-    /// - Returns: When the type change is allowed it will return, otherwise a fatal error will be raised.
-    
-    public static func fatalIfTypeChangeNotAllowed(from old: JType, to new: JType) {
-        if typeChangeIsAllowed(from: old, to: new) { return }
-        fatalError("Type change from \(old) to \(new) is not supported.")
-    }
-    
-    
-    /// Changes the type of self to the specified type. If a type change is performed, the internal variables may be affected. If the newType is the same as the current type, no changes will be made except for the "createdBySubscript" which will be set to false.
-    ///
-    /// Data members "bool", "number", "string" and "children" will be reset to 'nil'. "parent" and "name" will be unaffected.
-    ///
-    /// - Parameter to: The type to convert self to.
-    
-    fileprivate func changeTypeConditionally(to newType: JType) {
-    
-        createdBySubscript = false
-
-        if self.type == newType { return }
-        
-        VJson.fatalIfTypeChangeNotAllowed(from: self.type, to: newType)
-        
-        bool = nil
-        number = nil
-        string = nil
-        children = nil
-        
-        if newType == .object || newType == .array { children = Children(parent: self) }
-        
-        self.type = newType
+        return typeConversion == .allowed
     }
 }
 
@@ -1266,10 +1312,29 @@ extension VJson {
     
     
     /// Accessor for the name of this item if it is a name/value pair. Nil otherwise.
+    ///
+    /// - Note: It is not possible to assign 'nil' to the name if this object is contained in a parent of type OBJECT.
     
     public var nameValue: String? {
         get { return name }
-        set { name = newValue }
+        set {
+            if let parent = parent {
+                
+                // Cannot assign nil if parent needs a name for its children
+                if (parent.type == .object) && (newValue == nil) {
+                    return
+                }
+                
+                // Make sure this object's name is not in the cache
+                if let name = name {
+                    _ = parent.children?.objectMemberCache?.removeValue(forKey: name)
+                }
+            }
+            if newValue != name {
+                recordUndoActionRevertName(newName: newValue)
+                name = newValue
+            }
+        }
     }
     
     
@@ -1288,7 +1353,33 @@ extension VJson {
     
     public var nullValue: Bool? {
         get { return type == .null ? true : nil }
-        set { changeTypeConditionally(to: .null) }
+        set {
+            switch self.type {
+                
+            case .null:
+                recordUndoActionToNull()
+                self.createdBySubscript = false
+                
+            case .bool:
+                recordUndoActionToBool()
+                self.bool = nil
+                
+            case .number:
+                recordUndoActionToNumber()
+                self.number = nil
+                
+            case .string:
+                recordUndoActionToString()
+                self.string = nil
+                
+            case .object, .array:
+                removeAll()
+                recordUndoActionToTypeWithChildren()
+                self.children = nil
+            }
+            
+            self.type = .null
+        }
     }
     
     
@@ -1321,11 +1412,48 @@ extension VJson {
     public var boolValue: Bool? {
         get { return bool }
         set {
-            if newValue == nil {
-                changeTypeConditionally(to: .null)
+            // If the newValue is a nil is then make this a null instead.
+            if let value = newValue {
+                
+                if (type != .bool) || (bool != value) {
+                    
+                    if VJson.typeConversionIsAllowed(from: self.type, to: .bool) {
+                        
+                        switch self.type {
+                            
+                        case .null:
+                            recordUndoActionToNull()
+                            self.createdBySubscript = false
+                            
+                        case .bool:
+                            recordUndoActionToBool()
+                            
+                        case .number:
+                            recordUndoActionToNumber()
+                            self.number = nil
+                            
+                        case .string:
+                            recordUndoActionToString()
+                            self.string = nil
+                            
+                        case .array, .object:
+                            removeAll()
+                            recordUndoActionToTypeWithChildren()
+                            self.children = nil
+                        }
+                        
+                        self.bool = value
+                        self.type = .bool
+                        
+                    } else {
+                        
+                        if VJson.typeConversion == .fatalError {
+                            fatalError("Type conversion from \(self.type) to \(JType.bool) is not allowed")
+                        }
+                    }
+                }
             } else {
-                changeTypeConditionally(to: .bool)
-                bool = newValue
+                nullValue = true
             }
         }
     }
@@ -1372,11 +1500,49 @@ extension VJson {
     public var numberValue: NSNumber? {
         get { return number?.copy() as? NSNumber }
         set {
-            if newValue == nil {
-                changeTypeConditionally(to: .null)
+            // If the newValue is a nil is then make this a null instead.
+            if let value = newValue {
+                
+                if (type != .number) || (number?.compare(value) != ComparisonResult.orderedSame) {
+                    
+                    
+                    if VJson.typeConversionIsAllowed(from: self.type, to: .number) {
+                        
+                        switch self.type {
+                            
+                        case .null:
+                            recordUndoActionToNull()
+                            self.createdBySubscript = false
+                            
+                        case .bool:
+                            recordUndoActionToBool()
+                            self.bool = nil
+                            
+                        case .number:
+                            recordUndoActionToNumber()
+                            
+                        case .string:
+                            recordUndoActionToNumber()
+                            self.string = nil
+                            
+                        case .array, .object:
+                            removeAll()
+                            recordUndoActionToTypeWithChildren()
+                            self.children = nil
+                        }
+                        
+                        self.number = value.copy() as? NSNumber
+                        self.type = .number
+                        
+                    } else {
+                        
+                        if VJson.typeConversion == .fatalError {
+                            fatalError("Type conversion from \(self.type) to \(JType.number) is not allowed")
+                        }
+                    }
+                }
             } else {
-                changeTypeConditionally(to: .number)
-                number = newValue?.copy() as? NSNumber
+                nullValue = true
             }
         }
     }
@@ -1696,11 +1862,48 @@ extension VJson {
             return self.string?.replacingOccurrences(of: "\\\"", with: "\"")
         }
         set {
-            if newValue == nil {
-                changeTypeConditionally(to: .null)
+            // If the newValue is a nil is then make this a null instead.
+            if let value = newValue?.replacingOccurrences(of: "\"", with: "\\\"") {
+                
+                if (type != .string) || (string != value) {
+                    
+                    if VJson.typeConversionIsAllowed(from: self.type, to: .string) {
+                        
+                        switch self.type {
+                            
+                        case .null:
+                            recordUndoActionToNull()
+                            self.createdBySubscript = false
+                            
+                        case .bool:
+                            recordUndoActionToBool()
+                            self.bool = nil
+                            
+                        case .number:
+                            recordUndoActionToNumber()
+                            self.number = nil
+                            
+                        case .string:
+                            recordUndoActionToNumber()
+                            
+                        case .array, .object:
+                            removeAll()
+                            recordUndoActionToTypeWithChildren()
+                            self.children = nil
+                        }
+                        
+                        self.type = .string
+                        self.string = value
+                        
+                    } else {
+                        
+                        if VJson.typeConversion == .fatalError {
+                            fatalError("Type conversion from \(self.type) to \(JType.string) is not allowed")
+                        }
+                    }
+                }
             } else {
-                changeTypeConditionally(to: .string)
-                string = newValue?.replacingOccurrences(of: "\"", with: "\\\"")
+                nullValue = true
             }
         }
     }
@@ -1747,11 +1950,11 @@ extension VJson {
 // MARK: - JSON ARRAY and OBJECT
 
 extension VJson {
-
+    
     
     /// A wrapper for the child items, used only for ARRAYs and OBJECTs
     
-    public class Children {
+    fileprivate class Children {
         
         
         // May only be created internally
@@ -1766,7 +1969,7 @@ extension VJson {
         
         // A chache that is used to speed up access to OBJECT items
         
-        private var objectMemberCache: Dictionary<String, VJson>?
+        fileprivate var objectMemberCache: Dictionary<String, VJson>?
         
         
         // Enables or disables the cache
@@ -1819,13 +2022,25 @@ extension VJson {
         public var count: Int { return items.count }
         
         
+        /// Returns the child at the given index or nil if the index is out of bounds
+        ///
+        /// - Parameter at: The interger of the requested child.
+        
+        fileprivate func child(at index: Int) -> VJson? {
+            if (index >= items.startIndex) && (index < items.endIndex) {
+                return items[index]
+            }
+            return nil
+        }
+        
+        
         /// Returns the index of the given child item.
         ///
         /// - Parameter of: The child to be found.
         ///
         /// - Returns: The index of the requested child, or nil if not found.
         
-        fileprivate func index(ofChild child: VJson?) -> Int? {
+        fileprivate func index(of child: VJson?) -> Int? {
             guard let child = child else { return nil }
             for (index, item) in items.enumerated() {
                 if item === child { return index } // Compare and break if the child is found
@@ -1850,69 +2065,20 @@ extension VJson {
         }
         
         
-        /// Add the given child item to the end of the existing children
-        ///
-        /// - Parameter child: The child to be added.
-        ///
-        /// - Returns: The child that was added.
-        
-        @discardableResult
-        fileprivate func append(_ child: VJson?) -> VJson? {
-            guard let child = child else { return parent }
-            
-            child.parent = parent // Ensures the child's parent is always set
-            items.append(child)
-            return child
-        }
-        
-        
-        /// Add the given child items to the end of the existing children
-        ///
-        /// - Parameter array: The array with new child items.
-        
-        fileprivate func append(_ array: Array<VJson>) {
-            array.forEach() { append($0) }
-        }
-        
-        
         /// Inserts the given child item at the specified position.
         ///
         /// - Parameters:
         ///   - child: The item to be inserted.
-        ///   - at: The index where to insert the child.
-        ///
-        /// - Returns: The inserted item.
+        ///   - at: The index where to insert the child. If the index is set to endIndex the child will be appended.
         
         @discardableResult
-        fileprivate func insert(_ child: VJson?, at index: Int) -> VJson? {
-            guard let child = child else { return parent }
-            guard index < items.count else { return nil }
-            guard index >= 0 else { return nil }
+        fileprivate func insert(_ child: VJson?, at index: Int) {
+            guard let child = child else { return }
+            guard index <= items.count else { return }
+            guard index >= 0 else { return }
             
             child.parent = parent // Ensures the child's parent is always set
             items.insert(child, at: index)
-            return child
-        }
-        
-        
-        /// Replaces the child at the specified index with the new child.
-        ///
-        /// - Parameters:
-        ///   - childAt: The index of the child to be replaced.
-        ///   - with: The child item to be placed at the specified index.
-        ///
-        /// - Returns: The inserted child.
-        
-        @discardableResult
-        fileprivate func replace(childAt index: Int, with child: VJson?) -> VJson? {
-            guard let child = child else { return parent }
-            guard index < items.count else { return nil }
-            guard index >= 0 else { return nil }
-            
-            items[index].parent = nil // The child at the index will no longer be a child
-            child.parent = parent // Ensures the child's parent is always set
-            items[index] = child
-            return child
         }
         
         
@@ -1923,7 +2089,7 @@ extension VJson {
         /// - Returns: The child that was removed, or nil if the index did not exist.
         
         @discardableResult
-        fileprivate func remove(childAt index: Int) -> VJson? {
+        fileprivate func remove(at index: Int) -> VJson? {
             guard index < items.count else { return nil }
             guard index >= 0 else { return nil }
             
@@ -1942,41 +2108,12 @@ extension VJson {
         fileprivate func remove(_ child: VJson?) -> VJson? {
             guard let child = child else { return parent }
             
-            if let index = index(ofChild: child) {
+            if let index = index(of: child) {
                 items[index].parent = nil // Make sure it is decoupled from the parent
                 return items.remove(at: index)
             } else {
                 return nil
             }
-        }
-        
-        
-        /// Remove all child items that are identical to the specified child item.
-        ///
-        /// - Parameter childrenWith: The child against which to compare the internal items.
-        ///
-        /// - Returns: The number of children removed.
-        
-        @discardableResult
-        fileprivate func remove(childrenWith name: String?) -> Int {
-            guard let name = name else { return 0 }
-            
-            var result = 0
-            for i in (0 ..< items.count).reversed() {
-                if items[i].name == name {
-                    remove(childAt: i)
-                    result += 1 // Count the number of removed children
-                }
-            }
-            return result
-        }
-        
-        
-        /// Removes all children.
-        
-        fileprivate func removeAll() {
-            items.forEach(){ $0.parent = nil }
-            items.removeAll()
         }
         
         
@@ -1999,24 +2136,18 @@ extension VJson {
             return objectMemberCache?[key]
         }
     }
-
-
-    /// Returns a copy of the child items in this object if this object contains a JSON ARRAY or JSON OBJECT. An empty array for all other JSON types.
-    
-    public var arrayValue: Array<VJson> {
-        guard type == .array || type == .object else { return [] }
-        var arr: Array<VJson> = []
-        children?.items.forEach(){ arr.append($0.duplicate) }
-        return arr
-    }
     
     
-    /// Returns a copy of the children in a dictionary if this object contains a JSON OBJECT. An empty dictionary for all other JSON types.
+    /// Returns a copy of the all child items in this object.
+    
+    public var arrayValue: Array<VJson> { return children?.items.map { $0.duplicate } ?? [] }
+    
+    
+    /// Returns a copy of all children with a name.
     
     public var dictionaryValue: Dictionary<String, VJson> {
-        if type != .object { return [:] }
         var dict: Dictionary<String, VJson> = [:]
-        children?.items.forEach(){
+        children?.items.forEach {
             if let name = $0.name {
                 dict[name] = $0.duplicate
             }
@@ -2037,66 +2168,33 @@ extension VJson {
     public var nofChildren: Int {
         return children?.count ?? 0
     }
-
-    
-    /// Removes all children from either ARRAY or OBJECT
-    
-    public func removeAllChildren() {
-        children?.removeAll()
-    }
     
     
-    /// Removes the child items from self that are equal to the given item. Self must be an ARRAY or OBJECT.
+    /// Turns the JSON ARRAY in this object into a JSON OBJECT.
     ///
-    /// - Note: The parent is not compared when testing for equal.
-    ///
-    /// - Parameters:
-    ///   - childrenEqualTo: The item to compare against.
-    ///
-    /// - Returns: The number of child items removed.
+    /// Any child that does not have a name will receive its index as its name.
     
-    public func remove(childrenEqualTo item: VJson?) -> Int {
-        guard type == .array || type == .object else { return 0 }
+    public func arrayToObject() {
         var count = 0
-        if let indicies = children?.index(ofChildrenEqualTo: item) {
-            for index in indicies.reversed() {
-                _ = children?.remove(childAt: index)
-                count += 1
+        children?.items.forEach {
+            if !$0.hasName {
+                $0.nameValue = count.description // Note: Will be registered as an undo action
             }
+            count += 1
         }
-        return count
-    }
-
-    
-    /// Turns the JSON ARRAY in this object into a JSON OBJECT. Note that this can only succeed if all child items have a name. (I.e. are name/value pairs)
-    ///
-    /// - Returns: true if the conversion was successful. False otherwise.
-    
-    @discardableResult
-    public func arrayToObject() -> Bool {
-        if type != .array { return false }
-        for child in children?.items ?? [] {
-            if !child.hasName { return false }
-        }
+        recordUndoActionRevertType()
         self.type = .object
-        return true
     }
     
     
     /// Turns the JSON OBJECT in this object into a JSON ARRAY.
-    ///
-    /// Note that the names will be preserved until the array is saved. Then they will be discarded.
-    ///
-    /// - Returns: True if succesful.
     
-    @discardableResult
-    public func objectToArray() -> Bool {
-        if type != .object { return false }
-        type = .array
-        return true
+    public func objectToArray() {
+        recordUndoActionRevertType()
+        self.type = .array
     }
     
-
+    
     /// Controls the status of the dictionary cache for JSON OBJECTs. The dictionary cache can be used to speed up subscript access. As a ROM when looking for an OBJECT members 3 times or more, the cache will pay back its overhead. In some cases 2 times may be enough. More than 3 times is generally always quicker with cache enabled.
     ///
     /// - Note: The dictionary cache will speed up access for OBJECT members, but will "lose" members with duplicate names. I.e. a {"one":1, "one":2} object will only contain {"one":2} when caching is enabled. However the lost member is still present in the "children" array and will be saved (or be part of the generated code).
@@ -2129,6 +2227,104 @@ extension VJson {
     }
     
     
+    /// Converts this type to an object (if allowed)
+    
+    public func convertToObject() {
+        
+        if VJson.typeConversionIsAllowed(from: self.type, to: JType.object) {
+            
+            switch self.type {
+                
+            case .null:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNull()
+                type = .object
+                children = Children(parent: self)
+                
+            case .bool:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToBool()
+                bool = nil
+                type = .object
+                children = Children(parent: self)
+                
+            case .number:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNumber()
+                number = nil
+                type = .object
+                children = Children(parent: self)
+                
+            case .string:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToString()
+                string = nil
+                type = .object
+                children = Children(parent: self)
+                
+            case .object: break
+                
+            case .array: arrayToObject()
+            }
+            
+        } else {
+            
+            if VJson.typeConversion == .fatalError {
+                fatalError("Type conversion from \(self.type) to \(JType.object) is not allowed")
+            }
+        }
+    }
+    
+    
+    /// Converts this type to an array (if allowed)
+    
+    public func convertToArray() {
+        
+        if VJson.typeConversionIsAllowed(from: self.type, to: JType.array) {
+            
+            switch self.type {
+                
+            case .null:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNull()
+                type = .array
+                children = Children(parent: self)
+                
+            case .bool:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToBool()
+                bool = nil
+                type = .array
+                children = Children(parent: self)
+                
+            case .number:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNumber()
+                number = nil
+                type = .array
+                children = Children(parent: self)
+                
+            case .string:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToString()
+                string = nil
+                type = .array
+                children = Children(parent: self)
+                
+            case .object: objectToArray()
+                
+            case .array: break
+            }
+            
+        } else {
+            
+            if VJson.typeConversion == .fatalError {
+                fatalError("Type conversion from \(self.type) to \(JType.object) is not allowed")
+            }
+        }
+    }
+    
+    
     /// Returns a new VJson object with a JSON ARRAY containing the given items. Only those items that have their 'parent' member set to 'nil' will be included.
     ///
     /// - Parameters:
@@ -2139,11 +2335,7 @@ extension VJson {
     public convenience init(_ items: [VJson?], name: String? = nil, includeNil: Bool = false) {
         self.init(type: .array, name: name)
         let parentIsNilItems = items.filter(){ return $0?.parent == nil }
-        if includeNil {
-            self.children?.append(parentIsNilItems.map(){ $0 ?? VJson.null()})
-        } else {
-            self.children?.append(parentIsNilItems.flatMap(){$0})
-        }
+        append(children: parentIsNilItems, includeNil: includeNil)
     }
     
     
@@ -2173,7 +2365,7 @@ extension VJson {
             item.name = pname
             newItems.append(item)
         }
-        self.children?.append(newItems)
+        append(children: newItems)
     }
     
     
@@ -2191,26 +2383,25 @@ extension VJson {
             jitem.name = name
             newItems.append(jitem)
         }
-        self.children?.append(newItems)
+        append(children: newItems)
     }
 }
 
 
-// MARK: - Child manipulation of JSON ARRAYs
+// MARK: - Child manipulation
 
 extension VJson {
-
     
-    /// Returns the child at the given index if it exists. Self must be a JSON ARRAY item.
+    
+    /// Returns a reference to the child at the given index if it exists.
     ///
     /// - Parameters:
     ///   - at: The index of the requested child.
     ///
-    /// - Returns: The object or nil if no object exists at the given index. If self is not an array, it also returns nil.
+    /// - Returns: The object or nil if no object exists at the given index.
     
     public func child(at index: Int) -> VJson? {
-        guard type == .array else { return nil }
-        return self|index
+        return children?.child(at: index)
     }
     
     
@@ -2221,12 +2412,10 @@ extension VJson {
     ///
     /// - Returns: The index of the child if it is present. Nil if none was found.
     
-    public func index(ofChild child: VJson?) -> Int? {
-        guard let child = child else { return nil }
-        guard type == .array else { return nil }
-        return children?.index(ofChild: child)
+    public func index(of child: VJson?) -> Int? {
+        return children?.index(of: child)
     }
-
+    
     
     /// The indicies of the children with identical contents as the given child. An empty array if no comparable child is found. Self must be a JSON ARRAY item.
     ///
@@ -2236,188 +2425,72 @@ extension VJson {
     /// - Returns: The indicies of the child items with the same content. An empty array if none was found.
     
     public func index(ofChildrenEqualTo item: VJson?) -> [Int] {
-        guard let item = item else { return [] }
-        guard type == .array else { return [] }
         return children?.index(ofChildrenEqualTo: item) ?? []
     }
-
     
-    /// Removes the given object from self. Self must be an array.
+    
+    /// Removes the child at the given index.
     ///
-    /// - Parameters:
-    ///   - child: The child object to remove.
+    /// - Parameter index: The index at which to remove a child.
     ///
-    /// - Returns: Nil on failure, the item that was removed on success.
+    /// - Returns: The child that was removed. Nil if the index was invalid.
     
     @discardableResult
-    public func remove(child item: VJson?) -> VJson? {
-        guard type == .array else { return nil }
-        if let index = children?.index(ofChild: item) {
-            return children?.remove(childAt: index)
-        } else {
-            return nil
+    public func remove(at index: Int) -> VJson? {
+        if let removedChild = children?.remove(at: index) {
+            recordUndoActionInsert(child: removedChild, at: index)
+            return removedChild
+        }
+        return nil
+    }
+    
+    
+    /// Removes all children
+    
+    public func removeAll() {
+        if nofChildren > 0 {
+            remove(at: nofChildren - 1)
         }
     }
     
     
-    /// Replaces the child at the given index with the given child. Self must be a JSON ARRAY item.
+    /// Removes self from the JSON hierarchy if this is not the root item. The root item cannot be removed.
     ///
-    /// - Parameters:
-    ///   - childAt: The index of the child to be replaced.
-    ///   - with: The VJson object to be inserted.
-    ///
-    /// - Returns: The inserted child, or nil if an error occured.
+    /// - Returns: True on sucess, false on failure.
     
-    @discardableResult
-    public func replace(childAt index: Int, with child: VJson?) -> VJson? {
-        guard let child = child else { return nil }
-        guard type == .array else { return nil }
-        return children?.replace(childAt: index, with: child)
-    }
-
-    
-    /// Inserts the given child at the given index. Self must be a JSON ARRAY item.
-    ///
-    /// - Parameters:
-    ///   - child: The VJson object to be inserted.
-    ///   - at index: The index at which it will be inserted. Must be >= 0 && < nofChildren to succeed.
-    ///
-    /// - Returns: The inserted child, or nil if an error occured.
-    
-    @discardableResult
-    public func insert(_ child: VJson?, at index: Int) -> VJson? {
-        guard let child = child else { return nil }
-        changeTypeConditionally(to: .array)
-        guard type == .array else { return nil }
-        return children?.insert(child, at: index)
-    }
-    
-    
-    /// Appends the given object to the end of the array. Self must be a JSON ARRAY.
-    ///
-    /// - Parameters:
-    ///   - child: The VJson object to be appended.
-    ///
-    /// - Returns: The appended child, or nil if an error occured.
-    
-    @discardableResult
-    public func append(_ child: VJson?) -> VJson? {
-        guard let child = child else { return nil }
-        changeTypeConditionally(to: .array)
-        guard type == .array else { return nil }
-        return children?.append(child)
-    }
-
-    
-    /// Appends the given object to the end of the array. Self must be a JSON ARRAY.
-    ///
-    /// - Parameters:
-    ///   - child: The VJson object to be appended.
-    ///
-    /// - Returns: The appended child, or nil if an error occured.
-    
-    @discardableResult
-    public func append(_ item: VJsonSerializable?) -> VJson? {
-        return append(item?.json)
-    }
-
-    
-    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY.
-    ///
-    /// - Parameters:
-    ///   - children: The items to add.
-    ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
-    
-    public func append(children items: [VJson?]?, includeNil: Bool = false) {
-        guard let items = items else { return }
-        items.forEach() {
-            if $0 == nil {
-                if includeNil { append(VJson.null()) }
-            } else {
-                append($0)
+    public func remove() -> Bool {
+        if let p = parent {
+            if let index = p.index(of: self) {
+                p.remove(at: index)
+                return true
             }
         }
+        return false
     }
-
     
-    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY.
+    
+    /// Removes the child items from self that are equal to the given item.
+    ///
+    /// - Note: The parent is not compared against when testing for equal.
     ///
     /// - Parameters:
-    ///   - children: The items to add.
-    ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
-
-    public func append(children items: [VJsonSerializable?]?, includeNil: Bool = false) {
-        guard let items = items else { return }
-        let newItems = items.map() { $0?.json }
-        append(children: newItems, includeNil: includeNil)
-    }
-}
-
-
-// MARK: - Child manipulation of JSON OBJECTs
-
-extension VJson {
-    
-    
-    /// Returns the child with the requested name, if any.
+    ///   - childrenEqualTo: The item to compare against.
     ///
-    /// - Parameters:
-    ///   - name: The name of the requested child.
-    ///
-    /// - Returns: The requested child if it is present, nil otherwise.
+    /// - Returns: The number of child items removed.
     
-    public func child(with name: String) -> VJson? {
-        guard type == .object else { return nil }
-        return self|name
+    public func remove(childrenEqualTo item: VJson?) -> Int {
+        var count = 0
+        if let indicies = children?.index(ofChildrenEqualTo: item) {
+            for index in indicies.reversed() {
+                remove(at: index)
+                count += 1
+            }
+        }
+        return count
     }
     
     
-    /// Return all children with the given name. The count will be zero if no child with the given name exists.
-    ///
-    // - Parameter with: The name of the sought after child items.
-    ///
-    /// - Returns: An array with the found child items, may be empty.
-
-    public func children(with name: String) -> [VJson] {
-        guard type == .object else { return [] }
-        return self.children?.items.filter(){ $0.name == name } ?? []
-    }
-    
-    
-    /// Add a new item with the given name or replace a current item with that same name (when "replace" = 'true'). Self must contain a JSON OBJECT item or a NULL. If it is a NULL it will be converted into an OBJECT.
-    ///
-    /// - Parameters:
-    ///   - child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the child item.
-    ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
-    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
-    /// - Returns: The child that was added or nil on failure.
-    
-    @discardableResult
-    public func add(_ child: VJson?, for name: String? = nil, replace: Bool = true) -> VJson? {
-        guard let child = child else { return nil }
-        if name == nil && !child.hasName { return nil }
-        changeTypeConditionally(to: .object)
-        if name != nil { child.name = name }
-        if replace { children?.remove(childrenWith: child.name) }
-        return children?.append(child)
-    }
-
-    
-    /// Add a new item with the given name or replace a current item with that same name (when "replace" = 'true'). Self must contain a JSON OBJECT item or a NULL. If it is a NULL it will be converted into an OBJECT.
-    ///
-    /// - Parameters:
-    ///   - child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the child item.
-    ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
-    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
-    /// - Returns: The child that was added or nil on failure.
-
-    @discardableResult
-    public func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) -> VJson? {
-        return add(item?.json, for: name, replace: replace)
-    }
-    
-    
-    /// Removes all children with the given name from this object only. Self must contain a JSON OBJECT.
+    /// Removes all children with the given name from this object only.
     ///
     /// - Parameters:
     ///   - childrenWith: The name of the child items to be removed.
@@ -2426,8 +2499,210 @@ extension VJson {
     
     @discardableResult
     public func remove(childrenWith name: String) -> Int {
-        guard type == .object else { return 0 }
-        return children?.remove(childrenWith: name) ?? 0
+        var counter = 0
+        for (i, item) in (children?.items ?? []).enumerated().reversed() {
+            if item.name == name {
+                remove(at: i)
+                counter += 1 // Count the number of removed children
+            }
+        }
+        return counter
+    }
+    
+    
+    /// Move the child from one index to another.
+    ///
+    /// - Parameters:
+    ///   - from: The index of the child to move. If this index is invalid (<0 or >= nofChildren) then nothing will be done.
+    ///   - to: The index of the location where to move the child to. If this index <= 0 then the child will be moved to index 0, if this index >= nofChildren then the child will be moved to the end.
+    
+    public func move(from: Int, to: Int) {
+        guard from >= 0, from < nofChildren else { return }
+        guard let insertionIndex = children?.items.clamp(to) else { return }
+        if from == insertionIndex { return }
+        // First remove, then insert. Otherwise the parent will be set to nil.
+        let child = remove(at: from)
+        if insertionIndex > from {
+            // Removing the child changed the insertion point.
+            insert(child, at: (insertionIndex - 1))
+        } else {
+            insert(child, at: insertionIndex)
+        }
+    }
+    
+    
+    /// Replaces the child at the given index with the given child. If no child is given it is functionaly equivalent to 'remove(at index: Int)'
+    ///
+    /// - Parameters:
+    ///   - childAt: The index of the child to be replaced.
+    ///   - with: The VJson object to be inserted.
+    ///
+    /// - Returns: The removed child, or nil if an error occured.
+    
+    @discardableResult
+    public func replace(at index: Int, with child: VJson?) -> VJson? {
+        let removedChild = remove(at: index)
+        if let child = child { insert(child, at: index) }
+        return removedChild
+    }
+    
+    
+    /// Inserts the given child at the given index.
+    ///
+    /// - Parameters:
+    ///   - child: The VJson object to be inserted.
+    ///   - at index: The index at which it will be inserted. Must be >= 0 && <= nofChildren to succeed. If index == nofChildren then the child will be appended.
+    
+    @discardableResult
+    public func insert(_ child: VJson?, at index: Int) {
+        guard let child = child else { return }
+        guard (index >= 0) && (index <= nofChildren) else { return }
+        recordUndoActionRemove(at: index)
+        children?.insert(child, at: index)
+    }
+    
+    
+    /// Appends the given object to the end of the children.
+    ///
+    /// - Parameters:
+    ///   - child: The VJson object to be appended.
+    
+    @discardableResult
+    public func append(_ child: VJson?) {
+        insert(child, at: nofChildren)
+    }
+    
+    
+    /// Appends the given object to the end of the children.
+    ///
+    /// - Parameters:
+    ///   - item: The object to be serialized and appended.
+    
+    @discardableResult
+    public func append(_ item: VJsonSerializable?) {
+        if let child = item?.json {
+            insert(child, at: nofChildren)
+        }
+    }
+    
+    
+    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY.
+    ///
+    /// - Parameters:
+    ///   - children: The items to add.
+    ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
+    
+    public func append(children items: [VJson?], includeNil: Bool = false) {
+        items.forEach {
+            if $0 == nil {
+                if includeNil { insert(VJson.null(), at: nofChildren) }
+            } else {
+                insert($0, at: nofChildren)
+            }
+        }
+    }
+    
+    
+    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY.
+    ///
+    /// - Parameters:
+    ///   - children: The items to add.
+    ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
+    
+    public func append(children items: [VJsonSerializable?], includeNil: Bool = false) {
+        items.forEach {
+            if let item = $0 {
+                insert(item.json, at: nofChildren)
+            } else {
+                if includeNil {
+                    insert(VJson.null(), at: nofChildren)
+                }
+            }
+        }
+    }
+    
+    
+    /// Returns a reference to the first child with the requested name, if any.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the requested child.
+    ///
+    /// - Returns: The requested child if it is present, nil otherwise.
+    
+    public func child(with name: String) -> VJson? {
+        return self|name
+    }
+    
+    
+    /// Return an array with references to children with the given name. The count will be zero if no child with the given name exists.
+    ///
+    // - Parameter with: The name of the sought after child items.
+    ///
+    /// - Returns: An array with the found child items, may be empty.
+    
+    public func children(with name: String) -> [VJson] {
+        return self.children?.items.filter(){ $0.name == name } ?? []
+    }
+    
+    
+    /// Add a new child. If this is a replace (default) and there is an effective name (either from the child or a specified name) then the current children with the effective name will be removed. If there is no child, nothing will be added.
+    ///
+    /// - Parameters:
+    ///   - child: The child that should replace or be appended. The child should have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the child item.
+    ///   - name: If nil, the child should already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
+    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
+    
+    public func add(_ child: VJson?, for name: String? = nil, replace: Bool = true) {
+        
+        
+        // Remove the children with the effective name if this is a replace
+        
+        if replace {
+            
+            
+            // Get the effective name
+            
+            var aName: String?
+            if let name = child?.name { aName = name } // Will overwrite when a name is given
+            if let name = name { aName = name }
+            
+            
+            // Need a name for replacing
+            
+            if let name = aName {
+                
+                remove(childrenWith: name)
+            }
+        }
+        
+        
+        if let child = child {
+            
+            // Add the new child
+            
+            append(child)
+            
+            
+            // Change the name if a name was specified.
+            // This must be done after appending, otherwise the undo registration can fail.
+            
+            if let name = name {
+                child.nameValue = name
+            }
+        }
+    }
+    
+    
+    /// Add a new child representing the item. If this is a replace (default) and there is an effective name (either from the item or a specified name) then the current children with the effective name will be removed. If there is no item, nothing will be added.
+    ///
+    /// - Parameters:
+    ///   - item: The item for which a VJson object should be replace or be appended.
+    ///   - name: If non-nil, then this name will be used and the name of the item (if present) will be overwritten.
+    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
+    
+    public func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) {
+        guard let json = item?.json else { return }
+        return add(json, for: name, replace: replace)
     }
 }
 
@@ -2443,7 +2718,7 @@ extension VJson {
     ///   - at: An array of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of ["12"] can refer to the item at index 12 as well as the item for name "12".
     ///
     /// - Returns: the item at the given path if it exists. Otherwise nil.
-
+    
     public func item(at path: [String]) -> VJson? {
         
         if path.count == 0 {
@@ -2485,7 +2760,7 @@ extension VJson {
             }
         }
     }
-
+    
     /// Looks for a specific item in the hierachy.
     ///
     /// - Parameters:
@@ -2496,7 +2771,7 @@ extension VJson {
     public func item(at path: String ...) -> VJson? {
         return item(at: path)
     }
-
+    
     
     /// Looks for a specific item in the hierachy.
     ///
@@ -2525,6 +2800,86 @@ extension VJson {
     public func item(of: JType, at path: String ...) -> VJson? {
         return item(of: of, at: path)
     }
+    
+    
+    /// Returns the root of the hierarchy and the path from there to this item.
+    
+    public func location() -> (root: VJson, path: Array<String>)? {
+        
+        
+        // If there is no parent, this this is the top level and the path is empty.
+        
+        guard let _ = parent else { return (self, []) }
+        
+        
+        // The path that will be returned.
+        
+        var path: Array<String> = []
+        
+        
+        // The root that will be returned.
+        
+        var root: VJson
+        
+        
+        // The itteration variables
+        
+        var item: VJson? = self // Start at the 'bottom'
+        var nextUp: VJson? = self.parent
+        
+        repeat {
+            
+            root = item! // Only the last assignment will 'stick'
+            
+            
+            // Check if the path part is an array index or a name
+            
+            if (nextUp?.type ?? .object) == .array {
+                
+                
+                // Determine the array index
+                
+                if let index = nextUp?.index(of: item) {
+                    path.insert(index.description, at: 0)
+                } else {
+                    // Impossible
+                    assert(false, "Child not contained in parent.\nChild = \(item)\n\nParent = \(nextUp)")
+                }
+                
+            } else {
+                
+                
+                // There must be a name if the parent is non-nil
+                
+                if nextUp != nil {
+                    
+                    if let pathPart = item?.name {
+                        path.insert(pathPart, at: 0)
+                    } else {
+                        // Impossible
+                        assert(false, "The child from an object should always have a name.\nChild = \(item)\n\nParent = \(nextUp)")
+                    }
+                    
+                } else {
+                    
+                    // The parent is nil. For the top level object an empty path element should be returned. Hence nothing should be done here.
+                }
+            }
+            
+            
+            // Prepare for the next itteration
+            
+            item = nextUp
+            nextUp = nextUp?.parent
+            
+            
+            // Stop itterating if there are no more items
+            
+        } while item != nil
+        
+        
+        return (root, path)
+    }
 }
 
 
@@ -2549,33 +2904,29 @@ extension VJson {
     public func merge(with other: VJson) {
         
         
-        // Copy the name
-        
-        self.name = other.name
-        
-        
         // The other type drives the merge, for the simple types (non-array non-object) the other is simply copied.
         
         switch other.type {
             
         case .null:
-            changeTypeConditionally(to: .null);
-            return
+            
+            self.nullValue = true
+            
             
         case .bool:
-            changeTypeConditionally(to: .bool)
-            self.bool = other.bool
-            return
+            
+            self.boolValue = other.bool
+            
             
         case .string:
-            changeTypeConditionally(to: .string)
-            self.string = other.string
-            return
+            
+            self.stringValue = other.string
+            
             
         case .number:
-            changeTypeConditionally(to: .number)
-            self.number = other.numberValue
-            return
+            
+            self.numberValue = other.number
+            
             
         case .object:
             
@@ -2583,82 +2934,125 @@ extension VJson {
             
             switch self.type {
                 
-            case .null, .bool, .number, .string, .array:
-                changeTypeConditionally(to: .object)
+            case .null:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNull()
                 self.children = Children(parent: self)
-                self.children?.append(other.children?.items ?? [])
-                return
+                
+            case .bool:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToBool()
+                self.children = Children(parent: self)
+                
+            case .number:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNumber()
+                self.children = Children(parent: self)
+                
+            case .string:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToString()
+                self.children = Children(parent: self)
+                
+            case .array:
+                recordUndoActionRevertType()
                 
             case .object:
-                
-                // Override children with the same name as in others, add those that are not present.
-                
-                
-                // Adds a checkmark to each element, just to keep score.
-                
-                struct CheckBoxed<T> {
-                    var checked: Bool = false
-                    let value: T
-                    init(_ value: T) { self.value = value }
-                }
-                
-                
-                // Create a list of all self children with a marker for each
-                
-                var selfChildren: Array<CheckBoxed<VJson>> = []
-                self.children?.items.forEach({ selfChildren.append(CheckBoxed($0))})
-                
-                
-                // Any other children that are not contained in self children will be added in this array before adding them to self.
-                
-                var newChildren: Array<VJson> = []
-                
-                
-                // Merge self children with same name as other children
-                
-                for oc in other.children?.items ?? [] {
-                    var sc: VJson?
-                    for index in 0 ..< selfChildren.count {
-                        if !selfChildren[index].checked && (selfChildren[index].value.name == oc.name) {
-                            sc = selfChildren[index].value
-                            selfChildren[index].checked = true
-                            break
-                        }
-                    }
-                    if sc == nil {
-                        newChildren.append(oc)
-                    } else {
-                        sc?.merge(with: oc)
-                    }
-                }
-                
-                
-                // Add the new children in other to self
-                
-                self.children?.append(newChildren)
+                break
             }
+            
+            self.type = .object
+            
+            // Override children with the same name as in others, add those that are not present.
+            
+            
+            // Adds a checkmark to each element, just to keep score.
+            
+            struct CheckBoxed<T> {
+                var checked: Bool = false
+                let value: T
+                init(_ value: T) { self.value = value }
+            }
+            
+            
+            // Create a list of all self children with a marker for each
+            
+            var selfChildren: Array<CheckBoxed<VJson>> = []
+            self.children?.items.forEach({ selfChildren.append(CheckBoxed($0))})
+            
+            
+            // Any other children that are not contained in self children will be added in this array before adding them to self.
+            
+            var newChildren: Array<VJson> = []
+            
+            
+            // Merge self children with same name as other children
+            
+            for oc in other.children?.items ?? [] {
+                var sc: VJson?
+                for index in 0 ..< selfChildren.count {
+                    if !selfChildren[index].checked && (selfChildren[index].value.name == oc.name) {
+                        sc = selfChildren[index].value
+                        selfChildren[index].checked = true
+                        break
+                    }
+                }
+                if sc == nil {
+                    newChildren.append(oc)
+                } else {
+                    sc?.merge(with: oc)
+                }
+            }
+            
+            
+            // Add the new children in other to self
+            
+            self.append(children: newChildren)
             
             
         case .array:
             
             switch self.type {
-            case .null, .bool, .number, .string, .object:
-                changeTypeConditionally(to: .array)
+                
+            case .null:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNull()
                 self.children = Children(parent: self)
-                self.children?.append(other.arrayValue)
-                return
+                
+            case .bool:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToBool()
+                self.children = Children(parent: self)
+                
+            case .number:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToNumber()
+                self.children = Children(parent: self)
+                
+            case .string:
+                recordUndoActionToTypeWithoutChildren()
+                recordUndoActionToString()
+                self.children = Children(parent: self)
+                
+            case .object:
+                recordUndoActionRevertType()
                 
             case .array:
-                
-                for index in 0 ..< (other.children?.count ?? 0) {
-                    if index < (self.children?.count ?? 0) {
-                        self.children?.items[index].merge(with: other.children!.items[index])  // Force unwrap tested before use
-                    } else {
-                        _ = self.children?.append(other.children!.items[index])  // Force unwrap tested before use
-                    }
-                }
+                break
             }
+            
+            self.type = .array
+            
+            
+            // Add all the children in other to self
+            
+            self.append(children: other.arrayValue)
         }
+        
+        
+        // Copy the name
+        
+        self.nameValue = other.name
     }
 }
 
@@ -2734,7 +3128,7 @@ extension VJson: Sequence {
 // MARK: - Subscript support
 
 extension VJson {
-
+    
     
     /// Assigns/retrieves based on the given index.
     ///
@@ -2748,7 +3142,45 @@ extension VJson {
             
             // If this is an ARRAY object, then make sure there are enough elements and create the requested element
             
-            if type != .array { changeTypeConditionally(to: .array) }
+            if type != .array {
+                
+                if !VJson.typeConversionIsAllowed(from: self.type, to: .array) {
+                    if VJson.typeConversion == .fatalError {
+                        fatalError("Type conversion from \(self.type) to \(JType.array) is not allowed")
+                    }
+                    return
+                }
+                
+                switch self.type {
+                    
+                case .null:
+                    recordUndoActionToNull()
+                    recordUndoActionToTypeWithoutChildren()
+                    
+                case .bool:
+                    recordUndoActionToBool()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.bool = nil
+                    
+                case .number:
+                    recordUndoActionToNumber()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.number = nil
+                    
+                case .string:
+                    recordUndoActionToString()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.string = nil
+                    
+                case .object:
+                    recordUndoActionRevertType()
+                    
+                case .array:
+                    break
+                }
+                
+                self.type = .array
+            }
             
             
             // Ensure that enough elements are present in the array
@@ -2758,28 +3190,68 @@ extension VJson {
                 while index > (children.count - 1) {
                     let item = VJson.null()
                     item.createdBySubscript = true
-                    _ = children.append(item)
+                    self.append(item)
                 }
                 
-                children.replace(childAt: index, with: newValue)
+                replace(at: index, with: newValue)
             }
         }
         
         get {
             
-            
             // If this is an ARRAY object, then make sure there are enough elements and return the requested element
             
-            if type != .array { changeTypeConditionally(to: .array) }
+            if type != .array {
+                
+                if !VJson.typeConversionIsAllowed(from: self.type, to: .array) {
+                    if VJson.typeConversion == .fatalError {
+                        fatalError("Type conversion from \(self.type) to \(JType.array) is not allowed")
+                    }
+                    let null = VJson.null()
+                    null.createdBySubscript = true
+                    return null
+                }
+                
+                switch self.type {
+                    
+                case .null:
+                    recordUndoActionToNull()
+                    recordUndoActionToTypeWithoutChildren()
+                    
+                case .bool:
+                    recordUndoActionToBool()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.bool = nil
+                    
+                case .number:
+                    recordUndoActionToNumber()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.number = nil
+                    
+                case .string:
+                    recordUndoActionToString()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.string = nil
+                    
+                case .object:
+                    recordUndoActionRevertType()
+                    
+                case .array:
+                    break
+                }
+                
+                self.type = .array
+            }
             
             
             // Ensure that enough elements are present in the array
             
             if let children = children {
+                
                 while index > (children.count - 1) {
                     let item = VJson.null()
                     item.createdBySubscript = true
-                    _ = children.append(item)
+                    self.append(item)
                 }
             }
             
@@ -2801,7 +3273,45 @@ extension VJson {
             
             // If this is not an object type, change it into an object
             
-            if type != .object { changeTypeConditionally(to: .object) }
+            if type != .object {
+                
+                if !VJson.typeConversionIsAllowed(from: self.type, to: .object) {
+                    if VJson.typeConversion == .fatalError {
+                        fatalError("Type conversion from \(self.type) to \(JType.object) is not allowed")
+                    }
+                    return
+                }
+                
+                switch self.type {
+                    
+                case .null:
+                    recordUndoActionToNull()
+                    recordUndoActionToTypeWithoutChildren()
+                    
+                case .bool:
+                    recordUndoActionToBool()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.bool = nil
+                    
+                case .number:
+                    recordUndoActionToNumber()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.number = nil
+                    
+                case .string:
+                    recordUndoActionToString()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.string = nil
+                    
+                case .array:
+                    recordUndoActionRevertType()
+                    
+                case .object:
+                    break
+                }
+                
+                self.type = .object
+            }
             
             add(newValue, for: key)
         }
@@ -2811,7 +3321,47 @@ extension VJson {
             
             // If this is not an object type, change it into an object
             
-            if type != .object { changeTypeConditionally(to: .object) }
+            if type != .object {
+                
+                if !VJson.typeConversionIsAllowed(from: self.type, to: .object) {
+                    if VJson.typeConversion == .fatalError {
+                        fatalError("Type conversion from \(self.type) to \(JType.object) is not allowed")
+                    }
+                    let null = VJson.null()
+                    null.createdBySubscript = true
+                    return null
+                }
+                
+                switch self.type {
+                    
+                case .null:
+                    recordUndoActionToNull()
+                    recordUndoActionToTypeWithoutChildren()
+                    
+                case .bool:
+                    recordUndoActionToBool()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.bool = nil
+                    
+                case .number:
+                    recordUndoActionToNumber()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.number = nil
+                    
+                case .string:
+                    recordUndoActionToString()
+                    recordUndoActionToTypeWithoutChildren()
+                    self.string = nil
+                    
+                case .array:
+                    recordUndoActionRevertType()
+                    
+                case .object:
+                    break
+                }
+                
+                self.type = .object
+            }
             
             
             // If the requested object exist, return it
@@ -2883,8 +3433,8 @@ extension VJson {
                 for index in (0 ..< (children?.count ?? 0)).reversed() {
                     
                     if let child = children?[index] {
-                    
-                    
+                        
+                        
                         // Make sure that this value has all its subscript generated values removed
                         
                         if child.nofChildren > 0 { child.removeEmptySubscriptObjects() }
@@ -2904,7 +3454,7 @@ extension VJson {
                 // Actually remove items, if any.
                 // Note: Because of the reverse loop above, the indexes in itemsToBeRemoved count down.
                 
-                for i in itemsToBeRemoved { children!.remove(childAt: i) }
+                for i in itemsToBeRemoved { children!.remove(at: i) }
             }
         }
     }
@@ -2914,7 +3464,7 @@ extension VJson {
 // MARK: - Copying support
 
 extension VJson {
-
+    
     
     /// Returns a full in-depth copy of this JSON object. I.e. all child elements are also copied.
     
@@ -2926,13 +3476,13 @@ extension VJson {
         other.number = self.numberValue // Creates a copy of the NSNumber
         other.createdBySubscript = self.createdBySubscript
         for c in self.children?.items ?? [] {
-            _ = other.children?.append(c.duplicate)
+            _ = other.children?.insert(c.duplicate, at: nofChildren)
         }
         return other
     }
-
     
-    /// Replaces the content of self with the content of the given object, but it does not change the parent reference and the createdBySubscript will be set to false.
+    
+    /// Replaces the content of self with the content of the given object, but it does not change the parent reference and the createdBySubscript will be set to false. Any children in 'other' will be referenced, not copied.
     ///
     /// - Note: A fatalError is raised if a type change is attempeted but not supported.
     ///
@@ -2941,16 +3491,69 @@ extension VJson {
     /// - Returns: True if the operation was sucessful, false otherwise.
     
     @discardableResult
-    public func replaceContent(with other: VJson?) -> Bool {
+    fileprivate func replaceContent(with other: VJson?) -> Bool {
+        
         guard let other = other else { return false }
-        VJson.fatalIfTypeChangeNotAllowed(from: self.type, to: other.type)
+        
+        if !VJson.typeConversionIsAllowed(from: self.type, to: other.type) {
+            if VJson.typeConversion == .fatalError {
+                fatalError("Type conversion from \(self.type) to \(other.type) is not allowed")
+            }
+            return false
+        }
+        
+        switch other.type {
+            
+        case .null:
+            self.nullValue = true
+            
+        case .bool:
+            self.boolValue = other.bool
+            
+        case .number:
+            self.numberValue = other.numberValue
+            
+        case .string:
+            self.stringValue = other.stringValue
+            
+        case .array, .object:
+            
+            switch self.type {
+                
+            case .null:
+                recordUndoActionToNull()
+                recordUndoActionToTypeWithoutChildren()
+                self.children = Children(parent: self)
+                
+            case .bool:
+                recordUndoActionToBool()
+                recordUndoActionToTypeWithoutChildren()
+                self.children = Children(parent: self)
+                self.bool = nil
+                
+            case .number:
+                recordUndoActionToNumber()
+                recordUndoActionToTypeWithoutChildren()
+                self.children = Children(parent: self)
+                self.number = nil
+                
+            case .string:
+                recordUndoActionToString()
+                recordUndoActionToTypeWithoutChildren()
+                self.children = Children(parent: self)
+                self.string = nil
+                
+            case .array, .object:
+                removeAll()
+            }
+            
+            self.append(children: other.arrayValue)
+        }
+        
         self.type = other.type
-        self.bool = other.bool
-        self.string = other.string
-        self.number = other.numberValue // Creates a copy of the NSNumber if not nil
+        
         self.createdBySubscript = false
-        if other.children != nil { self.children = Children(parent: self) }
-        for child in other.children?.items ?? [] { _ = self.children?.append(child) }
+        
         return true
     }
     
@@ -2964,15 +3567,22 @@ extension VJson {
     /// - Returns: True if the operation was sucessful, false otherwise.
     
     @discardableResult
-    public func replaceSelfInParent(with other: VJson?) -> Bool {
+    fileprivate func replaceSelfInParent(with other: VJson?) -> Bool {
         guard let other = other else { return false }
         guard let parent = self.parent else { return false }
         guard other.parent == nil else { return false }
-        VJson.fatalIfTypeChangeNotAllowed(from: self.type, to: other.type)
+        
+        if !VJson.typeConversionIsAllowed(from: self.type, to: other.type) {
+            if VJson.typeConversion == .fatalError {
+                fatalError("Type conversion from \(self.type) to \(other.type) is not allowed")
+            }
+            return false
+        }
+        
         var success = false
         for (index, child) in (parent.children?.items ?? []).enumerated() {
             if child === self {
-                _ = parent.children?.replace(childAt: index, with: other)
+                parent.replace(at: index, with: other)
                 success = true
                 break
             }
@@ -2980,6 +3590,294 @@ extension VJson {
         return success
     }
 }
+
+
+// MARK: - Undo/Redo support
+
+#if os(OSX)
+    extension VJson {
+        
+        fileprivate func recordUndoActionToNull() {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    let sub = createdBySubscript
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) -> Void in
+                        if let item = root.item(at: path) {
+                            item.nullValue = true // will register as a redo
+                            item.createdBySubscript = sub
+                        } else {
+                            NSBeep()
+                            assert(false, "ERROR - Cannot undo, target for undo at path '\(path)' not found")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        fileprivate func recordUndoActionToBool() {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    let b = bool
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        if let item = root.item(at: path) {
+                            item.boolValue = b // will register as a redo
+                        } else {
+                            NSBeep()
+                            assert(false, "ERROR - Cannot undo, target for undo at path '\(path)' not found")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        fileprivate func recordUndoActionToNumber() {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    let num = numberValue
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        if let item = root.item(at: path) {
+                            item.numberValue = num // will register as a redo
+                        } else {
+                            NSBeep()
+                            assert(false, "ERROR - Cannot undo, target for undo at path '\(path)' not found")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        fileprivate func recordUndoActionToString() {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    let str = string
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        if let item = root.item(at: path) {
+                            item.stringValue = str // will register as a redo
+                        } else {
+                            NSBeep()
+                            assert(false, "ERROR - Cannot undo, target for undo at path '\(path)' not found")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        
+        fileprivate func recordUndoActionToTypeWithoutChildren() {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        if let item = root.item(at: path) {
+                            item.removeAll()
+                            item.children = nil
+                        } else {
+                            NSBeep()
+                            assert(false, "ERROR - Cannot undo, target for undo at path '\(path)' not found")
+                        }
+                    })
+                }
+                    
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        
+        // Only for type changes from "with children" to "without children"
+        
+        fileprivate func recordUndoActionToTypeWithChildren() {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    let oldType = self.type
+                    assert(children != nil)
+                    let dirCacheEnabled = children!.cacheEnabled
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        
+                        if let item = root.item(at: path) {
+                            
+                            // The switch statement is to make sure that redo will work as expected
+                            switch item.type {
+                                
+                            case .null:
+                                item.recordUndoActionToTypeWithoutChildren()
+                                item.recordUndoActionToNull()
+                                
+                            case .bool:
+                                item.recordUndoActionToTypeWithoutChildren()
+                                item.recordUndoActionToBool()
+                                
+                            case .number:
+                                item.recordUndoActionToTypeWithoutChildren()
+                                item.recordUndoActionToNumber()
+                                
+                            case .string:
+                                item.recordUndoActionToTypeWithoutChildren()
+                                item.recordUndoActionToString()
+                                
+                            case .object, .array: break
+                            }
+                            
+                            item.type = oldType
+                            item.children = VJson.Children(parent: item)
+                            item.children?.cacheEnabled = dirCacheEnabled
+                            
+                        } else {
+                            NSBeep()
+                            assert(false, "ERROR - Cannot undo, target for undo at path '\(path)' not found")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        fileprivate func recordUndoActionInsert(child: VJson, at index: Int) {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    root.undoManager?.registerUndo(withTarget:root, handler: {
+                        (root) in
+                        if let ip = root.item(at: path) {
+                            ip.insert(child, at: index)
+                        } else {
+                            print("ERROR - UndoActionInsert failure: Could not locate item at path '\(path)'")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        
+        fileprivate func recordUndoActionRemove(at index: Int) {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        if let ip = root.item(at: path) {
+                            _ = ip.remove(at: index)
+                        } else {
+                            print("ERROR - UndoActionInsert failure: Could not locate item at path '\(path)'")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        
+        fileprivate func recordUndoActionRevertName(newName: String?) {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    var path = path
+                    
+                    let oldName = self.name
+                    
+                    // Fix the path if the parent is an object (the path will change because of the name change)
+                    if let parent = parent, parent.type == .object {
+                        path[path.endIndex - 1] = newName!
+                    }
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        if let ip = root.item(at: path) {
+                            ip.nameValue = oldName
+                        } else {
+                            print("ERROR - UndoActionRevertName failure: Could not locate item at path '\(path)'")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+        
+        
+        /// - Note: Only ever use for type conversions from ARRAY to OBJECT and vice versa
+        
+        fileprivate func recordUndoActionRevertType() {
+            
+            if #available(OSX 10.11, *) {
+
+                if let (root, path) = self.location() {
+                    
+                    root.undoManager?.registerUndo(withTarget: root, handler: {
+                        (root) in
+                        if let ip = root.item(at: path) {
+                            switch ip.type {
+                            case .array: ip.arrayToObject()
+                            case .object:  ip.objectToArray()
+                            default:
+                                print("ERROR - UndoActionRevertType failure: Cannot revert for type \(ip.type)")
+                            }
+                        } else {
+                            print("ERROR - UndoActionRevertType failure: Could not locate item at path '\(path)'")
+                        }
+                    })
+                }
+                
+            } else {
+                fatalError("Undo/Redo support needs at least macOS 10.11")
+            }
+        }
+    }
+#endif
 
 
 // MARK: - Creating a VJson hierarchy from json code
@@ -3017,7 +3915,7 @@ extension VJson {
             return "VJson: Error in Exception enum"
         }
     }
-
+    
     
     /// Error info from the parser for the parse operations that do not throw.
     
@@ -3066,7 +3964,7 @@ extension VJson {
             return "[\(code), Incomplete:\(incomplete)] \(message)"
         }
     }
-
+    
     
     /// Parsing a JSON hierarchy stored in a file
     ///
@@ -3209,7 +4107,7 @@ extension VJson {
         }
         return nil
     }
-
+    
     
     /// Create a VJson hierarchy with the contents of the given string.
     ///
@@ -3267,14 +4165,14 @@ extension VJson {
             
         } catch let .reason(code, incomplete, message) as VJson.Exception {
             onError(code, incomplete, message)
-        
+            
         } catch let error {
             onError(-1, false, "\(error)")
         }
         return nil
     }
-
-
+    
+    
     /// Create a VJson hierarchy with the contents of the given data object.
     ///
     /// - Parameters:
@@ -3319,7 +4217,7 @@ extension VJson {
 // MARK: - Create code from the json hierarchy
 
 extension VJson {
-
+    
     
     /// Returns the JSON code that represents the hierarchy of this item.
     
@@ -3411,7 +4309,7 @@ extension VJson {
 // MARK: - Persisting
 
 extension VJson {
-
+    
     
     /// Tries to saves the contents of the JSON hierarchy to the specified file.
     ///
@@ -3500,7 +4398,7 @@ extension VJson {
 // MARK: - The VJson parser
 
 extension VJson {
-
+    
     
     /// Parses the given sequence of bytes (ASCII or UTF8 encoded) according to ECMA-404, 1st edition October 2013. The sequence should contain exactly one JSON hierarchy. Any errors will result in a throw.
     ///

@@ -76,7 +76,7 @@ public extension VJson {
             } else {
                 undoableUpdate(
                     to: .string,
-                    inequalityTest: string == newValue!,
+                    inequalityTest: string != newValue!,
                     assignment: string = newValue!.replacingOccurrences(of: "\"", with: "\\\"")
                 )
             }

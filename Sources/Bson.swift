@@ -384,7 +384,10 @@ public extension VJson {
                 case 0x04: // Array
                     let theName = bson.removeFirstUtf8CString()
                     if let object = VJson(bson: &bson) {
-                        object.objectToArray()
+                        let mem = VJson.fatalErrorOnTypeConversion
+                        VJson.fatalErrorOnTypeConversion = false
+                        undoableUpdate(to: .array)
+                        VJson.fatalErrorOnTypeConversion = mem
                         self.add(object, for: theName, replace: false)
                     }
                     

@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import SwifterJSON
+@testable import VJson
 
 class VJsonTestPart4: XCTestCase {
 

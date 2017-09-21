@@ -70,7 +70,7 @@ public extension VJson {
             if newValue == nil {
                 undoableUpdate(to: .null)
             } else {
-                undoableUpdate(to: .bool, inequalityTest: bool == newValue!, assignment: bool = newValue!)
+                undoableUpdate(to: .bool, inequalityTest: bool != newValue!, assignment: bool = newValue!)
             }
         }
     }

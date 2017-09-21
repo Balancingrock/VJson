@@ -144,11 +144,10 @@ public extension VJson {
     /// - Returns: True when the type change is allowed false otherwise.
     
     public static func typeChangeIsAllowed(from old: JType, to new: JType) -> Bool {
-        if !VJson.fatalErrorOnTypeConversion { return true }
         if old == .null { return true }
         if new == .null { return true }
         if old == new { return true }
-        return false
+        return !VJson.fatalErrorOnTypeConversion
     }
     
     
@@ -160,7 +159,7 @@ public extension VJson {
     ///   - assignment: Can be used to update the value itself to a new value.
     
     internal func undoableUpdate(to: JType? = nil, inequalityTest: @autoclosure () -> Bool = { return true }(), assignment: @autoclosure () -> Void = {}()) {
-        
+                
         let targetType = to ?? self.type
         
         if (type == targetType) {
@@ -200,6 +199,11 @@ public extension VJson {
                 }
                 
                 self.type = targetType
+                if (self.type == .array) || (self.type == .object) {
+                    if children == nil {
+                        children = Children(parent: self)
+                    }
+                }
                 assignment()
                 
             } else {
@@ -207,34 +211,5 @@ public extension VJson {
                 fatalError("Type conversion from \(self.type) to \(targetType) is not allowed")
             }
         }
-    }
-
-    
-    /// Turns the JSON ARRAY in this object into a JSON OBJECT. Note that this can only succeed if all child items have a name. (I.e. are name/value pairs)
-    ///
-    /// - Returns: true if the conversion was successful. False otherwise.
-
-    @discardableResult
-    public func arrayToObject() -> Bool {
-        if type != .array { return false }
-        for child in children?.items ?? [] {
-            if !child.hasName { return false }
-        }
-        undoableUpdate(to: .object)
-        return true
-    }
-    
-    
-    /// Turns the JSON OBJECT in this object into a JSON ARRAY.
-    ///
-    /// Note that the names will be preserved until the array is saved. Then they will be discarded.
-    ///
-    /// - Returns: True if succesful.
-    
-    @discardableResult
-    public func objectToArray() -> Bool {
-        if type != .object { return false }
-        undoableUpdate(to: .array)
-        return true
-    }
+    }    
 }

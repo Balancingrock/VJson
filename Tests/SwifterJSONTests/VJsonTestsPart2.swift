@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import SwifterJSON
+@testable import VJson
 
 
 class VJsonTestsPart2: XCTestCase {
@@ -130,7 +130,7 @@ class VJsonTestsPart2: XCTestCase {
         arr.append(VJson(3))
         var json = VJson(arr)
         var e: VJson?
-        XCTAssertNil(json.replace(childAt: 1, with: e))
+        XCTAssertNil(json.replace(at: 1, with: e))
         XCTAssertEqual(json.nofChildren, 3)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 2)
@@ -139,7 +139,7 @@ class VJsonTestsPart2: XCTestCase {
         // Test replace with non-nil
         // Expected: replaced at the proper place, non-nil return
         e = VJson(4)
-        XCTAssertEqual(json.replace(childAt: 1, with: e), e)
+        XCTAssertEqual(json.replace(at: 1, with: e), e)
         XCTAssertEqual(json.nofChildren, 3)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 4)
@@ -148,7 +148,7 @@ class VJsonTestsPart2: XCTestCase {
         // Test replace with non-nil index out of range
         // Expected: No change, return nil
         e = VJson(5)
-        XCTAssertNil(json.replace(childAt: 7, with: e))
+        XCTAssertNil(json.replace(at: 7, with: e))
         XCTAssertEqual(json.nofChildren, 3)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 4)
@@ -158,7 +158,7 @@ class VJsonTestsPart2: XCTestCase {
         // Expected: No change
         json = VJson.object()
         json.add(VJson(1), for: "one")
-        XCTAssertNil(json.replace(childAt: 0, with: VJson(2)))
+        XCTAssertNil(json.replace(at: 0, with: VJson(2)))
         XCTAssertEqual(json.nofChildren, 1)
         XCTAssertEqual(json.children(with: "one")[0].intValue, 1)
     }
@@ -176,7 +176,7 @@ class VJsonTestsPart2: XCTestCase {
         arr.append(VJson(3))
         var json = VJson(arr)
         var e: VJson?
-        XCTAssertNil(json.index(ofChild: e))
+        XCTAssertNil(json.index(of: e))
         XCTAssertEqual(json.nofChildren, 3)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 2)
@@ -185,7 +185,7 @@ class VJsonTestsPart2: XCTestCase {
         // Test with non-nil, not existing value
         // Expected: Return nil
         e = VJson(4)
-        XCTAssertNil(json.index(ofChild: e))
+        XCTAssertNil(json.index(of: e))
         XCTAssertEqual(json.nofChildren, 3)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 2)
@@ -213,7 +213,7 @@ class VJsonTestsPart2: XCTestCase {
         // Expected: No change
         json = VJson.object()
         json.add(VJson(1), for: "one")
-        XCTAssertNil(json.index(ofChild: VJson(2)))
+        XCTAssertNil(json.index(of: VJson(2)))
         XCTAssertEqual(json.nofChildren, 1)
         XCTAssertEqual(json.children(with: "one")[0].intValue, 1)
     }
@@ -585,7 +585,7 @@ class VJsonTestsPart2: XCTestCase {
         found2 = false
         loopCount = 0
         for j in json {
-            if j.intValue! == 1 { found1 = true; _ = json.remove(child: three) }
+            if j.intValue! == 1 { found1 = true; _ = json.remove(three) }
             if j.intValue! == 2 { found2 = true }
             loopCount += 1
         }
@@ -658,11 +658,11 @@ class VJsonTestsPart2: XCTestCase {
         json = VJson(items: ["one" : VJson(1), "two" : VJson(2)])
         json[2] &= true
         XCTAssertEqual(json.nofChildren, 3)
-        XCTAssertTrue(json.arrayValue[0].isNull)
-        XCTAssertTrue(json.arrayValue[1].isNull)
+        XCTAssertTrue(json.arrayValue[0].isNumber)
+        XCTAssertTrue(json.arrayValue[1].isNumber)
         XCTAssertTrue(json.arrayValue[2].boolValue!)
-        XCTAssertTrue(json[0].isNull)
-        XCTAssertTrue(json[1].isNull)
+        XCTAssertTrue(json[0].isNumber)
+        XCTAssertTrue(json[1].isNumber)
         XCTAssertTrue(json[2].isBool)
     }
     
@@ -714,8 +714,8 @@ class VJsonTestsPart2: XCTestCase {
         // Check type conversion from ARRAY
         json = VJson([VJson(1), VJson(2)])
         json["two"] &= 2
-        XCTAssertEqual(json.nofChildren, 1)
-        XCTAssertEqual(json.arrayValue[0].intValue!, 2)
+        XCTAssertEqual(json.nofChildren, 3)
+        XCTAssertEqual(json.arrayValue[2].intValue!, 2)
         XCTAssertTrue(json["two"].isNumber)
     }
     

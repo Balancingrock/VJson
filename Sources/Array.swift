@@ -120,7 +120,7 @@ public extension VJson {
     }
     
     
-    /// Replaces the child at the given index with the given child. Self must be a JSON ARRAY item.
+    /// Replaces the child at the given index with the given child. Self must be a JSON ARRAY.
     ///
     /// - Parameters:
     ///   - at: The index of the child to be replaced.
@@ -137,7 +137,7 @@ public extension VJson {
     }
     
     
-    /// Inserts the given child at the given index. Self must be a JSON ARRAY item.
+    /// Inserts the given child at the given index. Self must be a JSON ARRAY.
     ///
     /// - Parameters:
     ///   - child: The VJson object to be inserted.
@@ -154,7 +154,7 @@ public extension VJson {
     }
     
     
-    /// Appends the given object to the end of the array. Self must be a JSON ARRAY.
+    /// Appends the given object to the end of the array. Self must be a JSON ARRAY or the type change must be allowed.
     ///
     /// - Parameters:
     ///   - child: The VJson object to be appended.
@@ -164,13 +164,14 @@ public extension VJson {
     @discardableResult
     public func append(_ child: VJson?) -> VJson? {
         guard let child = child else { return nil }
+        if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
         guard type == .array else { return nil }
         recordUndoRedoAction()
         return children?.append(child)
     }
     
     
-    /// Appends the given object to the end of the array. Self must be a JSON ARRAY.
+    /// Appends the given object to the end of the array. Self must be a JSON ARRAY or or the type change must be allowed.
     ///
     /// - Parameters:
     ///   - child: The VJson object to be appended.
@@ -180,13 +181,14 @@ public extension VJson {
     @discardableResult
     public func append(_ item: VJsonSerializable?) -> VJson? {
         guard let item = item else { return nil }
+        if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
         guard type == .array else { return nil }
         recordUndoRedoAction()
         return children?.append(item.json)
     }
     
     
-    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY.
+    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY or the type change must be allowed.
     ///
     /// - Parameters:
     ///   - children: The items to add.
@@ -194,6 +196,8 @@ public extension VJson {
     
     public func append(_ items: [VJson?]?, includeNil: Bool = false) {
         guard let items = items else { return }
+        if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
+        guard type == .array else { return }
         recordUndoRedoAction()
         items.forEach() {
             if $0 == nil {
@@ -205,7 +209,7 @@ public extension VJson {
     }
     
     
-    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY.
+    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY or the type change must be allowed.
     ///
     /// - Parameters:
     ///   - children: The items to add.

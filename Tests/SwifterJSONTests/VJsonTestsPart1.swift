@@ -9,7 +9,7 @@
 // Note: These test have been developped while inspecting the source code. I.e. white box testing. Goal has been to test all possible conditions such that a high percentage of code coverage is achieved. However some explicit tests have been omitted if the part to test is already tested excessively in other test cases.
 
 import XCTest
-@testable import SwifterJSON
+@testable import VJson
 
 
 class VJsonTests: XCTestCase {
@@ -1027,53 +1027,43 @@ class VJsonTests: XCTestCase {
         // Creation without name
         var json = VJson.null()
         XCTAssertTrue(json.isNull)
-        XCTAssertTrue(json.asNull)
         XCTAssertTrue(json.nullValue!)
         
         // Creation with name
         json = VJson.null("aName")
         XCTAssertTrue(json.isNull)
-        XCTAssertTrue(json.asNull)
         XCTAssertTrue(json.nullValue!)
         
         // Convert from Number
         json = VJson(1)
         XCTAssertFalse(json.isNull)
-        XCTAssertFalse(json.asNull)
         XCTAssertNil(json.nullValue)
         json.nullValue = true
         XCTAssertTrue(json.isNull)
-        XCTAssertTrue(json.asNull)
         XCTAssertTrue(json.nullValue!)
 
         // Convert from String
         json = VJson("qwerty")
         XCTAssertFalse(json.isNull)
-        XCTAssertFalse(json.asNull)
         XCTAssertNil(json.nullValue)
         json.nullValue = false
         XCTAssertTrue(json.isNull)
-        XCTAssertTrue(json.asNull)
         XCTAssertTrue(json.nullValue!)
 
         // Convert from Object
         json = VJson.object("qwerty")
         XCTAssertFalse(json.isNull)
-        XCTAssertFalse(json.asNull)
         XCTAssertNil(json.nullValue)
         json.nullValue = false
         XCTAssertTrue(json.isNull)
-        XCTAssertTrue(json.asNull)
         XCTAssertTrue(json.nullValue!)
 
         // Convert from Array
         json = VJson.array("qwerty")
         XCTAssertFalse(json.isNull)
-        XCTAssertFalse(json.asNull)
         XCTAssertNil(json.nullValue)
         json.nullValue = false
         XCTAssertTrue(json.isNull)
-        XCTAssertTrue(json.asNull)
         XCTAssertTrue(json.nullValue!)
     }
     
@@ -1463,14 +1453,14 @@ class VJsonTests: XCTestCase {
         // Create with no value and no name
         var str: String?
         var json = VJson(str)
-        XCTAssertTrue(json.isString)
+        XCTAssertTrue(json.isNull)
         XCTAssertEqual(json.asString, "null")
         XCTAssertNil(json.stringValue)
         XCTAssertFalse(json.hasName)
         
         // Create with no value and with name
         json = VJson(str, name: "qwerty")
-        XCTAssertTrue(json.isString)
+        XCTAssertTrue(json.isNull)
         XCTAssertEqual(json.asString, "null")
         XCTAssertNil(json.stringValue)
         XCTAssertTrue(json.hasName)
@@ -1904,74 +1894,5 @@ class VJsonTests: XCTestCase {
         XCTAssertTrue(json.children(with: "key1")[0].intValue! == 1)
         XCTAssertTrue(json.children(with: "key2")[0].intValue! == 2)
         XCTAssertTrue(json.children(with: "key3")[0].intValue! == 3)
-    }
-
-    
-    // Testing: func arrayToObject() -> VJson? {...}
-    
-    func testArrayToObject() {
-        
-        // Valid conversion
-        var arr = Array<VJson?>()
-        arr.append(VJson.null("one"))
-        arr.append(VJson(12, name: "two"))
-        arr.append(VJson(true, name: "three"))
-        var json = VJson(arr)
-        if json.arrayToObject() {
-            XCTAssertTrue(json.isObject)
-            XCTAssertEqual(json.nofChildren, 3)
-            XCTAssertTrue(json.children(with: "one")[0].isNull)
-            XCTAssertTrue(json.children(with: "two")[0].intValue! == 12)
-            XCTAssertTrue(json.children(with: "three")[0].boolValue!)
-        } else {
-            XCTFail()
-        }
-        
-        // Invalid converion
-        arr = Array<VJson?>()
-        arr.append(VJson.null("one"))
-        arr.append(VJson(12, name: "two"))
-        arr.append(VJson(true))
-        json = VJson(arr)
-        XCTAssertFalse(json.arrayToObject())
-        
-        // Illegal conversions
-        json = VJson.object()
-        XCTAssertFalse(json.arrayToObject())
-        json = VJson.null()
-        XCTAssertFalse(json.arrayToObject())
-        json = VJson(true)
-        XCTAssertFalse(json.arrayToObject())
-        json = VJson(1)
-        XCTAssertFalse(json.arrayToObject())
-        json = VJson("qwerty")
-        XCTAssertFalse(json.arrayToObject())
-    }
-    
-    
-    // Testing: func objectToArray() -> Bool {...}
-    
-    func testObjectToArray() {
-        
-        // Sucessful conversion OBJECT to ARRAY, 1 element
-        var dict = Dictionary<String,VJson>()
-        dict["key1"] = VJson(1)
-        var json = VJson(items: dict)
-        XCTAssertTrue(json.objectToArray())
-        XCTAssertTrue(json.isArray)
-        XCTAssertEqual(json.nofChildren, 1)
-        XCTAssertTrue(json.arrayValue[0].intValue! == 1)
-
-        // Illegal conversions
-        json = VJson.array()
-        XCTAssertFalse(json.objectToArray())
-        json = VJson.null()
-        XCTAssertFalse(json.objectToArray())
-        json = VJson(true)
-        XCTAssertFalse(json.objectToArray())
-        json = VJson(1)
-        XCTAssertFalse(json.objectToArray())
-        json = VJson("qwerty")
-        XCTAssertFalse(json.objectToArray())
     }
 }

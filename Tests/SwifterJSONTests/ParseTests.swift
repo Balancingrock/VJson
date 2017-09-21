@@ -7,7 +7,8 @@
 //
 
 import XCTest
-import SwifterJSON
+@testable import VJson
+
 
 class ParseTests: XCTestCase {
 

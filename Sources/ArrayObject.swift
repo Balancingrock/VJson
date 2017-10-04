@@ -52,44 +52,13 @@
 // History
 //
 // 0.10.8  - Split off from VJson.swift
+//         - dictionaryValue now also returns those children from an ARRAY type that have a name
 // =====================================================================================================================
 
 import Foundation
 
 
 public extension VJson {
-    
-    
-    /// Creates an empty JSON ARRAY item with the given name (if any).
-    ///
-    /// - Parameter name: The name for the item (optional).
-    ///
-    /// - Returns: The new VJson item containing a JSON ARRAY.
-    
-    public static func array(_ name: String? = nil) -> VJson {
-        return VJson(type: .array, name: name)
-    }
-    
-    
-    /// Creates an empty JSON OBJECT item with the given name (if any).
-    ///
-    /// - Parameter name: The name for the item (optional).
-    ///
-    /// - Returns: The new VJson item containing a JSON OBJECT.
-    
-    public static func object(_ name: String? = nil) -> VJson {
-        return VJson(type: .object, name: name)
-    }
-    
-    
-    /// True if this object contains a JSON ARRAY object.
-    
-    public var isArray: Bool { return self.type == JType.array }
-    
-    
-    /// True if this object contains a JSON OBJECT object.
-    
-    public var isObject: Bool { return self.type == JType.object }
     
 
     /// Returns a copy of the child items in this object if this object contains a JSON ARRAY or JSON OBJECT. An empty array for all other JSON types.
@@ -102,10 +71,10 @@ public extension VJson {
     }
 
     
-    /// Returns a copy of the children in a dictionary if this object contains a JSON OBJECT. An empty dictionary for all other JSON types.
+    /// Returns a copy of the children that have their name property set in a dictionary if this object contains a JSON OBJECT or JSON ARRAY. An empty dictionary for all other JSON types.
     
     public var dictionaryValue: Dictionary<String, VJson> {
-        if type != .object { return [:] }
+        if nofChildren == 0 { return [:] }
         var dict: Dictionary<String, VJson> = [:]
         children?.items.forEach(){
             if let name = $0.name {
@@ -130,7 +99,7 @@ public extension VJson {
     }
     
     
-    /// Removes all children from either ARRAY or OBJECT
+    /// Removes all children from either ARRAY or OBJECT. Is undoable.
     
     public func removeAllChildren() {
         recordUndoRedoAction()
@@ -138,7 +107,7 @@ public extension VJson {
     }
     
     
-    /// Removes the child items from self that are equal to the given item. Self must be an ARRAY or OBJECT.
+    /// Removes the child items from self that are equal to the given item. Self must be an ARRAY or OBJECT. Is undoable.
     ///
     /// - Note: The parent is not compared when testing for equal.
     ///
@@ -164,42 +133,14 @@ public extension VJson {
     /// Controls the status of the dictionary cache for JSON OBJECTs. The dictionary cache can be used to speed up subscript access. As a ROM when looking for an OBJECT members 3 times or more, the cache will pay back its overhead. In some cases 2 times may be enough. More than 3 times is generally always quicker with cache enabled.
     ///
     /// - Note: The dictionary cache will speed up access for OBJECT members, but will "lose" members with duplicate names. I.e. a {"one":1, "one":2} object will only contain {"one":2} when caching is enabled. However the lost member is still present in the "children" array and will be saved (or be part of the generated code).
+    ///
+    /// - Note: Is not undoable.
     
     public var enableCacheForObjects: Bool {
         set { children?.cacheEnabled = newValue }
         get { return children?.cacheEnabled ?? false}
     }
 
-    
-    /// Returns a new VJson object with a JSON ARRAY containing the given items. Only those items that have their 'parent' member set to 'nil' will be included.
-    ///
-    /// - Parameters:
-    ///   - items: An array with VJson objects to be added as children, only those with parent == nil.
-    ///   - name: The name for the JSON ARRAY item.
-    ///   - includeNil: If true (default = false) then nil items in the array will be included as JSON NULL items.
-    
-    public convenience init(_ items: [VJson?], name: String? = nil, includeNil: Bool = false) {
-        self.init(type: .array, name: name)
-        let parentIsNilItems = items.filter(){ return $0?.parent == nil }
-        if includeNil {
-            self.children?.append(parentIsNilItems.map(){ $0 ?? VJson.null()})
-        } else {
-            self.children?.append(parentIsNilItems.flatMap(){$0})
-        }
-    }
-    
-    
-    /// Returns a new VJson object with a JSON ARRAY containing the given items.
-    ///
-    /// - Parameters:
-    ///   - items: An array with VJson objects to be added as children.
-    ///   - name: The name for the contained item (optional).
-    ///   - includeNil: If true (default = false) then nil items in the array will be included as JSON NULL items.
-    
-    public convenience init(_ items: [VJsonSerializable?], name: String? = nil, includeNil: Bool = false) {
-        self.init(items.map({$0?.json}), name: name, includeNil: includeNil)
-    }
-    
     
     /// Returns a new VJson object with a JSON OBJECT containing the items from the dictionary. Only those items that have their 'parent' member set to 'nil' will be included.
     ///

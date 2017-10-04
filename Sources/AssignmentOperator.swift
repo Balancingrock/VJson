@@ -498,16 +498,13 @@ public func &= (lhs: VJson?, rhs: VJson?) -> VJson? {
     
     // Assign rhs to lhs and again preserve the parent and name of lhs.
     
-    let name = llhs.name
     if llhs.parent != nil {
         // This is a child object, replace it in the parent
         llhs.replaceSelfInParent(with: rhs)
-        if let name = name { rhs.nameValue = name }
         return rhs
     } else {
         // This is a top level object, change the lhs object into the rhs
         llhs.replaceContent(with: rhs)
-        if let name = name { rhs.nameValue = name }
         return llhs
     }
 }
@@ -554,9 +551,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
     // if either lhs or rhs has a parent then update the content of lhs.
     
     if (rhs.parent != nil) || (llhs.parent != nil) {
-        let name = llhs.name
         llhs.replaceContent(with: rhs)
-        if let name = name { llhs.nameValue = name }
         return llhs
     }
     
@@ -584,7 +579,7 @@ public func &= (lhs: inout VJson?, rhs: VJson?) -> VJson? {
 extension VJson {
 
 
-    /// Replaces the content of self with the content of the given object, but it does not change the parent reference and the createdBySubscript will be set to false.
+    /// Replaces the content of self with the content of the given object, but it does not change the parent reference nor the name of self. The the createdBySubscript will be set to false.
     ///
     /// - Note: A fatalError is raised if a type change is attempeted but not supported.
     ///
@@ -608,7 +603,7 @@ extension VJson {
     }
     
     
-    /// Replaces self with other in the parent of self. The parent of other must be nil.
+    /// Replaces the content of self with other in the parent of self. The name of self remains unchanged. The parent of other must be nil.
     ///
     /// - Note: A fatalError is raised if a type change is attempeted but not supported.
     ///
@@ -626,6 +621,7 @@ extension VJson {
         var success = false
         for (index, child) in (parent.children?.items ?? []).enumerated() {
             if child === self {
+                other.name = self.name
                 _ = parent.children?.replace(at: index, with: other)
                 success = true
                 break

@@ -132,17 +132,19 @@ public final class VJson: NSObject {
     }
     
     
+    /// The custom string convertible protocol.
+    
+    override public var description: String { return code }
+
+    
+    /// Satifies the NSObject protocol
+    
     public override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? VJson else { return false }
         return self == object
     }
     
     public override func copy() -> Any { return duplicate }
-    
-    
-    /// The custom string convertible protocol.
-    
-    override public var description: String { return code }
 }
 
 #endif

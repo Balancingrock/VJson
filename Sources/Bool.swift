@@ -85,7 +85,7 @@ public extension VJson {
     
     /// The value of this object interpreted as a bool.
     ///
-    /// A NULL reads as false, a NUMBER 1(.0) reads as true, other numbers read as false, STRING "true" reads as true, all other strings read as false. ARRAY and OBJECT both read as false.
+    /// A NULL reads as false, a NUMBER 0(.0) reads as false, other numbers read as true, STRING "true" reads as true, all other strings read as false. ARRAY and OBJECT both read as false.
     
     public var asBool: Bool {
         switch type {

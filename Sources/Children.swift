@@ -169,12 +169,11 @@ public extension VJson {
         /// - Returns: The child that was added.
         
         @discardableResult
-        internal func append(_ child: VJson?) -> VJson? {
-            guard let child = child else { return parent }
+        internal func append(_ child: VJson?) {
+            guard let child = child else { return }
             
             child.parent = parent // Ensures the child's parent is always set
             items.append(child)
-            return child
         }
         
         
@@ -193,27 +192,29 @@ public extension VJson {
         ///   - child: The item to be inserted.
         ///   - at: The index where to insert the child.
         ///
-        /// - Returns: The inserted item.
+        /// - Returns: True on success, false on failure.
         
         @discardableResult
-        internal func insert(_ child: VJson?, at index: Int) -> VJson? {
-            guard let child = child else { return parent }
-            guard index < items.count else { return nil }
-            guard index >= 0 else { return nil }
-            
+        internal func insert(_ child: VJson?, at index: Int) -> Bool {
+            guard let child = child else { return false }
+            guard index >= 0 else { return false }
             child.parent = parent // Ensures the child's parent is always set
-            items.insert(child, at: index)
-            return child
+            if index < items.count {
+                items.insert(child, at: index)
+            } else {
+                items.append(child)
+            }
+            return true
         }
         
         
-        /// Replaces the child at the specified index with the new child.
+        /// Replaces the child at the specified index with the new child, returns the replaced child on success.
         ///
         /// - Parameters:
-        ///   - childAt: The index of the child to be replaced.
+        ///   - at: The index of the child to be replaced.
         ///   - with: The child item to be placed at the specified index.
         ///
-        /// - Returns: The inserted child.
+        /// - Returns: The replaced child or nil.
         
         @discardableResult
         internal func replace(at index: Int, with child: VJson?) -> VJson? {
@@ -221,10 +222,13 @@ public extension VJson {
             guard index < items.count else { return nil }
             guard index >= 0 else { return nil }
             
-            items[index].parent = nil // The child at the index will no longer be a child
-            child.parent = parent // Ensures the child's parent is always set
+            let removed = items[index]
+            removed.parent = nil // Remove the parent from the previous child
+
+            child.parent = parent // Ensures the new child's parent is set correctly
             items[index] = child
-            return child
+            
+            return removed
         }
         
         
@@ -248,17 +252,18 @@ public extension VJson {
         ///
         /// - Parameter child: The child to be removed.
         ///
-        /// - Returns: The child that was removed, nil if nothing was removed.
+        /// - Returns: True on success, false if nothing was removed.
         
         @discardableResult
-        internal func remove(_ child: VJson?) -> VJson? {
-            guard let child = child else { return parent }
+        internal func remove(_ child: VJson?) -> Bool {
+            guard let child = child else { return false }
             
             if let index = index(of: child) {
                 items[index].parent = nil // Make sure it is decoupled from the parent
-                return items.remove(at: index)
+                items.remove(at: index)
+                return true
             } else {
-                return nil
+                return false
             }
         }
         

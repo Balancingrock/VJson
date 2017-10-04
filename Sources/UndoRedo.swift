@@ -60,20 +60,6 @@
 import Foundation
 import Cocoa
 
-    
-extension VJson.Children {
-
-    
-    // Same as insert, but does not set the parent.
-    
-    fileprivate func undoRedoInsert(_ child: VJson, at index: Int) {
-        guard index < items.count else { return }
-        guard index >= 0 else { return }
-        
-        items.insert(child, at: index)
-    }
-}
-
 
 extension VJson {
     
@@ -165,12 +151,14 @@ extension VJson {
         other.type = self.type
         other.bool = self.bool
         other.string = self.string
+        other.number = self.numberValue
         other.createdBySubscript = self.createdBySubscript
         if self.children != nil {
-            other.children = Children(parent: other)
             other.children!.cacheEnabled = self.children!.cacheEnabled
             for c in self.children!.items {
-                other.children!.undoRedoInsert(c, at: nofChildren) // avoids update of parent!
+                let dupc = c.duplicate // duplicate does not update parent
+                dupc.parent = self
+                other.children!.items.append(dupc)
             }
         }
         return other
@@ -187,13 +175,14 @@ extension VJson {
         self.type = other.type
         self.bool = other.bool
         self.string = other.string
+        self.number = other.numberValue
         self.createdBySubscript = other.createdBySubscript
         if other.children != nil {
             self.children = Children(parent: self)
             self.children!.cacheEnabled = other.children!.cacheEnabled
             for c in other.children!.items {
                 assert(self === c.parent, "Parent should be the same as the old parent")
-                _ = self.children?.insert(c, at: nofChildren) // Updates parent setting, should be the same however.
+                _ = self.children?.append(c) // Updates parent setting, should be the same however.
             }
         } else {
             self.children = nil

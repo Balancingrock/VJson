@@ -52,12 +52,30 @@
 // History
 //
 // 0.10.8  - Split off from VJson.swift
+//         - The add operations no longer return a value.
 // =====================================================================================================================
 
 import Foundation
 
 
 public extension VJson {
+    
+    
+    /// Creates an empty JSON OBJECT item with the given name (if any).
+    ///
+    /// - Parameter name: The name for the item (optional).
+    ///
+    /// - Returns: The new VJson item containing a JSON OBJECT.
+    
+    public static func object(_ name: String? = nil) -> VJson {
+        return VJson(type: .object, name: name)
+    }
+    
+    
+    /// True if this object contains a JSON OBJECT object.
+    
+    public var isObject: Bool { return self.type == JType.object }
+
     
     /// Returns the child with the requested name, if any.
     ///
@@ -90,16 +108,15 @@ public extension VJson {
     ///   - child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the child item.
     ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
     ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
-    /// - Returns: The child that was added or nil on failure.
     
     @discardableResult
-    public func add(_ child: VJson?, for name: String? = nil, replace: Bool = true) -> VJson? {
-        guard let child = child else { return nil }
-        if name == nil && !child.hasName { return nil }
+    public func add(_ child: VJson?, for name: String? = nil, replace: Bool = true) {
+        guard let child = child else { return }
+        if name == nil && !child.hasName { return }
         undoableUpdate(to: .object)
         if name != nil { child.name = name }
         if replace { children?.remove(childrenWith: child.name) }
-        return children?.append(child)
+        children?.append(child)
     }
     
     
@@ -109,10 +126,9 @@ public extension VJson {
     ///   - child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the child item.
     ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
     ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
-    /// - Returns: The child that was added or nil on failure.
     
     @discardableResult
-    public func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) -> VJson? {
+    public func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) {
         return add(item?.json, for: name, replace: replace)
     }
     

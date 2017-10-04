@@ -60,7 +60,9 @@ import Foundation
 public extension VJson {
     
     
-    /// Returns a full in-depth copy of this JSON object. I.e. all child elements are also copied.
+    /// Returns a full in-depth copy of this JSON object as a self contained hierarchy. I.e. all child elements are also copied.
+    ///
+    /// - Note: The 'parent' of the duplicate will be 'nil'. However the children of the duplicate will have the proper 'parent' as necessary for the hierarchy.
     
     public var duplicate: VJson {
         let other = VJson(type: self.type, name: self.name)
@@ -71,6 +73,7 @@ public extension VJson {
         other.createdBySubscript = self.createdBySubscript
         if children != nil {
             other.children = Children(parent: other)
+            other.children!.cacheEnabled = self.children!.cacheEnabled
             for c in self.children!.items {
                 _ = other.children!.append(c.duplicate)
             }

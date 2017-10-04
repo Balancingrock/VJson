@@ -22,6 +22,7 @@ VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver fra
 - Merge function is NSOutlineView compatible
 - Limited KVO support to provide easier integration with -for example- an NSOutlineView
 - Notifications are isued for KVO updates.
+- Undo/redo support for macOS
 - Caching of named members for higher performance (usable in most cases)
 - Prepared for use under Linux (but not tested yet)
 
@@ -304,7 +305,13 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.10.7 (Current)
+#### 0.10.8 (Current)
+
+- Split the implementation into multiple source files
+- Added undo/redo support
+- Harmonized with Foundation class behaviour (minor changes in usage)
+
+#### 0.10.7
 
 - Renamed from SwifterJSON to VJson
 

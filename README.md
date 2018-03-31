@@ -307,6 +307,10 @@ Note: Planned releases are for information only and subject to change without no
 
 #### 0.10.8 (Current)
 
+- BRUtils was updated to 0.10.0
+
+#### 0.10.8
+
 - Split the implementation into multiple source files
 - Added undo/redo support
 - Harmonized with Foundation class behaviour (minor changes in usage)

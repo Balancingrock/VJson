@@ -305,11 +305,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.10.9 (Current)
+#### 0.10.10 (Current)
 
 - Swift 4 migration. Few minor adjustments to prevent warnings.
 
-#### 0.10.8
+#### 0.10.9
 
 - BRUtils was updated to 0.10.0
 

@@ -89,7 +89,7 @@ public extension VJson {
         if includeNil {
             self.children?.append(parentIsNilItems.map(){ $0 ?? VJson.null()})
         } else {
-            self.children?.append(parentIsNilItems.flatMap(){$0})
+            self.children?.append(parentIsNilItems.compactMap(){$0})
         }
     }
     
@@ -226,7 +226,6 @@ public extension VJson {
     /// - Parameters:
     ///   - child: The VJson object to be appended.
     
-    @discardableResult
     public func append(_ child: VJson?) {
         guard let child = child else { return }
         if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
@@ -241,7 +240,6 @@ public extension VJson {
     /// - Parameters:
     ///   - child: The VJson object to be appended.
     
-    @discardableResult
     public func append(_ item: VJsonSerializable?) {
         guard let item = item else { return }
         if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }

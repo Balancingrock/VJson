@@ -168,7 +168,6 @@ public extension VJson {
         ///
         /// - Returns: The child that was added.
         
-        @discardableResult
         internal func append(_ child: VJson?) {
             guard let child = child else { return }
             

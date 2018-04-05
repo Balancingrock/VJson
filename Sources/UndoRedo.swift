@@ -105,7 +105,7 @@ extension VJson {
                     path.insert(index.description, at: 0)
                 } else {
                     // Impossible
-                    assert(false, "Child not contained in parent.\nChild = \(item)\n\nParent = \(nextUp)")
+                    assert(false, "Child not contained in parent.\nChild = \(String(describing: item))\n\nParent = \(String(describing: nextUp))")
                 }
                 
             } else {
@@ -119,7 +119,7 @@ extension VJson {
                         path.insert(pathPart, at: 0)
                     } else {
                         // Impossible
-                        assert(false, "The child from an object should always have a name.\nChild = \(item)\n\nParent = \(nextUp)")
+                        assert(false, "The child from an object should always have a name.\nChild = \(String(describing: item))\n\nParent = \(String(describing: nextUp))")
                     }
                     
                 } else {
@@ -205,7 +205,7 @@ extension VJson {
                         if let item = root.item(at: path) {
                             item.undoRedoAssignment(from: clone)
                         } else {
-                            NSBeep()
+                            NSSound.beep()
                             assert(false, "ERROR - Cannot undo, target for undo at path '\(path)' not found")
                         }
                     })

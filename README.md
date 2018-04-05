@@ -14,7 +14,7 @@ VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver fra
 - Overloaded assignment operators for readable code.
 - Auto creation of null values for optional items that are nil.
 - Type conflicts can be configured to create fatal errors (is default).
-- Build with Swift 3
+- Build with Swift 4, Xcode 9.3
 - Includes extensive unit tests
 - Use either integrated parser or Apple's NSJSONSerialization parser
 - Builds with SPM (Swift Package Manager)
@@ -305,7 +305,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.10.8 (Current)
+#### 0.10.9 (Current)
+
+- Swift 4 migration. Few minor adjustments to prevent warnings.
+
+#### 0.10.8
 
 - BRUtils was updated to 0.10.0
 

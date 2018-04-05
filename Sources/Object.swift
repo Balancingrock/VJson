@@ -109,7 +109,6 @@ public extension VJson {
     ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
     ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
     
-    @discardableResult
     public func add(_ child: VJson?, for name: String? = nil, replace: Bool = true) {
         guard let child = child else { return }
         if name == nil && !child.hasName { return }
@@ -127,7 +126,6 @@ public extension VJson {
     ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
     ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
     
-    @discardableResult
     public func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) {
         return add(item?.json, for: name, replace: replace)
     }

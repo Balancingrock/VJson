@@ -305,7 +305,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.10.10 (Current)
+#### 0.11.0 (Current)
+
+- Switch to SPM 4
+
+#### 0.10.10
 
 - Swift 4 migration. Few minor adjustments to prevent warnings.
 

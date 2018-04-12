@@ -305,7 +305,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.11.0 (Current)
+#### 0.11.1 (Current)
+
+- Made the undoManager local rather than static.
+
+#### 0.11.0
 
 - Switch to SPM 4
 

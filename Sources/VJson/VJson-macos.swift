@@ -3,7 +3,7 @@
 //  File:       VJson-macos.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.11.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -11,7 +11,7 @@
 //  Blog:       http://swiftrien.blogspot.com
 //  Git:        https://github.com/Balancingrock/SwifterJSON
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -51,7 +51,8 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
+// 0.11.1 - Made member undoManager local instead of static.
+// 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
 
 #if os(macOS)
@@ -64,7 +65,7 @@ public final class VJson: NSObject {
     
     /// The undo manager
     
-    public static var undoManager: UndoManager?
+    public var undoManager: UndoManager?
 
     
     /// The JSON type of this object.

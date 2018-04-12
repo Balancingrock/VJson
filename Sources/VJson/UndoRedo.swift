@@ -3,7 +3,7 @@
 //  File:       UndoRedo.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.11.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -51,7 +51,8 @@
 //
 // History
 //
-// 0.10.8  - Initial version
+// 0.11.1 - undoManager is now local rather than static.
+// 0.10.8 - Initial version
 // =====================================================================================================================
 
 
@@ -192,7 +193,7 @@ extension VJson {
     
     internal func recordUndoRedoAction() {
         
-        if let undoManager = VJson.undoManager {
+        if let undoManager = undoManager {
             
             if #available(OSX 10.11, *) {
                 

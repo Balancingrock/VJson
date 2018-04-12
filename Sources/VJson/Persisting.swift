@@ -8,8 +8,7 @@
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
-//  Blog:       http://swiftrien.blogspot.com
-//  Git:        https://github.com/Balancingrock/SwifterJSON
+//  Git:        https://github.com/Balancingrock/VJson
 //
 //  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
 //

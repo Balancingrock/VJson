@@ -305,7 +305,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.11.1 (Current)
+#### 0.11.2 (Current)
+
+- Added  support operations for the upcoming JSON editor
+
+#### 0.11.1
 
 - Made the undoManager local rather than static.
 

@@ -3,13 +3,12 @@
 //  File:       Type.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.11.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
-//  Blog:       http://swiftrien.blogspot.com
-//  Git:        https://github.com/Balancingrock/SwifterJSON
+//  Git:        https://github.com/Balancingrock/VJson
 //
 //  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
 //
@@ -51,7 +50,8 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
+// 0.11.2 - Added changeType:to
+// 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
 
 import Foundation
@@ -211,5 +211,21 @@ public extension VJson {
                 fatalError("Type conversion from \(self.type) to \(targetType) is not allowed")
             }
         }
-    }    
+    }
+    
+    
+    /// Changes the JSON type of self if allowed.
+    ///
+    /// - Parameter to: The required JSON type.
+    ///
+    /// - Returns: False if the change is not allowed. True if changed (or stayed the same).
+    
+    public func changeType(to newType: JType) -> Bool {
+        if VJson.typeChangeIsAllowed(from: type, to: newType) {
+            undoableUpdate(to: newType)
+            return true
+        } else {
+            return false
+        }
+    }
 }

@@ -3,13 +3,12 @@
 //  File:       Array.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.11.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
-//  Blog:       http://swiftrien.blogspot.com
-//  Git:        https://github.com/Balancingrock/SwifterJSON
+//  Git:        https://github.com/Balancingrock/VJson
 //
 //  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
 //
@@ -51,12 +50,13 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
-//         - remove() now returns a bool instead of the removed child.
-//         - remove(at) added.
-//         - repace(at,with) now returns the replaced child (if any) instead of the inserted child.
-//         - insert(child,at) now returns a bool instead of the child and will append for index > nofChildren
-//         - The append operations no longer return anything.
+// 0.11.2 - Added move:from:to
+// 0.10.8 - Split off from VJson.swift
+//        - remove() now returns a bool instead of the removed child.
+//        - remove:at added.
+//        - repace:at:with now returns the replaced child (if any) instead of the inserted child.
+//        - insert:child:at now returns a bool instead of the child and will append for index > nofChildren
+//        - The append operations no longer return anything.
 // =====================================================================================================================
 
 import Foundation
@@ -176,7 +176,7 @@ public extension VJson {
     /// - Parameters:
     ///   - item: The child object to remove.
     ///
-    /// - Returns: True if successful, false otherwise.
+    /// - Returns: The child that was removed. Nil if the index is out of range.
     
     @discardableResult
     public func remove(at index: Int) -> VJson? {
@@ -218,6 +218,33 @@ public extension VJson {
         guard index < nofChildren else { return false }
         recordUndoRedoAction()
         return children?.insert(child, at: index) ?? false
+    }
+    
+    
+    /// Move an item to a new location.
+    ///
+    /// - Parameters:
+    ///   - from: The item to move.
+    ///   - to: The new location for the item.
+    ///
+    /// - Returns: True when successful, false when not.
+    
+    @discardableResult
+    public func move(from source: Int, to destination: Int) -> Bool {
+        guard type == .array else { return false }
+        guard (source >= 0) && (source < nofChildren) else { return false }
+        guard (destination >= 0) && (destination < nofChildren) else { return false }
+        if source == destination { return true }
+        
+        // The undo actions are performed in the remove and insert operations
+        
+        guard let item = remove(at: source) else { return false }
+        if source < destination {
+            insert(item, at: destination - 1)
+        } else {
+            insert(item, at: destination)
+        }
+        return true
     }
     
     

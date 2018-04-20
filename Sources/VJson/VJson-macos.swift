@@ -3,7 +3,7 @@
 //  File:       VJson-macos.swift
 //  Project:    VJson
 //
-//  Version:    0.11.1
+//  Version:    0.11.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,8 @@
 //
 // History
 //
+// 0.11.3 - Ensured that only the top level VJson object can have an undo manager.
+//        - Added an customData member of AnyObject that can be used to associate custom data with a VJson object.
 // 0.11.1 - Made member undoManager local instead of static.
 // 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
@@ -63,8 +65,25 @@ public final class VJson: NSObject {
     
     
     /// The undo manager
+    ///
+    /// - Note: VJson will support the assignment of an undo manager at the top level only.
     
-    public var undoManager: UndoManager?
+    public var undoManager: UndoManager? {
+        get {
+            if let parent = parent {
+                return parent.undoManager
+            } else {
+                return _undoManager
+            }
+        }
+        set {
+            if parent == nil {
+                _undoManager = newValue
+            }
+        }
+    }
+    
+    private var _undoManager: UndoManager?
 
     
     /// The JSON type of this object.
@@ -92,6 +111,13 @@ public final class VJson: NSObject {
     public internal(set) var string: String?
     
     
+    /// Custom data associated with this VJson object.
+    ///
+    /// - Note: VJson does not do anything with this object. As far as VJson is concerned, this member does not exist. It is not used when copying, duplication, comparing, undo/redo etc.
+    
+    public var customData: AnyObject?
+    
+    
     /// The container for all children if self is .array or .object.
     
     public internal(set) var children: Children?
@@ -100,8 +126,12 @@ public final class VJson: NSObject {
     /// The parent of a child
     ///
     /// A VJson object cannot have more than one parent. For that reason the parent is stricktly managed: when adding an object, the parent of that object must be nil. When removing an object, the parent of that object will be set to nil.
+    ///
+    /// - Note: When a parent is assigned, the undo manager will be set to nil.
     
-    public internal(set) weak var parent: VJson?
+    public internal(set) weak var parent: VJson? {
+        didSet { self._undoManager = nil }
+    }
     
     
     /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.

@@ -3,7 +3,7 @@
 //  File:       UndoRedo.swift
 //  Project:    VJson
 //
-//  Version:    0.11.1
+//  Version:    0.11.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.11.3 - Search for lowest undo manager in the VJson hierarchy.
 // 0.11.1 - undoManager is now local rather than static.
 // 0.10.8 - Initial version
 // =====================================================================================================================

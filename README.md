@@ -23,8 +23,9 @@ VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver fra
 - Limited KVO support to provide easier integration with -for example- an NSOutlineView
 - Notifications are isued for KVO updates.
 - Undo/redo support for macOS
+- customData member allows for association of external data with a VJson object
 - Caching of named members for higher performance (usable in most cases)
-- Prepared for use under Linux (but not tested yet)
+- Prepared for use under Linux (but needs more work)
 
 # Installation
 
@@ -305,7 +306,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.11.2 (Current)
+#### 0.11.3 (Current)
+
+- Added customData to VJson object
+- Ensured that only one undoManager is present in a VJson hierarchy (possible bugfix)
+
+#### 0.11.2
 
 - Added  support operations for the upcoming JSON editor
 

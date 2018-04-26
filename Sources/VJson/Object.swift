@@ -3,14 +3,14 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.12.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.0  - Added uniqueName:startsWith
 // 0.10.8  - Split off from VJson.swift
 //         - The add operations no longer return a value.
 // =====================================================================================================================
@@ -142,5 +143,25 @@ public extension VJson {
         guard type == .object else { return 0 }
         recordUndoRedoAction()
         return children?.remove(childrenWith: name) ?? 0
+    }
+    
+    
+    /// Creates a unique name by appending a '<joiner><number>' to the given name when necessary. The number will be the lowest possible number that makes the name unique, starting from 1. Self must be a JSON OBJECT.
+    ///
+    /// - Parameters:
+    ///   - startsWith: The string with which the name should start.
+    ///   - joiner: The string to use to join the name with the number. Default = '-'
+    ///
+    /// - Returns: A unique name or nil when self is not an OBJECT.
+    
+    func uniqueName(startsWith str: String, joiner: String = "-") -> String? {
+        guard isObject else { return nil }
+        var uniqueName = str
+        var count = 1
+        while self|uniqueName != nil {
+            uniqueName = "\(uniqueName)\(joiner)\(count)"
+            count += 1
+        }
+        return uniqueName
     }
 }

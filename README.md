@@ -309,6 +309,7 @@ Note: Planned releases are for information only and subject to change without no
 #### 0.12.0 (Current)
 
 - Moved insert:child:at and made it available for JSON OBJECTs as well.
+- Added uniqueName
 
 #### 0.11.4
 

@@ -63,15 +63,14 @@ class KeyValueCodingTests: XCTestCase {
     }
     
     func testSetValue() {
-        
-        VJson.undoManager = UndoManager()
-        
+                
         let json = VJson()
+        json.undoManager = UndoManager()
         json["one"][1]["a"] &= "test"
         json["one"][2]["b"] &= 1
         json["one"][3]["c"] &= true
         
-        VJson.undoManager?.removeAllActions()
+        json.undoManager?.removeAllActions()
         
         json.setValue("qwerty", forKey: "one.1.a")
         json.setValue("3", forKey: "one.2.b")
@@ -81,7 +80,7 @@ class KeyValueCodingTests: XCTestCase {
         XCTAssertEqual((json|"one"|2|"b")!.intValue!, 3)
         XCTAssertEqual((json|"one"|3|"c")!.boolValue!, false)
         
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         
         XCTAssertEqual((json|"one"|1|"a")!.stringValue!, "test")
         XCTAssertEqual((json|"one"|2|"b")!.intValue!, 1)

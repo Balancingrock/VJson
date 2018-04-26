@@ -14,11 +14,9 @@ class NullTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        VJson.undoManager = UndoManager()
     }
     
     override func tearDown() {
-        VJson.undoManager = nil
         super.tearDown()
     }
 
@@ -41,51 +39,55 @@ class NullTests: XCTestCase {
         
         // Convert from Number
         json = VJson(1)
+        json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        VJson.undoManager?.removeAllActions()
+        json.undoManager?.removeAllActions()
         json.nullValue = true
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
         
         
         // Convert from String
         json = VJson("qwerty")
+        json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        VJson.undoManager?.removeAllActions()
+        json.undoManager?.removeAllActions()
         json.nullValue = false
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
 
         
         // Convert from Object
         json = VJson.object("qwerty")
+        json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        VJson.undoManager?.removeAllActions()
+        json.undoManager?.removeAllActions()
         json.nullValue = false
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
         
         // Convert from Array
         json = VJson.array("qwerty")
+        json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        VJson.undoManager?.removeAllActions()
+        json.undoManager?.removeAllActions()
         json.nullValue = false
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
     }

@@ -27,21 +27,20 @@ class NameTests: XCTestCase {
     
     func testNameValue() {
         
-        VJson.undoManager = UndoManager()
-        
         // Without a name
         let json = VJson()
+        json.undoManager = UndoManager()
         XCTAssertFalse(json.hasName)
         XCTAssertNil(json.nameValue)
         
-        VJson.undoManager?.removeAllActions()
+        json.undoManager?.removeAllActions()
         
         // With a name
         json.nameValue = "aName"
         XCTAssertTrue(json.hasName)
         XCTAssertEqual(json.nameValue, "aName")
         
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         
         XCTAssertFalse(json.hasName)
         XCTAssertNil(json.nameValue)

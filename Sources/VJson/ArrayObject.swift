@@ -3,14 +3,14 @@
 //  File:       ArrayObject.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.11.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,8 +50,9 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
-//         - dictionaryValue now also returns those children from an ARRAY type that have a name
+// 0.11.4 - Added remove:child
+// 0.10.8 - Split off from VJson.swift
+//        - dictionaryValue now also returns those children from an ARRAY type that have a name
 // =====================================================================================================================
 
 import Foundation
@@ -103,6 +104,20 @@ public extension VJson {
     public func removeAllChildren() {
         recordUndoRedoAction()
         children?.removeAll()
+    }
+    
+    
+    /// Remove the given child from the children (if present).
+    ///
+    /// - Note: The child must be an actual child of self. I.e. the comparison is made using object references.
+    ///
+    /// - Returns: True if the child was removed.
+    
+    public func remove(_ child: VJson) -> Bool {
+        guard let i = children?.index(of: child) else { return false }
+        recordUndoRedoAction()
+        children?.remove(at: i)
+        return true
     }
     
     

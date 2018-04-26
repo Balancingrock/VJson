@@ -306,7 +306,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.11.3 (Current)
+#### 0.11.4 (Current)
+
+- Added remove:child operation
+- Fixed tests
+
+#### 0.11.3
 
 - Added customData to VJson object
 - Ensured that only one undoManager is present in a VJson hierarchy (possible bugfix)

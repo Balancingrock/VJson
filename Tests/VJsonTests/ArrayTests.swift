@@ -23,13 +23,13 @@ class ArrayTests: XCTestCase {
         
         json = VJson.array()
         
-        VJson.undoManager = UndoManager()
+        json.undoManager = UndoManager()
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         
-        VJson.undoManager = nil
+        json.undoManager = nil
 
         super.tearDown()
     }
@@ -262,6 +262,7 @@ class ArrayTests: XCTestCase {
         let child = VJson(5)
 
         json = VJson([VJson(1), child, VJson(3), VJson(2)])
+        json.undoManager = UndoManager()
 
         XCTAssertFalse(json.remove(VJson(1)))
         
@@ -272,7 +273,7 @@ class ArrayTests: XCTestCase {
         XCTAssertNotNil(rem)
         XCTAssertEqual(json.nofChildren, 3)
         
-        VJson.undoManager!.undo()
+        json.undoManager!.undo()
         
         XCTAssertEqual(json.nofChildren, 4)
         
@@ -282,6 +283,7 @@ class ArrayTests: XCTestCase {
     func testRemoveAt() {
         
         json = VJson([VJson(1), VJson(2), VJson(3), VJson(4)])
+        json.undoManager = UndoManager()
 
         XCTAssertNil(json.remove(at: 4))
         
@@ -296,7 +298,7 @@ class ArrayTests: XCTestCase {
             XCTFail("Unable to remove item")
         }
         
-        VJson.undoManager!.undo()
+        json.undoManager!.undo()
         
         XCTAssertEqual(json.nofChildren, 4)
         
@@ -366,6 +368,7 @@ class ArrayTests: XCTestCase {
         arr.append(VJson(2))
         arr.append(VJson(3))
         var json = VJson(arr)
+        json.undoManager = UndoManager()
         var e: VJson?
         XCTAssertFalse(json.insert(e, at: 1))
         XCTAssertEqual(json.nofChildren, 3)
@@ -403,28 +406,30 @@ class ArrayTests: XCTestCase {
         
         
         // Undo testing
-        VJson.undoManager!.removeAllActions()
         json = VJson([VJson(1), VJson(3), VJson(4)])
-        
+        json.undoManager = UndoManager()
+
         let child = VJson(5)
         
         let comp2 = VJson([VJson(5), VJson(1), VJson(3), VJson(4)])
         let comp3 = VJson([VJson(1), VJson(5), VJson(3), VJson(4)])
         
         let t2 = json.duplicate
+        t2.undoManager = UndoManager()
         XCTAssertTrue(t2.insert(child, at: 0))
         XCTAssertEqual(t2, comp2)
-        VJson.undoManager!.undo()
+        t2.undoManager!.undo()
         XCTAssertEqual(t2, json)
         
         let t3 = json.duplicate
+        t3.undoManager = UndoManager()
         XCTAssertTrue(t3.insert(child, at: 1))
         XCTAssertEqual(t3, comp3)
-        VJson.undoManager!.undo()
+        t3.undoManager!.undo()
         XCTAssertEqual(t3, json)
         
         XCTAssertFalse(t3.insert(child, at: -1))
-        VJson.undoManager!.undo()
+        t3.undoManager!.undo()
         XCTAssertEqual(t3, json)
     }
 
@@ -475,17 +480,18 @@ class ArrayTests: XCTestCase {
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         
         // Undo test
-        VJson.undoManager = UndoManager()
         json = VJson.array()
+        json.undoManager = UndoManager()
         json.append(VJson(0))
         XCTAssertEqual(json.nofChildren, 1)
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         XCTAssertEqual(json.nofChildren, 0)
     }
 
     func testAppendArray() {
         
         json = VJson.null()
+        json.undoManager = UndoManager()
         
         let arr: Array<VJson?> = [VJson(1), VJson(2), nil, VJson(4)]
         
@@ -495,7 +501,7 @@ class ArrayTests: XCTestCase {
         json.append(arr, includeNil: true)
         XCTAssertEqual(exp1, json)
         
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         
         json.append(arr)
         XCTAssertEqual(exp2, json)
@@ -504,6 +510,7 @@ class ArrayTests: XCTestCase {
     func testAppendSer() {
         
         json = VJson.null()
+        json.undoManager = UndoManager()
         
         let one = "one"
         let two = "two"
@@ -518,7 +525,7 @@ class ArrayTests: XCTestCase {
         
         XCTAssertEqual(json, comp1)
         
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         
         XCTAssertTrue(json.isNull)
     }
@@ -526,6 +533,7 @@ class ArrayTests: XCTestCase {
     func testAppendArraySer() {
         
         json = VJson.null()
+        json.undoManager = UndoManager()
         
         let arr: Array<String?> = ["one", "two", nil, "four"]
         
@@ -535,7 +543,7 @@ class ArrayTests: XCTestCase {
         json.append(arr, includeNil: true)
         XCTAssertEqual(exp1, json)
         
-        VJson.undoManager?.undo()
+        json.undoManager?.undo()
         
         json.append(arr)
         XCTAssertEqual(exp2, json)

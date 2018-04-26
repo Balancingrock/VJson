@@ -203,14 +203,14 @@ class BoolTests: XCTestCase {
         XCTAssertEqual(json.nofChildren, 0)
         
         // Test undo/redo
-        VJson.undoManager = UndoManager()
         json = VJson(true)
+        json.undoManager = UndoManager()
         XCTAssertTrue(json.boolValue!)
         json.boolValue = false
         XCTAssertFalse(json.boolValue!)
-        VJson.undoManager!.undo()
+        json.undoManager!.undo()
         XCTAssertTrue(json.boolValue!)
-        VJson.undoManager!.redo()
+        json.undoManager!.redo()
         XCTAssertFalse(json.boolValue!)
     }
 

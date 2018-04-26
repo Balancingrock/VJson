@@ -306,7 +306,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.11.4 (Current)
+#### 0.12.0 (Current)
+
+- Moved insert:child:at and made it available for JSON OBJECTs as well.
+
+#### 0.11.4
 
 - Added remove:child operation
 - Fixed tests

@@ -3,14 +3,14 @@
 //  File:       Array.swift
 //  Project:    VJson
 //
-//  Version:    0.11.2
+//  Version:    0.12.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.0 - Moved insert:child:at to ArrayObject.swift.
 // 0.11.2 - Added move:from:to
 // 0.10.8 - Split off from VJson.swift
 //        - remove() now returns a bool instead of the removed child.
@@ -200,24 +201,6 @@ public extension VJson {
         guard type == .array else { return nil }
         recordUndoRedoAction()
         return children?.replace(at: index, with: child)
-    }
-    
-    
-    /// Inserts the given child at the given index. Self must be a JSON ARRAY. Is Undoable.
-    ///
-    /// - Parameters:
-    ///   - child: The VJson object to be inserted.
-    ///   - at index: The index at which it will be inserted. The index must exist, insertion will fail for non-existing indexes.
-    ///
-    /// - Returns: True if the insertion was succesful. False if not.
-    
-    @discardableResult
-    public func insert(_ child: VJson?, at index: Int) -> Bool {
-        guard let child = child else { return false }
-        guard type == .array else { return false }
-        guard index < nofChildren else { return false }
-        recordUndoRedoAction()
-        return children?.insert(child, at: index) ?? false
     }
     
     

@@ -3,7 +3,7 @@
 //  File:       ArrayObject.swift
 //  Project:    VJson
 //
-//  Version:    0.11.4
+//  Version:    0.12.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.0 - Moved insert:child:at from Array.swift to here. Made the operation suitable for JSON OBJECTS.
 // 0.11.4 - Added remove:child
 // 0.10.8 - Split off from VJson.swift
 //        - dictionaryValue now also returns those children from an ARRAY type that have a name
@@ -104,6 +105,24 @@ public extension VJson {
     public func removeAllChildren() {
         recordUndoRedoAction()
         children?.removeAll()
+    }
+    
+    
+    /// Inserts the given child at the given index. Self must be a JSON ARRAY or JSON OBJECT. Is Undoable. If self is a JSON OBJECT then the name of the child must have been set.
+    ///
+    /// - Parameters:
+    ///   - child: The VJson object to be inserted.
+    ///   - at index: The index at which it will be inserted. The index must exist, insertion will fail for non-existing indexes.
+    ///
+    /// - Returns: True if the insertion was succesful. False if not.
+    
+    @discardableResult
+    public func insert(_ child: VJson?, at index: Int) -> Bool {
+        guard let child = child else { return false }
+        guard index < nofChildren else { return false }
+        guard isArray || (isObject && child.hasName) else { return false }
+        recordUndoRedoAction()
+        return children?.insert(child, at: index) ?? false
     }
     
     

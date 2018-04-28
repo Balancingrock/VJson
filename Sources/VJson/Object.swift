@@ -3,7 +3,7 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.12.1
+//  Version:    0.12.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.2  - Bugfix, uniqueName no longer appends numbers but updates the number.
 // 0.12.1  - Added public to uniqueName:startsWith
 // 0.12.0  - Added uniqueName:startsWith
 // 0.10.8  - Split off from VJson.swift
@@ -160,7 +161,7 @@ public extension VJson {
         var uniqueName = str
         var count = 1
         while self|uniqueName != nil {
-            uniqueName = "\(uniqueName)\(joiner)\(count)"
+            uniqueName = "\(str)\(joiner)\(count)"
             count += 1
         }
         return uniqueName

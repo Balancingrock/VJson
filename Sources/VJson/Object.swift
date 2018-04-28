@@ -3,7 +3,7 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.12.0
+//  Version:    0.12.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.1  - Added public to uniqueName:startsWith
 // 0.12.0  - Added uniqueName:startsWith
 // 0.10.8  - Split off from VJson.swift
 //         - The add operations no longer return a value.
@@ -154,7 +155,7 @@ public extension VJson {
     ///
     /// - Returns: A unique name or nil when self is not an OBJECT.
     
-    func uniqueName(startsWith str: String, joiner: String = "-") -> String? {
+    public func uniqueName(startsWith str: String, joiner: String = "-") -> String? {
         guard isObject else { return nil }
         var uniqueName = str
         var count = 1

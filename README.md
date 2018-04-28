@@ -306,7 +306,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.12.0 (Current)
+#### 0.12.1 (Current)
+
+- Bugfix: added 'public' to 'uniqueName'
+
+#### 0.12.0
 
 - Moved insert:child:at and made it available for JSON OBJECTs as well.
 - Added uniqueName

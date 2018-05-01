@@ -3,14 +3,14 @@
 //  File:       KeyValueCoding.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.11.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.11.3  - Added setValueFromAny
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -131,6 +132,57 @@ public extension VJson {
     }
     
     
+    ///
+    
+    public func setValueFromAny(_ value: Any?) -> Bool {
+        
+        switch type {
+            
+        // While a NULL may be changed into other types, this probably won't ever happen.
+        case .null:
+            if let b = boolFromAny(value) {
+                boolValue = b
+                return true
+                
+            } else if let n = numberFromAny(value) {
+                numberValue = n
+                return true
+                
+            } else if let s = stringFromAny(value) {
+                stringValue = s
+                return true
+            }
+            
+        // Update a bool
+        case .bool:
+            if let b = boolFromAny(value) {
+                boolValue = b
+                return true
+            }
+            
+        // Update a number
+        case .number:
+            if let n = numberFromAny(value) {
+                numberValue = n
+                return true
+            }
+            
+        // Update a string
+        case .string:
+            if let s = stringFromAny(value) {
+                stringValue = s
+                return true
+            }
+            
+        // Not supported (yet?)
+        case .array, .object:
+            break
+        }
+        
+        return false
+    }
+    
+    
     /// Override the KVO 'setValue' to update the members.
     ///
     /// If an update is made, the KVO_VALUE_UPDATE notification is sent for the VJson item that was updated.
@@ -141,52 +193,9 @@ public extension VJson {
         
         if let item = item(at: pathKeys) {
             
-            switch item.type {
-                
-            // While a NULL may be changed into other types, this probably won't ever happen.
-            case .null:
-                if let b = boolFromAny(value) {
-                    item.boolValue = b
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
-                    
-                } else if let n = numberFromAny(value) {
-                    item.numberValue = n
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
-                    
-                } else if let s = stringFromAny(value) {
-                    item.stringValue = s
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
-                }
-                
-            // Update a bool
-            case .bool:
-                if let b = boolFromAny(value) {
-                    item.boolValue = b
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
-                }
-                
-            // Update a number
-            case .number:
-                if let n = numberFromAny(value) {
-                    item.numberValue = n
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
-                }
-                
-            // Update a string
-            case .string:
-                if let s = stringFromAny(value) {
-                    item.stringValue = s
-                    NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
-                    return
-                }
-                
-            // Not supported (yet?)
-            case .array, .object: break
+            if item.setValueFromAny(value) {
+                NotificationCenter.default.post(name: VJson.KVO_VALUE_UPDATE, object: item)
+                return
             }
         }
         super.setValue(value, forKey: key)

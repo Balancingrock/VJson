@@ -306,7 +306,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.12.2 (Current)
+#### 0.12.3 (Current)
+
+- Added the setValueFromAny operation.
+
+#### 0.12.2
 
 - Bugfix: uniqueName now updates the number used to make the name unique instead of appending it again and again.
 

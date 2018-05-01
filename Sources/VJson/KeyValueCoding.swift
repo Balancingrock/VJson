@@ -3,7 +3,7 @@
 //  File:       KeyValueCoding.swift
 //  Project:    VJson
 //
-//  Version:    0.11.3
+//  Version:    0.12.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,7 +50,7 @@
 //
 // History
 //
-// 0.11.3  - Added setValueFromAny
+// 0.12.3  - Added setValueFromAny
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 

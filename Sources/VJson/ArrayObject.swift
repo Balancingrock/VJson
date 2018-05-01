@@ -3,7 +3,7 @@
 //  File:       ArrayObject.swift
 //  Project:    VJson
 //
-//  Version:    0.12.0
+//  Version:    0.12.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.4 - insert:child:at now accepts an out of range index. The child will then be appended.
 // 0.12.0 - Moved insert:child:at from Array.swift to here. Made the operation suitable for JSON OBJECTS.
 // 0.11.4 - Added remove:child
 // 0.10.8 - Split off from VJson.swift
@@ -119,7 +120,6 @@ public extension VJson {
     @discardableResult
     public func insert(_ child: VJson?, at index: Int) -> Bool {
         guard let child = child else { return false }
-        guard index < nofChildren else { return false }
         guard isArray || (isObject && child.hasName) else { return false }
         recordUndoRedoAction()
         return children?.insert(child, at: index) ?? false

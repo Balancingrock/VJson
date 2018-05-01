@@ -306,7 +306,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.12.3 (Current)
+#### 0.12.4 (Current)
+
+- Changed behaviour of insert:child:at to accept 'out of range' values for 'at'. In out of range situations the child will be appended to the end.
+
+#### 0.12.3
 
 - Added the setValueFromAny operation.
 

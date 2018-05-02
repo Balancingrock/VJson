@@ -3,14 +3,14 @@
 //  File:       UndoRedo.swift
 //  Project:    VJson
 //
-//  Version:    0.11.3
+//  Version:    0.12.5
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.5 - Made location public
 // 0.11.3 - Search for lowest undo manager in the VJson hierarchy.
 // 0.11.1 - undoManager is now local rather than static.
 // 0.10.8 - Initial version
@@ -67,7 +68,7 @@ extension VJson {
     
     /// Returns the root of the hierarchy and the path from there to this item.
     
-    internal func location() -> (root: VJson, path: Array<String>)? {
+    public func location() -> (root: VJson, path: Array<String>)? {
         
         
         // If there is no parent, this this is the top level and the path is empty.

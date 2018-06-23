@@ -3,7 +3,7 @@
 //  File:       Children.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.12.6
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.6  - Made some index functions public (were internal)
 // 0.10.8  - Split off from VJson.swift
 //         - Renamed index:ofChild to index:of
 // =====================================================================================================================
@@ -136,7 +137,7 @@ public extension VJson {
         ///
         /// - Returns: The index of the requested child, or nil if not found.
         
-        internal func index(of child: VJson?) -> Int? {
+        public func index(of child: VJson?) -> Int? {
             guard let child = child else { return nil }
             for (index, item) in items.enumerated() {
                 if item === child { return index } // Compare and break if the child is found
@@ -237,7 +238,7 @@ public extension VJson {
         /// - Returns: The child that was removed, or nil if the index did not exist.
         
         @discardableResult
-        internal func remove(at index: Int) -> VJson? {
+        public func remove(at index: Int) -> VJson? {
             guard index < items.count else { return nil }
             guard index >= 0 else { return nil }
             
@@ -253,7 +254,7 @@ public extension VJson {
         /// - Returns: True on success, false if nothing was removed.
         
         @discardableResult
-        internal func remove(_ child: VJson?) -> Bool {
+        public func remove(_ child: VJson?) -> Bool {
             guard let child = child else { return false }
             
             if let index = index(of: child) {

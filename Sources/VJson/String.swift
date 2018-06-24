@@ -3,7 +3,7 @@
 //  File:       String.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.12.7
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.7  - Fixed bug on asString assignment for Bool.
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -105,7 +106,7 @@ public extension VJson {
         set {
             switch type {
             case .null, .array, .object: break
-            case .bool: boolValue = Bool(newValue) ?? false
+            case .bool: boolValue = Bool(lettersOrDigits: newValue) ?? false
             case .string: stringValue = newValue
             case .number: numberValue = NSNumber.factory(boolIntDouble: newValue)
             }

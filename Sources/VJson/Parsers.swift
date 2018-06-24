@@ -3,7 +3,7 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.12.8
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.12.8  - Added location to the exception info
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -66,7 +67,7 @@ public extension VJson {
     ///
     /// Recommended use: let json = VJson.parse(data(from: myJsonCode)){ ... error handler ... }
     
-    public typealias parseErrorSignature = (_ code: Int, _ incomplete: Bool, _ message: String) -> Void
+    public typealias parseErrorSignature = (_ location: Int, _ code: Int, _ incomplete: Bool, _ message: String) -> Void
     
     
     /// This error type gets thrown if errors are found during parsing.
@@ -82,13 +83,13 @@ public extension VJson {
         /// - incomplete: When true, the error occured because the parser ran out of characters.
         /// - message: A textual description of the error.
         
-        case reason(code: Int, incomplete: Bool, message: String)
+        case reason(location: Int, code: Int, incomplete: Bool, message: String)
         
         
         /// The textual description of the exception.
         
         public var description: String {
-            if case let .reason(code, incomplete, message) = self { return "[\(code), Incomplete:\(incomplete)] \(message)" }
+            if case let .reason(location, code, incomplete, message) = self { return "[Location: \(location), Code: \(code), Incomplete:\(incomplete)] \(message)" }
             return "VJson: Error in Exception enum"
         }
     }
@@ -99,7 +100,12 @@ public extension VJson {
     public struct ParseError {
         
         
-        /// An integer number that references the error location
+        /// An integer number that references the index of the character that caused the error
+        
+        public var location: Int
+        
+        
+        /// An integer number that references the error in the parser code
         
         public var code: Int
         
@@ -121,7 +127,8 @@ public extension VJson {
         ///   - incomplete: True if the error occured because the parser ran out of characters.
         ///   - message: A textual description of the error.
         
-        public init(code: Int, incomplete: Bool, message: String) {
+        public init(location: Int, code: Int, incomplete: Bool, message: String) {
+            self.location = location
             self.code = code
             self.incomplete = incomplete
             self.message = message
@@ -131,14 +138,14 @@ public extension VJson {
         /// Creates an empty ParseError
         
         public init() {
-            self.init(code: -1, incomplete: false, message: "")
+            self.init(location: 0, code: -1, incomplete: false, message: "")
         }
         
         
         /// The textual description of the ParseError
         
         public var description: String {
-            return "[\(code), Incomplete:\(incomplete)] \(message)"
+            return "[Location: \(location), Code: \(code), Incomplete:\(incomplete)] \(message)"
         }
     }
     
@@ -153,11 +160,11 @@ public extension VJson {
         do {
             return try parse(file: file)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
-            onError(code, incomplete, message)
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            onError(location, code, incomplete, message)
             
         } catch let error {
-            onError(-1, false, "\(error)")
+            onError(0, -1, false, "\(error)")
         }
         return nil
     }
@@ -190,12 +197,14 @@ public extension VJson {
         do {
             return try parse(file: file)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            errorInfo?.location = location
             errorInfo?.code = code
             errorInfo?.incomplete = incomplete
             errorInfo?.message = message
             
         } catch let error {
+            errorInfo?.location = 0
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
@@ -215,11 +224,11 @@ public extension VJson {
         do {
             return try VJson.vJsonParser(buffer: buffer)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
-            onError(code, incomplete, message)
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            onError(location, code, incomplete, message)
             
         } catch let error {
-            onError(-1, false, "\(error)")
+            onError(0, -1, false, "\(error)")
         }
         return nil
     }
@@ -252,12 +261,14 @@ public extension VJson {
         do {
             return try parse(buffer: buffer)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            errorInfo?.location = location
             errorInfo?.code = code
             errorInfo?.incomplete = incomplete
             errorInfo?.message = message
             
         } catch let error {
+            errorInfo?.location = 0
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
@@ -276,11 +287,11 @@ public extension VJson {
         do {
             return try VJson.parse(string: string)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
-            onError(code, incomplete, message)
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            onError(location, code, incomplete, message)
             
         } catch let error {
-            onError(-1, false, "\(error)")
+            onError(0, -1, false, "\(error)")
         }
         return nil
     }
@@ -297,7 +308,7 @@ public extension VJson {
     
     public static func parse(string: String) throws -> VJson {
         guard var data = string.data(using: String.Encoding.utf8) else {
-            throw VJson.Exception.reason(code: 59, incomplete: false, message: "Could not convert string to UTF8")
+            throw VJson.Exception.reason(location: 0, code: 59, incomplete: false, message: "Could not convert string to UTF8")
         }
         return try VJson.vJsonParser(data: &data)
     }
@@ -316,12 +327,14 @@ public extension VJson {
         do {
             return try parse(string: string)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            errorInfo?.location = location
             errorInfo?.code = code
             errorInfo?.incomplete = incomplete
             errorInfo?.message = message
             
         } catch let error {
+            errorInfo?.location = 0
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
@@ -340,11 +353,11 @@ public extension VJson {
         do {
             return try VJson.vJsonParser(data: &data)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
-            onError(code, incomplete, message)
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            onError(location, code, incomplete, message)
             
         } catch let error {
-            onError(-1, false, "\(error)")
+            onError(0, -1, false, "\(error)")
         }
         return nil
     }
@@ -376,12 +389,14 @@ public extension VJson {
         do {
             return try VJson.vJsonParser(data: &data)
             
-        } catch let .reason(code, incomplete, message) as VJson.Exception {
+        } catch let .reason(location, code, incomplete, message) as VJson.Exception {
+            errorInfo?.location = location
             errorInfo?.code = code
             errorInfo?.incomplete = incomplete
             errorInfo?.message = message
             
         } catch let error {
+            errorInfo?.location = 0
             errorInfo?.code = -1
             errorInfo?.incomplete = false
             errorInfo?.message = "\(error)"
@@ -450,7 +465,7 @@ public extension VJson {
         } else {
             
             // This should be impossible.
-            throw Exception.reason(code: 100, incomplete: true, message: "Illegal value in AppleParser result")
+            throw Exception.reason(location: 0, code: 100, incomplete: true, message: "Illegal value in AppleParser result")
         }
     }
 }
@@ -471,7 +486,7 @@ internal extension VJson {
     
     fileprivate static func vJsonParser(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson {
         
-        guard buffer.count > 0 else { throw Exception.reason(code: 1, incomplete: true, message: "Empty buffer") }
+        guard buffer.count > 0 else { throw Exception.reason(location: 0, code: 1, incomplete: true, message: "Empty buffer") }
         
         
         // Start at the beginning
@@ -490,7 +505,7 @@ internal extension VJson {
             
             skipWhitespaces(buffer.baseAddress!, numberOfBytes: buffer.count, offset: &offset)
             
-            if offset < buffer.count { throw Exception.reason(code: 2, incomplete: false, message: "Unexpected characters after end of parsing at offset \(offset - 1)") }
+            if offset < buffer.count { throw Exception.reason(location: offset, code: 2, incomplete: false, message: "Unexpected characters after end of parsing at offset \(offset - 1)") }
         }
         
         return val
@@ -507,7 +522,7 @@ internal extension VJson {
     
     fileprivate static func vJsonParser(data: inout Data) throws -> VJson {
         
-        guard data.count > 0 else { throw Exception.reason(code: 3, incomplete: true, message: "Empty buffer") }
+        guard data.count > 0 else { throw Exception.reason(location: 0, code: 3, incomplete: true, message: "Empty buffer") }
         
         
         // Start at the beginning
@@ -558,16 +573,16 @@ internal extension VJson {
     
     private static func readTrue(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 4, incomplete: true, message: "Illegal value, missing 'r' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._r { throw Exception.reason(code: 5, incomplete: false, message: "Illegal value, no 'r' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 4, incomplete: true, message: "Illegal value, missing 'r' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._r { throw Exception.reason(location: offset, code: 5, incomplete: false, message: "Illegal value, no 'r' in 'true' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 6, incomplete: true, message: "Illegal value, missing 'u' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._u { throw Exception.reason(code: 7, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 6, incomplete: true, message: "Illegal value, missing 'u' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._u { throw Exception.reason(location: offset, code: 7, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 8, incomplete: true, message: "Illegal value, missing 'e' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._e { throw Exception.reason(code: 9, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 8, incomplete: true, message: "Illegal value, missing 'e' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._e { throw Exception.reason(location: offset, code: 9, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
         offset += 1
         
         return VJson(true)
@@ -578,20 +593,20 @@ internal extension VJson {
     
     private static func readFalse(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 10, incomplete: true, message: "Illegal value, missing 'a' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._a { throw Exception.reason(code: 11, incomplete: false, message: "Illegal value, no 'a' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 10, incomplete: true, message: "Illegal value, missing 'a' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._a { throw Exception.reason(location: offset, code: 11, incomplete: false, message: "Illegal value, no 'a' in 'true' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 12, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._l { throw Exception.reason(code: 13, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 12, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(location: offset, code: 13, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 14, incomplete: true, message: "Illegal value, missing 's' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._s { throw Exception.reason(code: 15, incomplete: false, message: "Illegal value, no 's' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 14, incomplete: true, message: "Illegal value, missing 's' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._s { throw Exception.reason(location: offset, code: 15, incomplete: false, message: "Illegal value, no 's' in 'true' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 16, incomplete: true, message: "Illegal value, missing 'e' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._e { throw Exception.reason(code: 17, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 16, incomplete: true, message: "Illegal value, missing 'e' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._e { throw Exception.reason(location: offset, code: 17, incomplete: false, message: "Illegal value, no 'e' in 'true' at offset \(offset)") }
         offset += 1
         
         return VJson(false)
@@ -602,16 +617,16 @@ internal extension VJson {
     
     private static func readNull(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 18, incomplete: true, message: "Illegal value, missing 'u' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._u { throw Exception.reason(code: 19, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 18, incomplete: true, message: "Illegal value, missing 'u' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._u { throw Exception.reason(location: offset, code: 19, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 20, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._l { throw Exception.reason(code: 21, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 20, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(location: offset, code: 21, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 22, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._l { throw Exception.reason(code: 23, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 22, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(location: offset, code: 23, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
         offset += 1
         
         return VJson.null()
@@ -622,7 +637,7 @@ internal extension VJson {
     
     private static func readString(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 24, incomplete: true, message: "Missing end of string at end of buffer") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 24, incomplete: true, message: "Missing end of string at end of buffer") }
         
         var strbuf = Array<UInt8>()
         
@@ -637,7 +652,7 @@ internal extension VJson {
                 if buffer[offset] == Ascii._BACKSLASH {
                     
                     offset += 1
-                    if offset >= numberOfBytes { throw Exception.reason(code: 25, incomplete: true, message: "Missing end of string at end of buffer") }
+                    if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 25, incomplete: true, message: "Missing end of string at end of buffer") }
                     
                     switch buffer[offset] {
                     case Ascii._DOUBLE_QUOTES, Ascii._BACKWARD_SLASH, Ascii._FOREWARD_SLASH: strbuf.append(buffer[offset])
@@ -649,16 +664,16 @@ internal extension VJson {
                     case Ascii._u:
                         strbuf.append(buffer[offset])
                         offset += 1
-                        if offset >= numberOfBytes { throw Exception.reason(code: 26, incomplete: true, message: "Missing second byte after \\u in string") }
+                        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 26, incomplete: true, message: "Missing second byte after \\u in string") }
                         strbuf.append(buffer[offset])
                         offset += 1
-                        if offset >= numberOfBytes { throw Exception.reason(code: 27, incomplete: true, message: "Missing third byte after \\u in string") }
+                        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 27, incomplete: true, message: "Missing third byte after \\u in string") }
                         strbuf.append(buffer[offset])
                         offset += 1
-                        if offset >= numberOfBytes { throw Exception.reason(code: 28, incomplete: true, message: "Missing fourth byte after \\u in string") }
+                        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 28, incomplete: true, message: "Missing fourth byte after \\u in string") }
                         strbuf.append(buffer[offset])
                     default:
-                        throw Exception.reason(code: 29, incomplete: false, message: "Illegal character after \\ in string")
+                        throw Exception.reason(location: offset, code: 29, incomplete: false, message: "Illegal character after \\ in string")
                     }
                     
                 } else {
@@ -668,13 +683,13 @@ internal extension VJson {
             }
             
             offset += 1
-            if offset >= numberOfBytes { throw Exception.reason(code: 30, incomplete: true, message: "Missing end of string at end of buffer") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 30, incomplete: true, message: "Missing end of string at end of buffer") }
         }
         
         if let str: String = String(bytes: strbuf, encoding: String.Encoding.utf8) {
             return VJson(str)
         } else {
-            throw Exception.reason(code: 31, incomplete: false, message: "NSUTF8StringEncoding conversion failed at offset \(offset - 1)")
+            throw Exception.reason(location: offset, code: 31, incomplete: false, message: "NSUTF8StringEncoding conversion failed at offset \(offset - 1)")
         }
     }
     
@@ -686,7 +701,7 @@ internal extension VJson {
         if buffer[offset] == Ascii._MINUS {
             numbuf.append(buffer[offset])
             offset += 1
-            if offset >= numberOfBytes { throw Exception.reason(code: 32, incomplete: true, message: "Missing number at end of buffer") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 32, incomplete: true, message: "Missing number at end of buffer") }
         }
         
         // First digit series
@@ -700,22 +715,22 @@ internal extension VJson {
                         if let double = toDouble(numstr) {
                             return VJson(double)
                         } else {
-                            throw Exception.reason(code: 33, incomplete: false, message: "Could not convert to double at end of buffer") // Probably impossible
+                            throw Exception.reason(location: offset, code: 33, incomplete: false, message: "Could not convert to double at end of buffer") // Probably impossible
                         }
                     } else {
-                        throw Exception.reason(code: 34, incomplete: false, message: "NSUTF8StringEncoding conversion failed at end of buffer")
+                        throw Exception.reason(location: offset, code: 34, incomplete: false, message: "NSUTF8StringEncoding conversion failed at end of buffer")
                     }
                 }
             }
         } else {
-            throw Exception.reason(code: 35, incomplete: false, message: "Illegal character in number at offset \(offset)")
+            throw Exception.reason(location: offset, code: 35, incomplete: false, message: "Illegal character in number at offset \(offset)")
         }
         
         // Fraction
         if buffer[offset] == Ascii._DOT {
             numbuf.append(buffer[offset])
             offset += 1
-            if offset >= numberOfBytes { throw Exception.reason(code: 36, incomplete: true, message: "Missing digits (expecting fraction) at offset \(offset - 1)") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 36, incomplete: true, message: "Missing digits (expecting fraction) at offset \(offset - 1)") }
             if buffer[offset].isAsciiNumber {
                 while buffer[offset].isAsciiNumber {
                     numbuf.append(buffer[offset])
@@ -726,15 +741,15 @@ internal extension VJson {
                             if let double = toDouble(numstr) {
                                 return VJson(double)
                             } else {
-                                throw Exception.reason(code: 37, incomplete: false, message: "Could not convert to double at end of buffer") // Probably impossible
+                                throw Exception.reason(location: offset, code: 37, incomplete: false, message: "Could not convert to double at end of buffer") // Probably impossible
                             }
                         } else {
-                            throw Exception.reason(code: 38, incomplete: false, message: "NSUTF8StringEncoding conversion failed at end of buffer")
+                            throw Exception.reason(location: offset, code: 38, incomplete: false, message: "NSUTF8StringEncoding conversion failed at end of buffer")
                         }
                     }
                 }
             } else {
-                throw Exception.reason(code: 39, incomplete: false, message: "Illegal character in fraction at offset \(offset)")
+                throw Exception.reason(location: offset, code: 39, incomplete: false, message: "Illegal character in fraction at offset \(offset)")
             }
         }
         
@@ -742,11 +757,11 @@ internal extension VJson {
         if buffer[offset] == Ascii._e || buffer[offset] == Ascii._E {
             numbuf.append(buffer[offset])
             offset += 1
-            if offset >= numberOfBytes { throw Exception.reason(code: 40, incomplete: true, message: "Missing mantissa at buffer end") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 40, incomplete: true, message: "Missing mantissa at buffer end") }
             if buffer[offset] == Ascii._MINUS || buffer[offset] == Ascii._PLUS {
                 numbuf.append(buffer[offset])
                 offset += 1
-                if offset >= numberOfBytes { throw Exception.reason(code: 41, incomplete: true, message: "Missing mantissa at buffer end") }
+                if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 41, incomplete: true, message: "Missing mantissa at buffer end") }
             }
             if buffer[offset].isAsciiNumber {
                 while buffer[offset].isAsciiNumber {
@@ -755,7 +770,7 @@ internal extension VJson {
                     if offset >= numberOfBytes { break }
                 }
             } else {
-                throw Exception.reason(code: 42, incomplete: false, message: "Illegal character in mantissa at offset \(offset)")
+                throw Exception.reason(location: offset, code: 42, incomplete: false, message: "Illegal character in mantissa at offset \(offset)")
             }
         }
         
@@ -764,7 +779,7 @@ internal extension VJson {
         if let numstr = String(bytes: numbuf, encoding: String.Encoding.utf8) {
             return VJson((toDouble(numstr) ?? Double(0.0)))
         } else {
-            throw Exception.reason(code: 43, incomplete: false, message: "NSUTF8StringEncoding conversion failed for number ending at offset \(offset - 1)")
+            throw Exception.reason(location: offset, code: 43, incomplete: false, message: "NSUTF8StringEncoding conversion failed for number ending at offset \(offset - 1)")
         }
         
     }
@@ -773,7 +788,7 @@ internal extension VJson {
         
         skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 44, incomplete: true, message: "Missing array end at end of buffer") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 44, incomplete: true, message: "Missing array end at end of buffer") }
         
         
         let result = VJson(type: .array, name: nil)
@@ -797,7 +812,7 @@ internal extension VJson {
             
             skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
-            if offset >= numberOfBytes { throw Exception.reason(code: 45, incomplete: true, message: "Missing array end at end of buffer") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 45, incomplete: true, message: "Missing array end at end of buffer") }
             
             if buffer[offset] == Ascii._COMMA {
                 result.append(value)
@@ -807,11 +822,11 @@ internal extension VJson {
                 result.append(value)
                 return result
             } else {
-                throw Exception.reason(code: 58, incomplete: false, message: "Expected comma or end-of-array bracket")
+                throw Exception.reason(location: offset, code: 58, incomplete: false, message: "Expected comma or end-of-array bracket")
             }
         }
         
-        throw Exception.reason(code: 46, incomplete: true, message: "Missing array end at end of buffer")
+        throw Exception.reason(location: offset, code: 46, incomplete: true, message: "Missing array end at end of buffer")
     }
     
     
@@ -821,7 +836,7 @@ internal extension VJson {
         
         skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 47, incomplete: true, message: "Missing value at end of buffer") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 47, incomplete: true, message: "Missing value at end of buffer") }
         
         
         // index points at non-whitespace
@@ -860,7 +875,7 @@ internal extension VJson {
             offset += 1
             val = try readTrue(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
-        default: throw Exception.reason(code: 48, incomplete: false, message: "Illegal character at start of value at offset \(offset)")
+        default: throw Exception.reason(location: offset, code: 48, incomplete: false, message: "Illegal character at start of value at offset \(offset)")
         }
         
         return val
@@ -870,7 +885,7 @@ internal extension VJson {
         
         skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        if offset >= numberOfBytes { throw Exception.reason(code: 49, incomplete: true, message: "Missing object end at end of buffer") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 49, incomplete: true, message: "Missing object end at end of buffer") }
         
         
         // Result object
@@ -903,11 +918,11 @@ internal extension VJson {
                 if str.type == .string {
                     name = str.string!
                 } else {
-                    throw Exception.reason(code: 50, incomplete: false, message: "Programming error")
+                    throw Exception.reason(location: offset, code: 50, incomplete: false, message: "Programming error")
                 }
                 
             } else {
-                throw Exception.reason(code: 51, incomplete: false, message: "Expected double quotes of name in name/value pair at offset \(offset)")
+                throw Exception.reason(location: offset, code: 51, incomplete: false, message: "Expected double quotes of name in name/value pair at offset \(offset)")
             }
             
             
@@ -915,10 +930,10 @@ internal extension VJson {
             
             skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
-            if offset >= numberOfBytes { throw Exception.reason(code: 52, incomplete: true, message: "Missing ':' in name/value pair at offset \(offset - 1)") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 52, incomplete: true, message: "Missing ':' in name/value pair at offset \(offset - 1)") }
             
             if buffer[offset] != Ascii._COLON {
-                throw Exception.reason(code: 53, incomplete: false, message: "Missing ':' in name/value pair at offset \(offset)")
+                throw Exception.reason(location: offset, code: 53, incomplete: false, message: "Missing ':' in name/value pair at offset \(offset)")
             }
             
             offset += 1 // Consume the ":"
@@ -928,7 +943,7 @@ internal extension VJson {
             
             skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
-            if offset >= numberOfBytes { throw Exception.reason(code: 54, incomplete: true, message: "Missing value of name/value pair at buffer end") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 54, incomplete: true, message: "Missing value of name/value pair at buffer end") }
             
             let val = try readValue(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
@@ -943,23 +958,23 @@ internal extension VJson {
             
             skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
-            if offset >= numberOfBytes { throw Exception.reason(code: 55, incomplete: true, message: "Missing end of object at buffer end") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 55, incomplete: true, message: "Missing end of object at buffer end") }
             
             if buffer[offset] == Ascii._BRACE_CLOSE {
                 offset += 1
                 return result
             }
             
-            if buffer[offset] != Ascii._COMMA { throw Exception.reason(code: 56, incomplete: false, message: "Unexpected character, expected comma at offset \(offset)") }
+            if buffer[offset] != Ascii._COMMA { throw Exception.reason(location: offset, code: 56, incomplete: false, message: "Unexpected character, expected comma at offset \(offset)") }
             
             offset += 1 // Consume the ','
             
             skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
-            if offset >= numberOfBytes { throw Exception.reason(code: 60, incomplete: true, message: "Missing name/value pair at buffer end") }
+            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 60, incomplete: true, message: "Missing name/value pair at buffer end") }
         }
         
-        throw Exception.reason(code: 57, incomplete: true, message: "Missing name in name/value pair of object at buffer end")
+        throw Exception.reason(location: offset, code: 57, incomplete: true, message: "Missing name in name/value pair of object at buffer end")
     }
     
     private static func skipWhitespaces(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) {

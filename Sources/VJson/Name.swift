@@ -3,14 +3,14 @@
 //  File:       Name.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,21 +50,64 @@
 //
 // History
 //
+// 0.13.0  - Improved unicode character support.
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
 import Foundation
+import Ascii
 
 
 public extension VJson {
     
     
-    /// Accessor for the name of this item if it is a name/value pair. Nil otherwise.
+    /// The name of this item as a Swift string with the escape sequences replaced by their proper characters.
+    ///
+    /// - Note: When writing to this variable the string will be scanned for characters that need an escape sequence, when found, such characters will be replaced by their escape sequence.
     
     public var nameValue: String? {
-        get { return name }
+        get { return name?.jsonStringToString() }
         set {
-            if name != newValue {
+            if let newName = newValue?.stringToJsonString() {
+                if newName != name {
+                    recordUndoRedoAction()
+                    name = newName
+                }
+            } else {
+                recordUndoRedoAction()
+                name = nil
+            }
+        }
+    }
+    
+    
+    /// The name of this item as a string if there is any, the escape sequences are replaced by printables.
+    ///
+    /// - Note: When writing to this variable the string will be scanned for characters that need an escape sequence, when found, such characters will be replaced by their escape sequence. Printables will also be converted (back) into their escape sequence.
+
+    public var nameValuePrintable: String? {
+        get { return name?.jsonStringToString(lut: printableJsonStringSequenceLUT) }
+        set {
+            if let newName = newValue?.stringToJsonString(lut: printableJsonStringSequenceLUT) {
+                if newName != name {
+                    recordUndoRedoAction()
+                    name = newName
+                }
+            } else {
+                recordUndoRedoAction()
+                name = nil
+            }
+        }
+    }
+    
+    
+    /// The raw name of this object as a sequence of single byte UTF8 characters.
+    ///
+    /// - Note: This is the raw data as received/read or stored/transmitted. Complete with escape sequences.
+    
+    public var nameValueRaw: String? {
+        get { return name }
+        set { if name != newValue {
                 recordUndoRedoAction()
                 name = newValue
             }

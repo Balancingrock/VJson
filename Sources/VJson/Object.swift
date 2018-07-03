@@ -3,7 +3,7 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.12.2
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.0  - Added escape sequence support
 // 0.12.2  - Bugfix, uniqueName no longer appends numbers but updates the number.
 // 0.12.1  - Added public to uniqueName:startsWith
 // 0.12.0  - Added uniqueName:startsWith
@@ -100,7 +101,8 @@ public extension VJson {
     
     public func children(with name: String) -> [VJson] {
         guard type == .object else { return [] }
-        return self.children?.items.filter(){ $0.name == name } ?? []
+        let jname = name.stringToJsonString()
+        return self.children?.items.filter(){ $0.name == jname } ?? []
     }
     
     
@@ -115,7 +117,7 @@ public extension VJson {
         guard let child = child else { return }
         if name == nil && !child.hasName { return }
         undoableUpdate(to: .object)
-        if name != nil { child.name = name }
+        if name != nil { child.name = name?.stringToJsonString() }
         if replace { children?.remove(childrenWith: child.name) }
         children?.append(child)
     }
@@ -144,7 +146,7 @@ public extension VJson {
     public func remove(childrenWith name: String) -> Int {
         guard type == .object else { return 0 }
         recordUndoRedoAction()
-        return children?.remove(childrenWith: name) ?? 0
+        return children?.remove(childrenWith: name.stringToJsonString()) ?? 0
     }
     
     

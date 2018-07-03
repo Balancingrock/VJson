@@ -3,7 +3,7 @@
 //  File:       PipeOperator.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.0  - Added escape sequence support
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -66,7 +67,7 @@ import Foundation
 
 public func | (lhs: VJson?, rhs: String?) -> VJson? {
     guard let lhs = lhs else { return nil }
-    guard let rhs = rhs else { return nil }
+    guard let rhs = rhs?.stringToJsonString() else { return nil }
     if let result = lhs.children?.cached(rhs) {
         return result
     } else {

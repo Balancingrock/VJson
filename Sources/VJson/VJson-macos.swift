@@ -3,7 +3,7 @@
 //  File:       VJson-macos.swift
 //  Project:    VJson
 //
-//  Version:    0.11.3
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.0 - Improved escape sequence support, name is now translated to an escaped sequence.
 // 0.11.3 - Ensured that only the top level VJson object can have an undo manager.
 //        - Added an customData member of AnyObject that can be used to associate custom data with a VJson object.
 // 0.11.1 - Made member undoManager local instead of static.
@@ -144,7 +145,7 @@ public final class VJson: NSObject {
     internal init(type: JType, name: String? = nil) {
         
         self.type = type
-        self.name = name
+        self.name = name?.stringToJsonString()
         
         super.init()
         

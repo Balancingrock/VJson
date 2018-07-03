@@ -3,7 +3,7 @@
 //  File:       KeyValueCoding.swift
 //  Project:    VJson
 //
-//  Version:    0.12.3
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.0  - Added escape sequence support for keys
 // 0.12.3  - Added setValueFromAny
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
@@ -189,7 +190,7 @@ public extension VJson {
     
     public override func setValue(_ value: Any?, forKey key: String) {
         
-        let pathKeys = key.components(separatedBy: ".")
+        let pathKeys = key.stringToJsonString().components(separatedBy: ".")
         
         if let item = item(at: pathKeys) {
             
@@ -206,7 +207,7 @@ public extension VJson {
     
     public override func value(forKey key: String) -> Any? {
         
-        let pathKeys = key.components(separatedBy: ".")
+        let pathKeys = key.stringToJsonString().components(separatedBy: ".")
         
         if let item = item(at: pathKeys) {
             switch item.type {

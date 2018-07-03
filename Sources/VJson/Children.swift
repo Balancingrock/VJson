@@ -3,14 +3,14 @@
 //  File:       Children.swift
 //  Project:    VJson
 //
-//  Version:    0.12.6
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.0  - Fixed bug that would insert at too high an index.
 // 0.12.6  - Made some index functions public (were internal)
 // 0.10.8  - Split off from VJson.swift
 //         - Renamed index:ofChild to index:of
@@ -197,12 +198,9 @@ public extension VJson {
         internal func insert(_ child: VJson?, at index: Int) -> Bool {
             guard let child = child else { return false }
             guard index >= 0 else { return false }
+            guard index < items.count else { return false }
             child.parent = parent // Ensures the child's parent is always set
-            if index < items.count {
-                items.insert(child, at: index)
-            } else {
-                items.append(child)
-            }
+            items.insert(child, at: index)
             return true
         }
         

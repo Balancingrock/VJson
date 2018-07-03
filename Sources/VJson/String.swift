@@ -3,14 +3,14 @@
 //  File:       String.swift
 //  Project:    VJson
 //
-//  Version:    0.12.7
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.0  - Improved support for unicode and escape sequences.
 // 0.12.7  - Fixed bug on asString assignment for Bool.
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
@@ -61,15 +62,60 @@ import BRUtils
 public extension VJson {
     
     
-    /// The string value if this is a JSON STRING item, nil otherwise.
+    /// The Swift string value if this is a JSON STRING item, nil otherwise.
+    ///
+    /// - Note: When writing to this variable the string will be scanned for characters that need an escape sequence, when found, such characters will be replaced by their escape sequence.
     ///
     /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non string will result in a fatal error.
     
     public var stringValue: String? {
         get {
-            if string == nil { return nil }
-            return self.string?.replacingOccurrences(of: "\\\"", with: "\"")
+            return self.string?.jsonStringToString()
         }
+        set {
+            if newValue == nil {
+                undoableUpdate(to: .null)
+            } else {
+                let jstr = newValue!.stringToJsonString()
+                undoableUpdate(
+                    to: .string,
+                    inequalityTest: string != jstr,
+                    assignment: string = jstr
+                )
+            }
+        }
+    }
+    
+    
+    /// The string value if this is a JSON STRING item, nil otherwise. The string will contain only printable characters, escape sequences are replaced by their printable equivalent.
+    ///
+    /// - Note: When writing to this variable the string will be scanned for characters that need an escape sequence, when found, such characters will be replaced by their escape sequence. Printables will also be converted (back) into their escape sequence.
+    ///
+    /// If the VJson.fatalErrorOnTypeConversion is set to 'true' (default) then assigning a non string will result in a fatal error.
+
+    public var stringValuePrintable: String? {
+        get {
+            return self.string?.jsonStringToString(lut: printableJsonStringSequenceLUT)
+        }
+        set {
+            if newValue == nil {
+                undoableUpdate(to: .null)
+            } else {
+                let jstr = newValue!.stringToJsonString(lut: printableJsonStringSequenceLUT)
+                undoableUpdate(
+                    to: .string,
+                    inequalityTest: string != jstr,
+                    assignment: string = jstr
+                )
+            }
+        }
+    }
+    
+    
+    /// The raw string value as read/received or written/transferred. A sequence of single byte UTF8 characters. Escape sequences are not replaced by their escaped characters on neither read nor write.
+    
+    public var stringValueRaw: String? {
+        get { return string }
         set {
             if newValue == nil {
                 undoableUpdate(to: .null)
@@ -77,7 +123,7 @@ public extension VJson {
                 undoableUpdate(
                     to: .string,
                     inequalityTest: string != newValue!,
-                    assignment: string = newValue!.replacingOccurrences(of: "\"", with: "\\\"")
+                    assignment: string = newValue!
                 )
             }
         }
@@ -107,7 +153,7 @@ public extension VJson {
             switch type {
             case .null, .array, .object: break
             case .bool: boolValue = Bool(lettersOrDigits: newValue) ?? false
-            case .string: stringValue = newValue
+            case .string: stringValue = newValue.stringToJsonString()
             case .number: numberValue = NSNumber.factory(boolIntDouble: newValue)
             }
         }
@@ -117,13 +163,13 @@ public extension VJson {
     /// Creates a new VJson item with a JSON STRING with the given value. If the given string is a nil, a JSON NULL is created.
     ///
     /// - Parameters:
-    ///   - value: The value for the new item.
+    ///   - value: The value for the new item, note that the string will be converted into a JSON escaped string. I.e. all characters that must be escaped will be converted into their escaped sequences.
     ///   - name: The name for the value (optional).
     
     public convenience init(_ string: String?, name: String? = nil) {
         if let string = string {
             self.init(type: .string, name: name)
-            self.string = string
+            self.string = string.stringToJsonString()
         } else {
             self.init(type: .null, name: name)
         }

@@ -67,8 +67,8 @@ import Foundation
 
 public func | (lhs: VJson?, rhs: String?) -> VJson? {
     guard let lhs = lhs else { return nil }
-    guard let rhs = rhs?.stringToJsonString() else { return nil }
-    if let result = lhs.children?.cached(rhs) {
+    guard let rhs = rhs else { return nil }
+    if let result = lhs.children?.cached(rhs.stringToJsonString()) {
         return result
     } else {
         let arr = lhs.children(with: rhs)

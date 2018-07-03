@@ -47,6 +47,10 @@ class PipeOperatorTests: XCTestCase {
         // Execute the string pipe operator with a multiple matched path
         json!.add(VJson(17), for: "top", replace: false)
         XCTAssertEqual(json!.nofChildren, 3)
+        
+        // Test a smiley lookup
+        json!["smiley😀"] &= "tab \u{08} and /"
+        XCTAssertEqual((json|"smiley😀")!.stringValue, "tab \u{08} and /")
     }
     
     

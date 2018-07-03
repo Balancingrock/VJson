@@ -3,7 +3,7 @@
 //  File:       UndoRedo.swift
 //  Project:    VJson
 //
-//  Version:    0.12.5
+//  Version:    0.13.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.0 - Added escape sequences support
 // 0.12.5 - Made location public
 // 0.11.3 - Search for lowest undo manager in the VJson hierarchy.
 // 0.11.1 - undoManager is now local rather than static.
@@ -149,7 +150,7 @@ extension VJson {
     /// Returns a clone of this JSON object for undo/redo purposes.
     
     internal func undoRedoClone() -> VJson {
-        let other = VJson(type: self.type, name: self.name)
+        let other = VJson(type: self.type, name: self.nameValue)
         other.type = self.type
         other.bool = self.bool
         other.string = self.string

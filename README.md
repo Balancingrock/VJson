@@ -9,12 +9,13 @@ VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver fra
 - Intuitive subscript accessors (for creation).
 - Intuitive pipe accessors (for interrogation).
 - Interpret items as other types (eg read a Bool as a String or vice-versa).
+- Full escape sequence support (including unicode) for names and values
 - Allows multiple values with identical names in an OBJECT.
 - Allows ARRAYs with different JSON types.
 - Overloaded assignment operators for readable code.
 - Auto creation of null values for optional items that are nil.
 - Type conflicts can be configured to create fatal errors (is default).
-- Build with Swift 4, Xcode 9.3
+- Build with Swift 4, Xcode 9.4.1
 - Includes extensive unit tests
 - Use either integrated parser or Apple's NSJSONSerialization parser
 - Builds with SPM (Swift Package Manager)
@@ -306,7 +307,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.12.5 (Current)
+#### 0.13.0 (Current)
+
+- Improved/Fixed escape sequence support
+- Fixed a bug that allowed inserting at non exitsing indicies
+
+#### 0.12.5
 
 - Made the function 'location' public
 

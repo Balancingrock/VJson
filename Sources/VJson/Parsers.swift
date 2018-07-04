@@ -3,7 +3,7 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.13.1
+//  Version:    0.13.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.2  - Fixed another bug introduced in 0.13.0 due to support for escape sequences
 // 0.13.1  - Fixed a bug introduced in 0.13.0 due to support for escape sequences
 // 0.12.8  - Added location to the exception info
 // 0.10.8  - Split off from VJson.swift
@@ -651,17 +652,19 @@ internal extension VJson {
             } else {
                 
                 if buffer[offset] == Ascii._BACKSLASH {
+                    strbuf.append(Ascii._BACKSLASH)
                     
                     offset += 1
+                    
                     if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 25, incomplete: true, message: "Missing end of string at end of buffer") }
                     
                     switch buffer[offset] {
-                    case Ascii._DOUBLE_QUOTES, Ascii._BACKWARD_SLASH, Ascii._FOREWARD_SLASH: strbuf.append(buffer[offset])
-                    case Ascii._b: strbuf.append(Ascii._BACKSPACE)
-                    case Ascii._f: strbuf.append(Ascii._FORMFEED)
-                    case Ascii._n: strbuf.append(Ascii._NEWLINE)
-                    case Ascii._r: strbuf.append(Ascii._CARRIAGE_RETURN)
-                    case Ascii._t: strbuf.append(Ascii._TAB)
+                    case Ascii._DOUBLE_QUOTES, Ascii._BACKWARD_SLASH, Ascii._FOREWARD_SLASH, Ascii._b, Ascii._f, Ascii._n, Ascii._r, Ascii._t: strbuf.append(buffer[offset])
+                    //case Ascii._b: strbuf.append(Ascii._BACKSPACE)
+                    //case Ascii._f: strbuf.append(Ascii._FORMFEED)
+                    //case Ascii._n: strbuf.append(Ascii._NEWLINE)
+                    //case Ascii._r: strbuf.append(Ascii._CARRIAGE_RETURN)
+                    //case Ascii._t: strbuf.append(Ascii._TAB)
                     case Ascii._u:
                         strbuf.append(buffer[offset])
                         offset += 1
@@ -687,8 +690,10 @@ internal extension VJson {
             if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 30, incomplete: true, message: "Missing end of string at end of buffer") }
         }
         
-        if let str: String = String(bytes: strbuf, encoding: String.Encoding.utf8) {
-            return VJson(str)
+        if let str: String = String(bytes: strbuf, encoding: String.Encoding.ascii) {
+            let v = VJson("")
+            v.stringValueRaw = str
+            return v
         } else {
             throw Exception.reason(location: offset, code: 31, incomplete: false, message: "NSUTF8StringEncoding conversion failed at offset \(offset - 1)")
         }

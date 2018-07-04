@@ -3,14 +3,14 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.12.8
+//  Version:    0.13.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.1  - Fixed a bug introduced in 0.13.0 due to support for escape sequences
 // 0.12.8  - Added location to the exception info
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
@@ -951,7 +952,7 @@ internal extension VJson {
             // Add the name/value pair to this object
             
             val.name = name
-            result.add(val, for: name, replace: false)
+            result.add(val, for: nil, replace: false)
             
             
             // A comma or brace end should be next

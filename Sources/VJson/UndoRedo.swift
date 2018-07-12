@@ -3,7 +3,7 @@
 //  File:       UndoRedo.swift
 //  Project:    VJson
 //
-//  Version:    0.13.0
+//  Version:    0.13.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.3 - Fixed problem with undo support for name changes of a child
 // 0.13.0 - Added escape sequences support
 // 0.12.5 - Made location public
 // 0.11.3 - Search for lowest undo manager in the VJson hierarchy.
@@ -193,13 +194,22 @@ extension VJson {
     }
     
     
-    internal func recordUndoRedoAction() {
+    internal func recordUndoRedoAction(_ forNewName: String? = nil) {
         
         if let undoManager = undoManager {
             
             if #available(OSX 10.11, *) {
                 
-                if let (root, path) = self.location() {
+                if let (root, lpath) = self.location() {
+                    
+                    var path = lpath
+                    
+                    // If the name will be changed, be sure to use the new name in the path
+                    if let newName = forNewName {
+                        if path.count >= 1 {
+                            path[path.count - 1] = newName
+                        }
+                    }
                     
                     let clone = undoRedoClone()
                     

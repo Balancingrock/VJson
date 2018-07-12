@@ -41,4 +41,53 @@ class Bugfixes: XCTestCase {
         
         XCTAssertEqual(json?.children?.items[0].nameValueRaw, "th\\uD83D\\uDE00ree")
     }
+    
+    func testBugfix_0_13_3() {
+        
+        // This test will fail (crash on assert) with < 0.13.3
+        
+        let json = VJson()
+        json["name"] &= "content"
+        let child = json["name"]
+        XCTAssertEqual(child.nameValue, "name")
+        
+        json.undoManager = UndoManager()
+        
+        child.nameValue = "new"
+        XCTAssertEqual(child.nameValue, "new")
+        
+        json.undoManager?.undo()
+        
+        XCTAssertEqual(child.nameValue, "name")
+        
+        
+        // Extra test on removing a name from root object
+        
+        let root = VJson("content", name: "name")
+        
+        root.undoManager = UndoManager()
+        
+        XCTAssertEqual(root.nameValue, "name")
+        root.nameValue = nil
+        XCTAssertNil(root.nameValue)
+        
+        root.undoManager?.undo()
+        
+        XCTAssertEqual(root.nameValue, "name")
+        
+        
+        // Extra test on removing a name from a child object
+        
+        let array = VJson.array()
+        let element = VJson("content", name: "name")
+        array.append(element)
+        XCTAssertEqual(array[0].nameValue, "name")
+        array.undoManager = UndoManager()
+
+        array[0].nameValue = nil
+        XCTAssertNil(array[0].nameValue)
+        
+        array.undoManager?.undo()
+        XCTAssertEqual(array[0].nameValue, "name")
+    }
 }

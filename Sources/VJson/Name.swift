@@ -3,7 +3,7 @@
 //  File:       Name.swift
 //  Project:    VJson
 //
-//  Version:    0.13.0
+//  Version:    0.13.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.3  - Fixed problem with undo support for name changes of a child
 // 0.13.0  - Improved unicode character support.
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
@@ -70,12 +71,16 @@ public extension VJson {
         set {
             if let newName = newValue?.stringToJsonString() {
                 if newName != name {
-                    recordUndoRedoAction()
+                    recordUndoRedoAction(newName)
                     name = newName
                 }
             } else {
-                recordUndoRedoAction()
-                name = nil
+                if let parent = parent, parent.isObject {
+                    // Cannot remove name
+                } else {
+                    recordUndoRedoAction()
+                    name = nil
+                }
             }
         }
     }
@@ -90,12 +95,16 @@ public extension VJson {
         set {
             if let newName = newValue?.stringToJsonString(lut: printableJsonStringSequenceLUT) {
                 if newName != name {
-                    recordUndoRedoAction()
+                    recordUndoRedoAction(newName)
                     name = newName
                 }
             } else {
-                recordUndoRedoAction()
-                name = nil
+                if let parent = parent, parent.isObject {
+                    // Cannot remove name
+                } else {
+                    recordUndoRedoAction()
+                    name = nil
+                }
             }
         }
     }
@@ -107,9 +116,19 @@ public extension VJson {
     
     public var nameValueRaw: String? {
         get { return name }
-        set { if name != newValue {
-                recordUndoRedoAction()
-                name = newValue
+        set {
+            if let newName = newValue {
+                if newName != name {
+                    recordUndoRedoAction(newName)
+                    name = newName
+                }
+            } else {
+                if let parent = parent, parent.isObject {
+                    // Cannot remove name
+                } else {
+                    recordUndoRedoAction()
+                    name = nil
+                }
             }
         }
     }

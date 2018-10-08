@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.13.4  - Fixed error message on 'null' parsing
 // 0.13.2  - Fixed another bug introduced in 0.13.0 due to support for escape sequences
 // 0.13.1  - Fixed a bug introduced in 0.13.0 due to support for escape sequences
 // 0.12.8  - Added location to the exception info
@@ -619,16 +620,16 @@ internal extension VJson {
     
     private static func readNull(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
         
-        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 18, incomplete: true, message: "Illegal value, missing 'u' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._u { throw Exception.reason(location: offset, code: 19, incomplete: false, message: "Illegal value, no 'u' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 18, incomplete: true, message: "Illegal value, missing 'u' in 'null' at end of buffer") }
+        if buffer[offset] != Ascii._u { throw Exception.reason(location: offset, code: 19, incomplete: false, message: "Illegal value, no 'u' in 'null' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 20, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._l { throw Exception.reason(location: offset, code: 21, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 20, incomplete: true, message: "Illegal value, missing 'l' in 'null' at end of buffer") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(location: offset, code: 21, incomplete: false, message: "Illegal value, no 'l' in 'null' at offset \(offset)") }
         offset += 1
         
-        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 22, incomplete: true, message: "Illegal value, missing 'l' in 'true' at end of buffer") }
-        if buffer[offset] != Ascii._l { throw Exception.reason(location: offset, code: 23, incomplete: false, message: "Illegal value, no 'l' in 'true' at offset \(offset)") }
+        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 22, incomplete: true, message: "Illegal value, missing 'l' in 'null' at end of buffer") }
+        if buffer[offset] != Ascii._l { throw Exception.reason(location: offset, code: 23, incomplete: false, message: "Illegal value, no 'l' in 'null' at offset \(offset)") }
         offset += 1
         
         return VJson.null()

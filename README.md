@@ -307,10 +307,28 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.13.0 (Current)
+#### 0.13.4 (Current)
+
+- Fixed error message for parsing an illegal 'null' value
+
+#### 0.13.3
+
+- Fixed undo error for name changes on a child
+
+#### 0.13.2
+
+- The previous bug -once fixed- unearthed another -even bigger- bug.
+Its fixed now, but it will have effectively made releases 0.13.0 and 0.13.1 unusable.
+So please make sure to upgrade to the latest. (0.13.2)
+
+#### 0.13.1
+
+- Fixed a bug that was introduced in the previous version when parsing a name with an escape sequence.
+
+#### 0.13.0
 
 - Improved/Fixed escape sequence support
-- Fixed a bug that allowed inserting at non exitsing indicies
+- Fixed a bug that allowed inserting at non existing indicies
 
 #### 0.12.5
 

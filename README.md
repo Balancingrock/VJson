@@ -12,6 +12,7 @@ VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver fra
 - Full escape sequence support (including unicode) for names and values
 - Allows multiple values with identical names in an OBJECT.
 - Allows ARRAYs with different JSON types.
+- Allows fragmented JSON code, including named top level items like '"name":true'
 - Overloaded assignment operators for readable code.
 - Auto creation of null values for optional items that are nil.
 - Type conflicts can be configured to create fatal errors (is default).
@@ -307,7 +308,13 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.13.4 (Current)
+#### 0.14.0 (Current)
+
+- Added name output for named top level objects
+- Fixed parsing bug of top level string item
+- Added parsing of named top level item
+
+#### 0.13.4
 
 - Fixed error message for parsing an illegal 'null' value
 

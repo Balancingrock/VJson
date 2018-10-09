@@ -3,7 +3,7 @@
 //  File:       Code.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.14.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.14.0  - Added name to top level item (if the top level item has a name)
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -139,6 +140,13 @@ public extension VJson {
             }
             
             str += "]"
+        }
+        
+        
+        // Add the name if the top level item has a name
+        
+        if parent == nil, let name = name {
+            str = "\"\(name)\":\(str)"
         }
         
         return str

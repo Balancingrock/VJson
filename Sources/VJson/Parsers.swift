@@ -3,7 +3,7 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.13.2
+//  Version:    0.14.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,10 @@
 //
 // History
 //
+// 0.14.0  - Fixed error when reading top level string value
+//         - Added reading of named top level values
+//         - Added return of nil when parsing empty data or only whitespace data
+//         - Updated several documentation texts
 // 0.13.4  - Fixed error message on 'null' parsing
 // 0.13.2  - Fixed another bug introduced in 0.13.0 due to support for escape sequences
 // 0.13.1  - Fixed a bug introduced in 0.13.0 due to support for escape sequences
@@ -74,17 +78,17 @@ public extension VJson {
     
     
     /// This error type gets thrown if errors are found during parsing.
-    ///
-    /// - reason: The details of the error.
     
     public enum Exception: Error, CustomStringConvertible {
         
         
         /// The details of the error
         ///
-        /// - code: An integer number that references the error location
-        /// - incomplete: When true, the error occured because the parser ran out of characters.
-        /// - message: A textual description of the error.
+        /// _code_: An integer number that references the error location
+        ///
+        /// _incomplete_: When true, the error occured because the parser ran out of characters.
+        ///
+        /// _message_: A textual description of the error.
         
         case reason(location: Int, code: Int, incomplete: Bool, message: String)
         
@@ -126,6 +130,7 @@ public extension VJson {
         /// Create a new ParseError
         ///
         /// - Parameters:
+        ///   - location: The offset in the buffer where the error occured (assumes ASCII coding)
         ///   - code: An integer number that references the error location
         ///   - incomplete: True if the error occured because the parser ran out of characters.
         ///   - message: A textual description of the error.
@@ -155,9 +160,11 @@ public extension VJson {
     
     /// Parsing a JSON hierarchy stored in a file
     ///
-    /// - Parameter from: The URL of a file.
+    /// - Parameters:
+    ///   - from: The URL of a file.
+    ///   - onError: The function to execute if an error occured during parsing.
     ///
-    /// - Returns: A ParseFunctionResult
+    /// - Returns: The VJson hierarchy with the contents of the file or nil if the file is empty, consists only of whitespaces, or an error occured.
     
     public static func parse(file: URL, onError: parseErrorSignature) -> VJson? {
         do {
@@ -177,11 +184,11 @@ public extension VJson {
     ///
     /// - Parameter file: The URL that designates the file to be read.
     ///
-    /// - Returns: A VJson hierarchy with the contents of the file.
+    /// - Returns: The VJson hierarchy with the contents of the file or nil if the file is empty or consists only of whitespaces.
     ///
     /// - Throws: Either an VJson.Error.reason or an NSError if the VJson hierarchy could not be created or the file not be read.
     
-    public static func parse(file: URL) throws -> VJson {
+    public static func parse(file: URL) throws -> VJson? {
         var data = try Data(contentsOf: URL(fileURLWithPath: file.path), options: Data.ReadingOptions.uncached)
         return try vJsonParser(data: &data)
     }
@@ -193,8 +200,8 @@ public extension VJson {
     ///   - file: The URL that designates the file to be read.
     ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
     ///
-    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
-    
+    /// - Returns: The VJson hierarchy with the contents of the file or nil if the file is empty, consists only of whitespaces, or an error occured.
+
     public static func parse(file: URL, errorInfo: inout ParseError?) -> VJson? {
         
         do {
@@ -218,10 +225,12 @@ public extension VJson {
     
     /// Parsing a JSON hierarchy stored in a buffer
     ///
-    /// - Parameter from: The buffer to parse.
+    /// - Parameters:
+    ///   - from: The buffer to parse.
+    ///   - onError: The function to execute if an error occured during parsing.
     ///
-    /// - Returns: A ParseFunctionResult
-    
+    /// - Returns: The VJson hierarchy from the contents of the buffer or nil if the buffer is empty or consists only of whitespaces.
+
     public static func parse(buffer: UnsafeBufferPointer<UInt8>, onError: parseErrorSignature) -> VJson? {
         
         do {
@@ -242,23 +251,23 @@ public extension VJson {
     /// - Parameters:
     ///   - buffer: The buffer containing the data to be parsed.
     ///
-    /// - Returns: A VJson hierarchy with the contents of the buffer.
+    /// - Returns: The VJson hierarchy from the contents of the buffer or nil if the buffer is empty or consists only of whitespaces.
     ///
     /// - Throws: A VJson.Error.reason if the parsing failed.
     
-    public static func parse(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson {
+    public static func parse(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson? {
         return try VJson.vJsonParser(buffer: buffer)
     }
     
     
     /// Create a VJson hierarchy with the contents of the given buffer.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - buffer: The buffer containing the data to be parsed.
     ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
     ///
-    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
-    
+    /// - Returns: The VJson hierarchy from the contents of the buffer or nil if the buffer is empty, consists only of whitespaces, or an error occured.
+
     public static func parse(buffer: UnsafeBufferPointer<UInt8>, errorInfo: inout ParseError?) -> VJson? {
         
         do {
@@ -282,10 +291,12 @@ public extension VJson {
     
     /// Parsing a JSON hierarchy stored in a string.
     ///
-    /// - Parameter from: The string to parse.
+    /// - Parameters:
+    ///   - from: The string to parse.
+    ///   - onError: The function to execute if an error occured during parsing.
     ///
-    /// - Returns: A ParseFunctionResult
-    
+    /// - Returns: The VJson hierarchy from the contents of the string or nil if the string is empty, consists only of whitespaces, or an error occured.
+
     public static func parse(string: String, onError: parseErrorSignature) -> VJson? {
         do {
             return try VJson.parse(string: string)
@@ -305,11 +316,11 @@ public extension VJson {
     /// - Parameters:
     ///   - string: The string containing the data to be parsed.
     ///
-    /// - Returns: A VJson hierarchy with the contents of the buffer.
+    /// - Returns: The VJson hierarchy from the contents of the string or nil if the string is empty or consists only of whitespaces.
     ///
     /// - Throws: A VJson.Error.reason if the parsing failed.
     
-    public static func parse(string: String) throws -> VJson {
+    public static func parse(string: String) throws -> VJson? {
         guard var data = string.data(using: String.Encoding.utf8) else {
             throw VJson.Exception.reason(location: 0, code: 59, incomplete: false, message: "Could not convert string to UTF8")
         }
@@ -319,12 +330,12 @@ public extension VJson {
     
     /// Create a VJson hierarchy with the contents of the given buffer.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - string: The string containing the data to be parsed.
     ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
     ///
-    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
-    
+    /// - Returns: The VJson hierarchy from the contents of the string or nil if the string is empty, consists only of whitespaces, or an error occured.
+
     public static func parse(string: String, errorInfo: inout ParseError?) -> VJson? {
         
         do {
@@ -348,10 +359,12 @@ public extension VJson {
     
     /// Parsing a JSON hierarchy stored in a Data object
     ///
-    /// - Parameter from: The data to parse.
+    /// - Parameters:
+    ///   - from: The data to parse.
+    ///   - onError: The function to execute if an error occured during parsing.
     ///
-    /// - Returns: A ParseFunctionResult
-    
+    /// - Returns: The VJson hierarchy from the contents of the data or nil if the data is empty, consists only of whitespaces, or an error occured.
+
     public static func parse(data: inout Data, onError: parseErrorSignature) -> VJson? {
         do {
             return try VJson.vJsonParser(data: &data)
@@ -371,23 +384,23 @@ public extension VJson {
     /// - Parameters:
     ///   - data: The data object containing the data to be parsed.
     ///
-    /// - Returns: A VJson hierarchy with the contents of the data object.
+    /// - Returns: The VJson hierarchy from the contents of the data or nil if the data is empty or consists only of whitespaces.
     ///
     /// - Throws: A VJson.Error.reason if the parsing failed.
     
-    public static func parse(data: inout Data) throws -> VJson {
+    public static func parse(data: inout Data) throws -> VJson? {
         return try VJson.vJsonParser(data: &data)
     }
     
     
     /// Create a VJson hierarchy with the contents of the given data object.
     ///
-    /// - Parameters
+    /// - Parameters:
     ///   - data: The data object containing the data to be parsed.
     ///   - errorInfo: A (pointer to a) struct that will contain the error info if an error occured during parsing (i.e. when the result of the function if nil).
     ///
-    /// - Returns: On success the VJson hierarchy. On error a nil for the VJson hierarchy and the structure with error information filled in.
-    
+    /// - Returns: The VJson hierarchy from the contents of the data or nil if the data is empty, consists only of whitespaces, or an error occured.
+
     public static func parse(data: inout Data, errorInfo: inout ParseError?) -> VJson? {
         do {
             return try VJson.vJsonParser(data: &data)
@@ -416,7 +429,7 @@ public extension VJson {
     
     /// This parser uses the Apple NSJSONSerialization class to parse the given data.
     ///
-    /// - Note: Parser differences: Apple's parser is usually faster (about 2x). However Apple's parser cannot parse multiple key/value pairs with the same name and Apple's parser will create a VJson NUMBER items for BOOL's.
+    /// - Note: Parser differences: Apple's parser is usually faster (about 2x). However Apple's parser cannot parse multiple key/value pairs with the same name and Apple's parser will create a VJson NUMBER item for BOOL's. It will likely also behave different for fractional JSON but this has not been examined.
     ///
     /// - Returns: A VJson hierarchy
     ///
@@ -483,13 +496,13 @@ internal extension VJson {
     ///
     /// - Parameter buffer: A buffer with ASCII or UTF8 formatted data to be parsed.
     ///
-    /// - Returns: The VJson hierarchy representing the data in the buffer.
+    /// - Returns: The VJson hierarchy from the contents of the buffer or nil if the buffer is empty or consists only of whitespaces.
     ///
     /// - Throws: Error.reason
     
-    fileprivate static func vJsonParser(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson {
+    fileprivate static func vJsonParser(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson? {
         
-        guard buffer.count > 0 else { throw Exception.reason(location: 0, code: 1, incomplete: true, message: "Empty buffer") }
+        guard buffer.count > 0 else { return nil }
         
         
         // Start at the beginning
@@ -519,13 +532,13 @@ internal extension VJson {
     ///
     /// - Parameter data: A data object with ASCII or UTF8 formatted data to be parsed.
     ///
-    /// - Returns: The VJson hierarchy representing the data in the buffer.
+    /// - Returns: The VJson hierarchy from the contents of the data object or nil if the data object is empty or consists only of whitespaces.
     ///
     /// - Throws: Error.reason
     
-    fileprivate static func vJsonParser(data: inout Data) throws -> VJson {
+    fileprivate static func vJsonParser(data: inout Data) throws -> VJson? {
         
-        guard data.count > 0 else { throw Exception.reason(location: 0, code: 3, incomplete: true, message: "Empty buffer") }
+        guard data.count > 0 else { return nil }
         
         
         // Start at the beginning
@@ -537,7 +550,7 @@ internal extension VJson {
         
         let val = try data.withUnsafeBytes() {
             
-            (ptr: UnsafePointer<UInt8>) -> VJson in
+            (ptr: UnsafePointer<UInt8>) -> VJson? in
             
             try readValue(ptr, numberOfBytes: data.count, offset: &offset)
         }
@@ -688,7 +701,7 @@ internal extension VJson {
             }
             
             offset += 1
-            if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 30, incomplete: true, message: "Missing end of string at end of buffer") }
+            //if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 30, incomplete: true, message: "Missing end of string at end of buffer") }
         }
         
         if let str: String = String(bytes: strbuf, encoding: String.Encoding.ascii) {
@@ -839,16 +852,16 @@ internal extension VJson {
     
     // The value should never return an .ERROR type. If an error occured it should be reported through the errorString and errorReason.
     
-    private static func readValue(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson {
+    private static func readValue(_ buffer: UnsafePointer<UInt8>, numberOfBytes: Int, offset: inout Int) throws -> VJson? {
         
         skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
         
-        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 47, incomplete: true, message: "Missing value at end of buffer") }
+        if offset >= numberOfBytes { return nil } //throw Exception.reason(location: offset, code: 47, incomplete: true, message: "Missing value at end of buffer") }
         
         
         // index points at non-whitespace
         
-        var val: VJson
+        var val: VJson?
         
         switch buffer[offset] {
             
@@ -863,6 +876,19 @@ internal extension VJson {
         case Ascii._DOUBLE_QUOTES:
             offset += 1
             val = try readString(buffer, numberOfBytes: numberOfBytes, offset: &offset)
+            
+            // Maybe the string is a name for a named top-level item
+            if offset < numberOfBytes {
+                skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
+                if offset < numberOfBytes, buffer[offset] == Ascii._COLON {
+                    // It should be a name, if not ... its an error
+                    let name = val!.stringValue
+                    offset += 1 // consume the semicolon
+                    val = try readValue(buffer, numberOfBytes: numberOfBytes, offset: &offset)
+                    if val == nil { throw Exception.reason(location: offset, code: 61, incomplete: true, message: "Missing value at end of buffer") }
+                    val!.name = name
+                }
+            }
             
         case Ascii._MINUS:
             val = try readNumber(buffer, numberOfBytes: numberOfBytes, offset: &offset)
@@ -954,10 +980,12 @@ internal extension VJson {
             
             let val = try readValue(buffer, numberOfBytes: numberOfBytes, offset: &offset)
             
+            if val == nil { throw Exception.reason(location: offset, code: 62, incomplete: true, message: "Missing value at buffer end") }
+            
             
             // Add the name/value pair to this object
             
-            val.name = name
+            val!.name = name
             result.add(val, for: nil, replace: false)
             
             

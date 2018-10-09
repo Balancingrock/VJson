@@ -42,7 +42,11 @@ class ParseTests: XCTestCase {
         do {
             for tc in testcases {
                 let json = try VJson.parse(string: tc)
-                XCTAssertEqual(tc, json.description)
+                if let json = json {
+                    XCTAssertEqual(tc, json.description)
+                } else {
+                    XCTFail("Unexcpeted nil returned")
+                }
             }
         } catch let error as VJson.ParseError {
             XCTFail("Parser test failed: \(error)")
@@ -247,4 +251,317 @@ class ParseTests: XCTestCase {
         }
     }
 
+    func testArrayTopLevel() {
+        
+        let testcases: Array<String> = [
+            "[]",
+            "[null]",
+            "[true]",
+            "[false]",
+            "[1]",
+            "[1.2]",
+            "[\"string\"]",
+            "[[]]",
+            "[1,2]",
+            "[{\"two\":2}]",
+            "[1,2,{\"name\":{}}]"
+        ]
+        
+        do {
+            for tc in testcases {
+                if let json = try VJson.parse(string: tc) {
+                    XCTAssertTrue(json.isArray)
+                    XCTAssertEqual(tc, json.description)
+                } else {
+                    XCTFail("Unexpected nil returned")
+                }
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+    
+    func testNullTopLevel() {
+        
+        let str = "null"
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isNull)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+    
+    func testBoolTopLevel() {
+        
+        let testcases: Array<String> = [
+            "true",
+            "false",
+        ]
+        
+        do {
+            for tc in testcases {
+                if let json = try VJson.parse(string: tc) {
+                    XCTAssertTrue(json.isBool)
+                    XCTAssertEqual(tc, json.description)
+                } else {
+                    XCTFail("Unexpected nil returned")
+                }
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    func testNumberTopLevel() {
+        
+        let testcases: Array<String> = [
+            "1",
+            "2.3",
+            "-2.3",
+            "2.3e-06",
+            ]
+        
+        do {
+            for tc in testcases {
+                if let json = try VJson.parse(string: tc) {
+                    XCTAssertTrue(json.isNumber)
+                    XCTAssertEqual(tc, json.code)
+                } else {
+                    XCTFail("Unexpected nil returned")
+                }
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    func testStringTopLevel() {
+        
+        let str = "\"Some\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    func testNamedNullTopLevelItem() {
+        
+        let str = "\"name\":null"
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isNull)
+                XCTAssertTrue(json.hasName)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+    
+    func testNamedBoolTopLevel() {
+        
+        let testcases: Array<String> = [
+            "\"name\":true",
+            "\"name\":false",
+            ]
+        
+        do {
+            for tc in testcases {
+                if let json = try VJson.parse(string: tc) {
+                    XCTAssertTrue(json.isBool)
+                    XCTAssertTrue(json.hasName)
+                    XCTAssertEqual(tc, json.description)
+                } else {
+                    XCTFail("Unexpected nil returned")
+                }
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    func testNamedNumberTopLevel() {
+        
+        let testcases: Array<String> = [
+            "\"name\":1",
+            "\"name\":2.3",
+            "\"name\":-2.3",
+            "\"name\":2.3e-06",
+            ]
+        
+        do {
+            for tc in testcases {
+                if let json = try VJson.parse(string: tc) {
+                    XCTAssertTrue(json.isNumber)
+                    XCTAssertTrue(json.hasName)
+                    XCTAssertEqual(tc, json.code)
+                } else {
+                    XCTFail("Unexpected nil returned")
+                }
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    
+    func testNamedStringTopLevel() {
+        
+        let str1 = "\"name\":\"Some\""
+        let str2 = "\"name\": \"Some\""
+        let str3 = "\"name\" : \"Some\""
+        let str4 = "\"name\" : \"Some\" "
+        let str5 = " \"name\" : \"Some\" "
+
+        
+        do {
+            if let json = try VJson.parse(string: str1) {
+                XCTAssertTrue(json.isString)
+                XCTAssertTrue(json.hasName)
+                XCTAssertEqual(str1, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+
+            if let json = try VJson.parse(string: str2) {
+                XCTAssertTrue(json.isString)
+                XCTAssertTrue(json.hasName)
+                XCTAssertEqual(str1, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+
+            if let json = try VJson.parse(string: str3) {
+                XCTAssertTrue(json.isString)
+                XCTAssertTrue(json.hasName)
+                XCTAssertEqual(str1, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+
+            if let json = try VJson.parse(string: str4) {
+                XCTAssertTrue(json.isString)
+                XCTAssertTrue(json.hasName)
+                XCTAssertEqual(str1, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+            
+            if let json = try VJson.parse(string: str5) {
+                XCTAssertTrue(json.isString)
+                XCTAssertTrue(json.hasName)
+                XCTAssertEqual(str1, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    func testNamedObjectTopLevel() {
+        
+        let testcases: Array<String> = [
+            "\"name\":{}",
+            "\"name\":{\"next\":false}",
+            ]
+        
+        do {
+            for tc in testcases {
+                if let json = try VJson.parse(string: tc) {
+                    XCTAssertTrue(json.isObject)
+                    XCTAssertTrue(json.hasName)
+                    XCTAssertEqual(tc, json.description)
+                } else {
+                    XCTFail("Unexpected nil returned")
+                }
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    
+    func testNamedArrayTopLevel() {
+        
+        let testcases: Array<String> = [
+            "\"\":[]",
+            "\"name\":[]",
+            "\"name\":[1,2,3]",
+            ]
+        
+        do {
+            for tc in testcases {
+                if let json = try VJson.parse(string: tc) {
+                    XCTAssertTrue(json.isArray)
+                    XCTAssertTrue(json.hasName)
+                    XCTAssertEqual(tc, json.description)
+                } else {
+                    XCTFail("Unexpected nil returned")
+                }
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    func testEmptyTopLevel() {
+        
+        let str1 = ""
+        let str2 = "    "
+        
+        
+        do {
+            var json = try VJson.parse(string: str1)
+            XCTAssertNil(json)
+            
+            json = try VJson.parse(string: str2)
+            XCTAssertNil(json)
+
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+
+    }
 }

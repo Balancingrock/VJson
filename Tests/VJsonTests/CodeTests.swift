@@ -25,21 +25,21 @@ class CodeTests: XCTestCase {
         
         // NULL
         XCTAssertEqual(VJson.null().code, "null")
-        XCTAssertEqual(VJson.null("name").code, "null")
+        XCTAssertEqual(VJson.null("name").code, "\"name\":null")
         
         // BOOL
         XCTAssertEqual(VJson(true).code, "true")
         XCTAssertEqual(VJson(false).code, "false")
-        XCTAssertEqual(VJson(false, name: "name").code, "false")
+        XCTAssertEqual(VJson(false, name: "name").code, "\"name\":false")
         
         // NUMBER
         XCTAssertEqual(VJson(23).code, "23")
         XCTAssertEqual(VJson(23.45).code, "23.45")
-        XCTAssertEqual(VJson(23.45, name: "name").code, "23.45")
+        XCTAssertEqual(VJson(23.45, name: "name").code, "\"name\":23.45")
         
         // STRING
         XCTAssertEqual(VJson("qwerty").code, "\"qwerty\"")
-        XCTAssertEqual(VJson("qwerty", name: "name").code, "\"qwerty\"")
+        XCTAssertEqual(VJson("qwerty", name: "name").code, "\"name\":\"qwerty\"")
         
         // ARRAY
         var json = VJson.array()

@@ -3,14 +3,14 @@
 //  File:       Merge.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.15.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,7 +21,7 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
+//  I strongly believe that voluntarism is the way for societies to function optimally. I thus reject
 //  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
 //  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
 //
@@ -50,6 +50,10 @@
 //
 // History
 //
+// 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
+//          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
+//          OBJECTs or ARRAYs.
+//          General overhaul of comments and documentation.
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -59,15 +63,15 @@ import Foundation
 public extension VJson {
     
     
-    /// Updates the content of this object with the content of the object to be merged. Child members with the same name in self as in other will be made identical to the member in other.
+    /// Updates the content of self with the content of the object to be merged. Subitems with the same name in self as in other will be made identical to the subitem in other.
     ///
-    /// This merge function was designed to support the outline view. When members are merged the original member will remain, only its data content will change. This also applies to array items.
+    /// This merge function was designed to support the outline view. When subitems are merged the original subitem will remain, only its data content will change. This also applies to array items.
     ///
     /// After merging the two hierarchies will not share objects, i.e. all shared data is duplicated.
     ///
     /// - Note: This operation can change the types of the content in self to and from null. Other type conversions are only possible if VJson.fatalErrorOnTypeConversion is set to 'false'
     ///
-    /// - Note: If other has two children with the same name, the order in which they appear will be preserved
+    /// - Note: If other has two subitems with the same name, the order in which they appear will be preserved
     ///
     /// - Parameters
     ///   - with: The object to be merged into self.

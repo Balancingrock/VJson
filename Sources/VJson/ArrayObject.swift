@@ -21,7 +21,7 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the voluntarism is the way for societies to function optimally. I thus reject
+//  I strongly believe that voluntarism is the way for societies to function optimally. I thus reject
 //  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
 //  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
 //
@@ -70,7 +70,7 @@ public extension VJson {
     /// Returns a copy of the child items in this object if this object contains a JSON ARRAY or JSON OBJECT. An empty array for all other JSON types.
     
     public var arrayValue: Array<VJson> {
-        guard type == .array || type == .object else { return [] }
+        if nofChildren == 0 { return [] }
         var arr: Array<VJson> = []
         children?.items.forEach(){ arr.append($0.duplicate) }
         return arr

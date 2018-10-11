@@ -3,7 +3,7 @@
 //  File:       Duplicate.swift
 //  Project:    VJson
 //
-//  Version:    0.11.4
+//  Version:    0.15.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -21,7 +21,7 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
+//  I strongly believe that voluntarism is the way for societies to function optimally. I thus reject
 //  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
 //  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
 //
@@ -50,6 +50,10 @@
 //
 // History
 //
+// 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
+//          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
+//          OBJECTs or ARRAYs.
+//          General overhaul of comments and documentation.
 // 0.11.4 - Added note explaining that the undo manager is not copied
 // 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
@@ -60,9 +64,9 @@ import Foundation
 public extension VJson {
     
     
-    /// Returns an in-depth copy of this JSON object as a self contained hierarchy. I.e. all child elements are also copied.
+    /// Returns an in-depth copy of this JSON object as a self contained hierarchy. I.e. all subitems are also copied.
     ///
-    /// - Note: The 'parent' of the duplicate will be 'nil'. However the children of the duplicate will have the proper 'parent' as necessary for the hierarchy.
+    /// - Note: The 'parent' of the duplicate will be 'nil'. However the subitems in the duplicate will have the proper 'parent' as necessary for the hierarchy.
     ///
     /// - Note: The undoManager is not copied, set a new undo manager when necessary.
     

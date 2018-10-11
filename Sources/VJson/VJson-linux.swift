@@ -3,14 +3,14 @@
 //  File:       VJson-linux.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.15.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,7 +21,7 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
+//  I strongly believe that voluntarism is the way for societies to function optimally. I thus reject
 //  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
 //  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
 //
@@ -50,7 +50,11 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
+// 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
+//          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
+//          OBJECTs or ARRAYs.
+//          General overhaul of comments and documentation.
+// 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
 
 // =========================================
@@ -104,7 +108,7 @@ public final class VJson: Equatable, CustomStringConvertible {
     public internal(set) var string: String?
     
     
-    /// The container for all children if self is .array or .object.
+    /// The container for all subitems if self is .array or .object.
     
     public internal(set) var children: Children?
     

@@ -3,7 +3,7 @@
 //  File:       ArrayObject.swift
 //  Project:    VJson
 //
-//  Version:    0.12.4
+//  Version:    0.15.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -21,7 +21,7 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
+//  I strongly believe that the voluntarism is the way for societies to function optimally. I thus reject
 //  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
 //  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
 //
@@ -50,6 +50,10 @@
 //
 // History
 //
+// 0.15.0 - Moved insert:at to the file Array, changed insert:at into insertChild:at
+//          Added appendChild:
+//          Renamed remove: to removeChild:
+//          Renamed remove:childrenEqualTo: to removeChildren:equalTo
 // 0.12.4 - insert:child:at now accepts an out of range index. The child will then be appended.
 // 0.12.0 - Moved insert:child:at from Array.swift to here. Made the operation suitable for JSON OBJECTS.
 // 0.11.4 - Added remove:child
@@ -109,7 +113,7 @@ public extension VJson {
     }
     
     
-    /// Inserts the given child at the given index. Self must be a JSON ARRAY or JSON OBJECT. Is Undoable. If self is a JSON OBJECT then the name of the child must have been set.
+    /// Inserts the given child at the given index. Self must contain a JSON ARRAY or JSON OBJECT. Is Undoable. If self contains a JSON OBJECT then the child must have a name.
     ///
     /// - Parameters:
     ///   - child: The VJson object to be inserted.
@@ -118,7 +122,7 @@ public extension VJson {
     /// - Returns: True if the insertion was succesful. False if not.
     
     @discardableResult
-    public func insert(_ child: VJson?, at index: Int) -> Bool {
+    public func insertChild(_ child: VJson?, at index: Int) -> Bool {
         guard let child = child else { return false }
         guard isArray || (isObject && child.hasName) else { return false }
         recordUndoRedoAction()
@@ -126,13 +130,31 @@ public extension VJson {
     }
     
     
-    /// Remove the given child from the children (if present).
+    /// Appends the given child at the end. Self must contain a JSON ARRAY or JSON OBJECT. Is Undoable. If self contains a JSON OBJECT then the child must have a name.
+    ///
+    /// - Parameters:
+    ///   - child: The VJson object to be appended.
+    ///   - at index: The index at which it will be inserted. The index must exist, insertion will fail for non-existing indexes.
+    ///
+    /// - Returns: True if the insertion was succesful. False if not.
+    
+    @discardableResult
+    public func appendChild(_ child: VJson?) -> Bool {
+        guard let child = child else { return false }
+        guard isArray || (isObject && child.hasName) else { return false }
+        recordUndoRedoAction()
+        children?.append(child)
+        return children != nil
+    }
+
+    
+    /// Remove the given child from the children (if present). Self must contain a JSON ARRAY or JSON OBJECT.
     ///
     /// - Note: The child must be an actual child of self. I.e. the comparison is made using object references.
     ///
     /// - Returns: True if the child was removed.
     
-    public func remove(_ child: VJson) -> Bool {
+    public func removeChild(_ child: VJson) -> Bool {
         guard let i = children?.index(of: child) else { return false }
         recordUndoRedoAction()
         children?.remove(at: i)
@@ -140,7 +162,7 @@ public extension VJson {
     }
     
     
-    /// Removes the child items from self that are equal to the given item. Self must be an ARRAY or OBJECT. Is undoable.
+    /// Removes the child items from self that are equal to the given item. Self must contain an ARRAY or OBJECT. Is undoable.
     ///
     /// - Note: The parent is not compared when testing for equal.
     ///
@@ -149,7 +171,7 @@ public extension VJson {
     ///
     /// - Returns: The number of child items removed.
     
-    public func remove(childrenEqualTo item: VJson?) -> Int {
+    public func removeChildren(equalTo item: VJson?) -> Int {
         guard type == .array || type == .object else { return 0 }
         var count = 0
         if let indicies = children?.index(ofChildrenEqualTo: item) {
@@ -167,46 +189,10 @@ public extension VJson {
     ///
     /// - Note: The dictionary cache will speed up access for OBJECT members, but will "lose" members with duplicate names. I.e. a {"one":1, "one":2} object will only contain {"one":2} when caching is enabled. However the lost member is still present in the "children" array and will be saved (or be part of the generated code).
     ///
-    /// - Note: Is not undoable.
+    /// - Note: The cache will be reset on every write access.
     
     public var enableCacheForObjects: Bool {
         set { children?.cacheEnabled = newValue }
         get { return children?.cacheEnabled ?? false}
-    }
-
-    
-    /// Returns a new VJson object with a JSON OBJECT containing the items from the dictionary. Only those items that have their 'parent' member set to 'nil' will be included.
-    ///
-    /// - Parameters:
-    ///   - items: A dictionary with the name/value pairs to be included as children.
-    ///   - name: The name for the contained item (optional).
-    
-    public convenience init(items: [String:VJson], name: String? = nil) {
-        self.init(type: .object, name: name)
-        var newItems: Array<VJson> = []
-        let parentIsNilItems = items.filter(){ return $0.value.parent == nil }
-        for (pname, item) in parentIsNilItems {
-            item.name = pname
-            newItems.append(item)
-        }
-        self.children?.append(newItems)
-    }
-    
-    
-    /// Returns a new VJson object with a JSON OBJECT containing the items from the dictionary.
-    ///
-    /// - Parameters:
-    ///   - items: A dictionary with the name/value pairs to be included as children.
-    ///   - name: The name for the contained item (optional).
-    
-    public convenience init(_ items: [String:VJsonSerializable], name: String? = nil) {
-        self.init(type: VJson.JType.object, name: name)
-        var newItems: [VJson] = []
-        for (name, item) in items {
-            let jitem = item.json
-            jitem.name = name
-            newItems.append(jitem)
-        }
-        self.children?.append(newItems)
     }
 }

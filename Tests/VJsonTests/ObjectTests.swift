@@ -54,14 +54,14 @@ class ObjectTests: XCTestCase {
         // Test: Empty OBJECT
         // Expected: Empty array
         var json = VJson.object()
-        XCTAssertEqual(json.children(with: "qwerty").count, 0)
+        XCTAssertEqual(json.items(with: "qwerty").count, 0)
         
         // Test: Empty ARRAY
         // Expected: Empty array
         json = VJson.array()
         json.append(VJson(0))
         json.append(VJson(1))
-        XCTAssertEqual(json.children(with: "qwerty").count, 0)
+        XCTAssertEqual(json.items(with: "qwerty").count, 0)
         
         // Test: Non empty OBJECT, name does not occur
         // Expected: Empty array
@@ -69,7 +69,7 @@ class ObjectTests: XCTestCase {
         json.add(VJson(1, name: "one"))
         json.add(VJson(2, name: "two"))
         json.add(VJson(3, name: "one"), replace: false)
-        XCTAssertEqual(json.children(with: "qwerty").count, 0)
+        XCTAssertEqual(json.items(with: "qwerty").count, 0)
         
         // Test: Non empty OBJECT, name occurs twice
         // Expected: Empty array
@@ -77,9 +77,9 @@ class ObjectTests: XCTestCase {
         json.add(VJson(1, name: "one"))
         json.add(VJson(2, name: "two"))
         json.add(VJson(3, name: "one"), replace: false)
-        XCTAssertEqual(json.children(with: "one").count, 2)
-        XCTAssertEqual(json.children(with: "one")[0].intValue!, 1)
-        XCTAssertEqual(json.children(with: "one")[1].intValue!, 3)
+        XCTAssertEqual(json.items(with: "one").count, 2)
+        XCTAssertEqual(json.items(with: "one")[0].intValue!, 1)
+        XCTAssertEqual(json.items(with: "one")[1].intValue!, 3)
     }
 
     
@@ -178,7 +178,7 @@ class ObjectTests: XCTestCase {
         // Test: Remove children from an empty object
         // Expected: No Change
         var json = VJson.object()
-        XCTAssertEqual(json.remove(childrenWith: "qwerty"), 0)
+        XCTAssertEqual(json.removeItems(forName: "qwerty"), 0)
         XCTAssertEqual(json.nofChildren, 0)
         
         // Test: Use name for non-existing children
@@ -187,7 +187,7 @@ class ObjectTests: XCTestCase {
         json.add(VJson(1, name: "one"))
         json.add(VJson(2, name: "two"))
         json.add(VJson(3, name: "three"))
-        XCTAssertEqual(json.remove(childrenWith: "four"), 0)
+        XCTAssertEqual(json.removeItems(forName: "four"), 0)
         XCTAssertEqual(json.nofChildren, 3)
         
         // Test: Remove a single child
@@ -196,7 +196,7 @@ class ObjectTests: XCTestCase {
         json.add(VJson(1, name: "one"))
         json.add(VJson(2, name: "two"))
         json.add(VJson(3, name: "three"))
-        XCTAssertEqual(json.remove(childrenWith: "three"), 1)
+        XCTAssertEqual(json.removeItems(forName: "three"), 1)
         XCTAssertEqual(json.nofChildren, 2)
         XCTAssertEqual(json.arrayValue[0].intValue, 1)
         XCTAssertEqual(json.arrayValue[1].intValue, 2)
@@ -207,7 +207,7 @@ class ObjectTests: XCTestCase {
         json.add(VJson(1, name: "one"))
         json.add(VJson(2, name: "two"))
         json.add(VJson(3, name: "one"), replace: false)
-        XCTAssertEqual(json.remove(childrenWith: "one"), 2)
+        XCTAssertEqual(json.removeItems(forName: "one"), 2)
         XCTAssertEqual(json.nofChildren, 1)
         XCTAssertEqual(json.arrayValue[0].intValue, 2)
         
@@ -217,7 +217,7 @@ class ObjectTests: XCTestCase {
         json.append(VJson(1, name: "one"))
         json.append(VJson(2, name: "two"))
         json.append(VJson(3, name: "one"))
-        XCTAssertEqual(json.remove(childrenWith: "two"), 0)
+        XCTAssertEqual(json.removeItems(forName: "two"), 0)
         XCTAssertEqual(json.nofChildren, 3)
     }
 

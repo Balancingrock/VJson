@@ -3,7 +3,7 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.13.0
+//  Version:    0.15.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -21,7 +21,7 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
+//  I strongly believe that the voluntarism is the way for societies to function optimally. I thus reject
 //  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
 //  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
 //
@@ -50,6 +50,9 @@
 //
 // History
 //
+// 0.15.0  - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
+//           or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
+//           OBJECTs or ARRAYs.
 // 0.13.0  - Added escape sequence support
 // 0.12.2  - Bugfix, uniqueName no longer appends numbers but updates the number.
 // 0.12.1  - Added public to uniqueName:startsWith
@@ -80,26 +83,26 @@ public extension VJson {
     public var isObject: Bool { return self.type == JType.object }
 
     
-    /// Returns the child with the requested name, if any.
+    /// Returns the item with the requested name, if any.
     ///
     /// - Parameters:
-    ///   - name: The name of the requested child.
+    ///   - name: The name of the requested item.
     ///
-    /// - Returns: The requested child if it is present, nil otherwise.
+    /// - Returns: The requested item if it is present, nil otherwise.
     
-    public func child(with name: String) -> VJson? {
+    public func item(with name: String) -> VJson? {
         guard type == .object else { return nil }
         return self|name
     }
     
     
-    /// Return all children with the given name. The count will be zero if no child with the given name exists.
+    /// Return all items with the given name.
     ///
-    // - Parameter with: The name of the sought after child items.
+    /// - Parameter with: The name of the sought after items.
     ///
-    /// - Returns: An array with the found child items, may be empty.
+    /// - Returns: An array with the found items, may be empty.
     
-    public func children(with name: String) -> [VJson] {
+    public func items(with name: String) -> [VJson] {
         guard type == .object else { return [] }
         let jname = name.stringToJsonString()
         return self.children?.items.filter(){ $0.name == jname } ?? []
@@ -109,41 +112,41 @@ public extension VJson {
     /// Add a new item with the given name or replace a current item with that same name (when "replace" = 'true'). Self must contain a JSON OBJECT item or a NULL. If it is a NULL it will be converted into an OBJECT.
     ///
     /// - Parameters:
-    ///   - child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the child item.
-    ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
-    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
+    ///   - item: The item that should replace or be appended. The item must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the item.
+    ///   - name: If nil, the item must already have a name. If non-nil, then this name will be used and the name of the item (if present) will be overwritten.
+    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the item will be added and no check on duplicate names will be performed.
     
-    public func add(_ child: VJson?, for name: String? = nil, replace: Bool = true) {
-        guard let child = child else { return }
-        if name == nil && !child.hasName { return }
+    public func add(_ item: VJson?, for name: String? = nil, replace: Bool = true) {
+        guard let item = item else { return }
+        if name == nil && !item.hasName { return }
         undoableUpdate(to: .object)
-        if name != nil { child.name = name?.stringToJsonString() }
-        if replace { children?.remove(childrenWith: child.name) }
-        children?.append(child)
+        if name != nil { item.name = name?.stringToJsonString() }
+        if replace { children?.remove(childrenWith: item.name) }
+        children?.append(item)
     }
     
     
     /// Add a new item with the given name or replace a current item with that same name (when "replace" = 'true'). Self must contain a JSON OBJECT item or a NULL. If it is a NULL it will be converted into an OBJECT.
     ///
     /// - Parameters:
-    ///   - child: The child that should replace or be appended. The child must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the child item.
-    ///   - name: If nil, the child must already have a name. If non-nil, then this name will be used and the name of the child (if present) will be overwritten.
-    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the child will be added and no check on duplicate names will be performed.
+    ///   - item: The item that should replace or be appended. The item must have a name or a name must be provided in the parameter "for name". If a name is provided in "for name" then that name will take precedence and replace the name contained in the item.
+    ///   - name: If nil, the item must already have a name. If non-nil, then this name will be used and the name of the item (if present) will be overwritten.
+    ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the item will be added and no check on duplicate names will be performed.
     
     public func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) {
         return add(item?.json, for: name, replace: replace)
     }
     
     
-    /// Removes all children with the given name from this object only. Self must contain a JSON OBJECT.
+    /// Removes all items with the given name from this object only. Self must contain a JSON OBJECT.
     ///
     /// - Parameters:
-    ///   - childrenWith: The name of the child items to be removed.
+    ///   - forName: The name of the items to be removed.
     ///
-    /// - Returns: The number of children removed.
+    /// - Returns: The number of items removed.
     
     @discardableResult
-    public func remove(childrenWith name: String) -> Int {
+    public func removeItems(forName name: String) -> Int {
         guard type == .object else { return 0 }
         recordUndoRedoAction()
         return children?.remove(childrenWith: name.stringToJsonString()) ?? 0
@@ -168,4 +171,41 @@ public extension VJson {
         }
         return uniqueName
     }
+    
+    
+    /// Returns a VJson object with a JSON OBJECT containing the items from the dictionary. Only those items that have their 'parent' member set to 'nil' will be included.
+    ///
+    /// - Parameters:
+    ///   - items: A dictionary with the name/value pairs to be included as children.
+    ///   - name: The name for the contained item (optional).
+    
+    public convenience init(items: [String:VJson], name: String? = nil) {
+        self.init(type: .object, name: name)
+        var newItems: Array<VJson> = []
+        let parentIsNilItems = items.filter(){ return $0.value.parent == nil }
+        for (pname, item) in parentIsNilItems {
+            item.name = pname
+            newItems.append(item)
+        }
+        self.children?.append(newItems)
+    }
+    
+    
+    /// Returns a VJson object with a JSON OBJECT containing the items from the dictionary.
+    ///
+    /// - Parameters:
+    ///   - items: A dictionary with the name/value pairs to be included as children.
+    ///   - name: The name for the contained item (optional).
+    
+    public convenience init(_ items: [String:VJsonSerializable], name: String? = nil) {
+        self.init(type: VJson.JType.object, name: name)
+        var newItems: [VJson] = []
+        for (name, item) in items {
+            let jitem = item.json
+            jitem.name = name
+            newItems.append(jitem)
+        }
+        self.children?.append(newItems)
+    }
+
 }

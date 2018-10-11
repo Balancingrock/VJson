@@ -308,7 +308,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.14.0 (Current)
+#### 0.15.0 (Current)
+
+- Meta change: JSON OBJECT and JSON ARRAY operations are now seperated from operations on an Item's children. The practical result is that operations that are common to JSON ARRAY and JSON OBJECT now operate on Children and carry this information in their name. For example, there is now a remove:at (for ARRAY), removeItems:forName (for OBJECT) and removeChild:_ and removeChildren:equalTo (Both ARRAY and OBJECT). This change has been refected in the documentation and comments as well.
+- Removed index:ofChildrenEqualTo. The code is still in the source, so if necessary it can be copied by a client.
+
+#### 0.14.0
 
 - Added name output for named top level objects
 - Fixed parsing bug of top level string item

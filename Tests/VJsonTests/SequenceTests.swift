@@ -109,7 +109,7 @@ class SequenceTests: XCTestCase {
         found2 = false
         loopCount = 0
         for j in json {
-            if j.intValue! == 1 { found1 = true; _ = json.remove(three) }
+            if j.intValue! == 1 { found1 = true; _ = json.removeChild(three) }
             if j.intValue! == 2 { found2 = true }
             loopCount += 1
         }

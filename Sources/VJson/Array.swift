@@ -3,7 +3,7 @@
 //  File:       Array.swift
 //  Project:    VJson
 //
-//  Version:    0.12.0
+//  Version:    0.15.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -21,7 +21,7 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
+//  I strongly believe that the voluntarism is the way for societies to function optimally. I thus reject
 //  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
 //  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
 //
@@ -44,12 +44,14 @@
 //
 // =====================================================================================================================
 //
-//  This JSON implementation was written using the definitions as found on: http://json.org (2015.01.01)
-//
-// =====================================================================================================================
-//
 // History
 //
+// 0.15.0 - Moved the insert:at operation from ArrayObject to this file and made it array specific.
+//          Removed remove:
+//          Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
+//          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
+//          OBJECTs or ARRAYs.
+//          General overhaul of comments and documentation.
 // 0.12.0 - Moved insert:child:at to ArrayObject.swift.
 // 0.11.2 - Added move:from:to
 // 0.10.8 - Split off from VJson.swift
@@ -66,23 +68,23 @@ import Foundation
 public extension VJson {
     
     
-    /// Creates an empty JSON ARRAY item with the given name (if any).
+    /// Creates an empty VJson ARRAY with the given name (if any).
     ///
     /// - Parameter name: The name for the item (optional).
     ///
-    /// - Returns: The new VJson item containing a JSON ARRAY.
+    /// - Returns: An empty VJson ARRAY.
     
     public static func array(_ name: String? = nil) -> VJson {
         return VJson(type: .array, name: name)
     }
 
     
-    /// Returns a new VJson object with a JSON ARRAY containing the given items. Only those items that have their 'parent' member set to 'nil' will be included.
+    /// Returns a VJson ARRAY containing the given items. Only those items that have their 'parent' member set to 'nil' will be included.
     ///
     /// - Parameters:
-    ///   - items: An array with VJson objects to be added as children, only those with parent == nil.
-    ///   - name: The name for the JSON ARRAY item.
-    ///   - includeNil: If true (default = false) then nil items in the array will be included as JSON NULL items.
+    ///   - items: An array with items to be added (only if the item.parent == nil).
+    ///   - name: The name for the VJson ARRAY.
+    ///   - includeNil: If true (default = false) then nil items in the array will be included as VJson NULL items.
     
     public convenience init(_ items: [VJson?], name: String? = nil, includeNil: Bool = false) {
         self.init(type: .array, name: name)
@@ -95,119 +97,118 @@ public extension VJson {
     }
     
     
-    /// Returns a new VJson object with a JSON ARRAY containing the given items.
+    /// Returns a VJson ARRAY containing the given items.
     ///
     /// - Parameters:
-    ///   - items: An array with VJson objects to be added as children.
-    ///   - name: The name for the contained item (optional).
-    ///   - includeNil: If true (default = false) then nil items in the array will be included as JSON NULL items.
+    ///   - items: An array with items to be added.
+    ///   - name: The name for the VJson ARRAY (optional).
+    ///   - includeNil: If true (default = false) then nil items in the array will be included as VJson NULL items.
     
     public convenience init(_ items: [VJsonSerializable?], name: String? = nil, includeNil: Bool = false) {
         self.init(items.map({$0?.json}), name: name, includeNil: includeNil)
     }
 
     
-    /// True if this object contains a JSON ARRAY object.
+    /// True if this VJson object contains a JSON ARRAY.
     
     public var isArray: Bool { return self.type == JType.array }
 
     
-    /// Returns the child at the given index if it exists. Self must be a JSON ARRAY item.
+    /// Returns the item at the given index if it exists. Self must contain a JSON ARRAY item.
     ///
     /// - Parameters:
-    ///   - at: The index of the requested child.
+    ///   - at: The index of the requested item.
     ///
-    /// - Returns: The object or nil if no object exists at the given index. If self is not an array, it also returns nil.
+    /// - Returns: A VJson object with the requested item or nil if no item exists at the given index. Also returns nil if self does not contain a JSON ARRAY.
     
-    public func child(at index: Int) -> VJson? {
-        guard type == .array else { return nil }
+    public func item(at index: Int) -> VJson? {
+        guard isArray else { return nil }
         return self|index
     }
     
     
-    /// The index of the given child. Self must be a JSON ARRAY item.
+    /// The index of the given item. Self must contain a JSON ARRAY.
     ///
     /// - Parameters:
-    ///   - of: The child to find the index of.
+    ///   - of: The item to find the index of.
     ///
-    /// - Returns: The index of the child if it is present. Nil if none was found.
+    /// - Returns: The index of the item if it is present. Nil if none was found or self does not contain a JSON ARRAY.
     
-    public func index(of child: VJson?) -> Int? {
-        guard let child = child else { return nil }
-        guard type == .array else { return nil }
-        return children?.index(of: child)
+    public func index(of item: VJson?) -> Int? {
+        guard isArray else { return nil }
+        guard let item = item else { return nil }
+        return children?.index(of: item)
     }
     
     
+    /*
     /// The indicies of the children with identical contents as the given child. An empty array if no comparable child is found. Self must be a JSON ARRAY item.
     ///
     /// - Parameters:
     ///   - ofChildEqualTo: The child to compare the content with.
     ///
     /// - Returns: The indicies of the child items with the same content. An empty array if none was found.
-    
+
     public func index(ofChildrenEqualTo item: VJson?) -> [Int] {
         guard let item = item else { return [] }
         guard type == .array else { return [] }
         return children?.index(ofChildrenEqualTo: item) ?? []
     }
+    */
     
-    
-    /// Removes the given object from self. Self must be a JSON ARRAY. Is undoable.
+    /// Inserts the given item at the given index. Self must contain a JSON ARRAY. Is Undoable.
     ///
     /// - Parameters:
-    ///   - item: The child object to remove.
+    ///   - item: The item to be inserted.
+    ///   - at index: The index at which the item will be inserted. The index must exist, insertion will fail for non-existing indexes.
     ///
-    /// - Returns: True if successful, false otherwise.
+    /// - Returns: True if the insertion was succesful. False if not.
     
     @discardableResult
-    public func remove(_ item: VJson?) -> Bool {
-        guard type == .array else { return false }
-        if let index = children?.index(of: item) {
-            recordUndoRedoAction()
-            return children?.remove(at: index) != nil
-        } else {
-            return false
-        }
+    public func insert(_ item: VJson?, at index: Int) -> Bool {
+        guard let item = item else { return false }
+        guard isArray else { return false }
+        recordUndoRedoAction()
+        return children?.insert(item, at: index) ?? false
     }
+
     
-    
-    /// Removes the given object from self. Self must be a JSON ARRAY. Is undoable.
+    /// Removes the given object from self. Self must contain a JSON ARRAY. Is undoable.
     ///
     /// - Parameters:
-    ///   - item: The child object to remove.
+    ///   - item: The item object to remove.
     ///
-    /// - Returns: The child that was removed. Nil if the index is out of range.
+    /// - Returns: The item that was removed. Nil if the index is out of range.
     
     @discardableResult
     public func remove(at index: Int) -> VJson? {
-        guard type == .array else { return nil }
+        guard isArray else { return nil }
         recordUndoRedoAction()
         return children?.remove(at: index)
     }
 
     
-    /// Replaces the child at the given index with the given child. Self must be a JSON ARRAY. Is undoable.
+    /// Replaces the item at the given index with the given item. Self must contain a JSON ARRAY. Is undoable.
     ///
     /// - Parameters:
-    ///   - at: The index of the child to be replaced.
-    ///   - with: The VJson object to be inserted.
+    ///   - at: The index of the item to be replaced.
+    ///   - with: The item to be inserted.
     ///
-    /// - Returns: The replaced child, or nil if an error occured.
+    /// - Returns: The replaced item, or nil if an error occured.
     
     @discardableResult
-    public func replace(at index: Int, with child: VJson?) -> VJson? {
-        guard let child = child else { return nil }
-        guard type == .array else { return nil }
+    public func replace(at index: Int, with item: VJson?) -> VJson? {
+        guard isArray else { return nil }
+        guard let item = item else { return nil }
         recordUndoRedoAction()
-        return children?.replace(at: index, with: child)
+        return children?.replace(at: index, with: item)
     }
     
     
-    /// Move an item to a new location.
+    /// Move an item to a new location. Is unodable.
     ///
     /// - Parameters:
-    ///   - from: The item to move.
+    ///   - from: The index of the item to move.
     ///   - to: The new location for the item.
     ///
     /// - Returns: True when successful, false when not.
@@ -231,24 +232,24 @@ public extension VJson {
     }
     
     
-    /// Appends the given object to the end of the array. Self must be a JSON ARRAY or the type change must be allowed. Is undoable.
+    /// Appends the given item to the end of the array. Self must contain a JSON ARRAY or a type change must be allowed. Is undoable.
     ///
     /// - Parameters:
-    ///   - child: The VJson object to be appended.
+    ///   - item: The item to be appended.
     
-    public func append(_ child: VJson?) {
-        guard let child = child else { return }
+    public func append(_ item: VJson?) {
+        guard let item = item else { return }
         if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
         guard type == .array else { return }
         recordUndoRedoAction()
-        children?.append(child)
+        children?.append(item)
     }
     
     
-    /// Appends the given object to the end of the array. Self must be a JSON ARRAY or or the type change must be allowed. Is undoable.
+    /// Appends the given item to the end of the array. Self must contain a JSON ARRAY or a type change must be allowed. Is undoable.
     ///
     /// - Parameters:
-    ///   - child: The VJson object to be appended.
+    ///   - item: The item to be appended.
     
     public func append(_ item: VJsonSerializable?) {
         guard let item = item else { return }
@@ -259,11 +260,11 @@ public extension VJson {
     }
     
     
-    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY or the type change must be allowed. Is undoable.
+    /// Appends the given items to the end of the array. Self must contain a JSON ARRAY or a type change must be allowed. Is undoable.
     ///
     /// - Parameters:
-    ///   - children: The items to add.
-    ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
+    ///   - items: The items to add.
+    ///   - includeNil: If true, a VJson NULL will be added for each 'nil' in the array.
     
     public func append(_ items: [VJson?]?, includeNil: Bool = false) {
         guard let items = items else { return }
@@ -280,11 +281,11 @@ public extension VJson {
     }
     
     
-    /// Appends the given objects to the end of the array. Self must be a JSON ARRAY or the type change must be allowed. Is undoable.
+    /// Appends the given items to the end of the array. Self must contain a JSON ARRAY or a type change must be allowed. Is undoable.
     ///
     /// - Parameters:
-    ///   - children: The items to add.
-    ///   - includeNil: If true, a NULL will be added for each 'nil' in the array.
+    ///   - items: The items to add.
+    ///   - includeNil: If true, a VJson NULL will be added for each 'nil' in the array.
     
     public func append(_ items: [VJsonSerializable?]?, includeNil: Bool = false) {
         guard let items = items else { return }

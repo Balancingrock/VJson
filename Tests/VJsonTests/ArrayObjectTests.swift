@@ -252,7 +252,7 @@ class ArrayObjectTests: XCTestCase {
         var json = VJson(arr)
         json.undoManager = UndoManager()
         var e: VJson?
-        XCTAssertEqual(json.remove(childrenEqualTo: e), 0)
+        XCTAssertEqual(json.removeChildren(equalTo: e), 0)
         XCTAssertEqual(json.nofChildren, 4)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 2)
@@ -263,7 +263,7 @@ class ArrayObjectTests: XCTestCase {
         // Expected: Return nil
         e = VJson(4)
         json.undoManager!.removeAllActions()
-        XCTAssertEqual(json.remove(childrenEqualTo: e), 0)
+        XCTAssertEqual(json.removeChildren(equalTo: e), 0)
         XCTAssertEqual(json.nofChildren, 4)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 2)
@@ -274,7 +274,7 @@ class ArrayObjectTests: XCTestCase {
         // Expected: Return nil
         e = VJson(2)
         json.undoManager!.removeAllActions()
-        XCTAssertNotNil(json.remove(childrenEqualTo: e))
+        XCTAssertNotNil(json.removeChildren(equalTo: e))
         XCTAssertEqual(json.nofChildren, 2)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         XCTAssertEqual(json.arrayValue[1].intValue!, 3)
@@ -290,12 +290,12 @@ class ArrayObjectTests: XCTestCase {
         json.add(VJson(2), for: "two", replace: false)
         e = VJson(4)
         json.undoManager!.removeAllActions()
-        XCTAssertEqual(json.remove(childrenEqualTo: e), 0)
+        XCTAssertEqual(json.removeChildren(equalTo: e), 0)
         XCTAssertEqual(json.nofChildren, 4)
-        XCTAssertEqual(json.children(with: "one")[0].intValue, 1)
-        XCTAssertEqual(json.children(with: "two")[0].intValue, 2)
-        XCTAssertEqual(json.children(with: "three")[0].intValue, 3)
-        XCTAssertEqual(json.children(with: "two")[0].intValue, 2)
+        XCTAssertEqual(json.items(with: "one")[0].intValue, 1)
+        XCTAssertEqual(json.items(with: "two")[0].intValue, 2)
+        XCTAssertEqual(json.items(with: "three")[0].intValue, 3)
+        XCTAssertEqual(json.items(with: "two")[0].intValue, 2)
         
         // Test with non-nil on an object
         // Expected: No change
@@ -307,10 +307,10 @@ class ArrayObjectTests: XCTestCase {
         json.add(VJson(2), for: "two", replace: false)
         e = VJson(2, name: "two")
         json.undoManager!.removeAllActions()
-        XCTAssertEqual(json.remove(childrenEqualTo: e), 2)
+        XCTAssertEqual(json.removeChildren(equalTo: e), 2)
         XCTAssertEqual(json.nofChildren, 2)
-        XCTAssertEqual(json.children(with: "one")[0].intValue, 1)
-        XCTAssertEqual(json.children(with: "three")[0].intValue, 3)
+        XCTAssertEqual(json.items(with: "one")[0].intValue, 1)
+        XCTAssertEqual(json.items(with: "three")[0].intValue, 3)
     }
 
     
@@ -340,9 +340,9 @@ class ArrayObjectTests: XCTestCase {
         json = VJson(items: dict)
         XCTAssertTrue(json.isObject)
         XCTAssertEqual(json.nofChildren, 3)
-        XCTAssertTrue(json.children(with: "key1")[0].intValue! == 1)
-        XCTAssertTrue(json.children(with: "key2")[0].intValue! == 2)
-        XCTAssertTrue(json.children(with: "key3")[0].intValue! == 3)
+        XCTAssertTrue(json.items(with: "key1")[0].intValue! == 1)
+        XCTAssertTrue(json.items(with: "key2")[0].intValue! == 2)
+        XCTAssertTrue(json.items(with: "key3")[0].intValue! == 3)
     }
     
     
@@ -383,8 +383,8 @@ class ArrayObjectTests: XCTestCase {
         json = VJson(dict)
         XCTAssertTrue(json.isObject)
         XCTAssertEqual(json.nofChildren, 3)
-        XCTAssertTrue(json.children(with: "key1")[0].intValue! == 1)
-        XCTAssertTrue(json.children(with: "key2")[0].intValue! == 2)
-        XCTAssertTrue(json.children(with: "key3")[0].intValue! == 3)
+        XCTAssertTrue(json.items(with: "key1")[0].intValue! == 1)
+        XCTAssertTrue(json.items(with: "key2")[0].intValue! == 2)
+        XCTAssertTrue(json.items(with: "key3")[0].intValue! == 3)
     }
 }

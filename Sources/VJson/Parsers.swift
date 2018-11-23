@@ -3,7 +3,7 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.14.0
+//  Version:    0.15.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.1  - Improved removal of bytes that have been processed.
 // 0.14.0  - Fixed error when reading top level string value
 //         - Added reading of named top level values
 //         - Added return of nil when parsing empty data or only whitespace data
@@ -528,7 +529,7 @@ internal extension VJson {
     }
     
     
-    /// Parses the data according to ECMA-404, 1st edition October 2013. The sequence should contain exactly one JSON hierarchy. Any errors will result in a throw.
+    /// Parses the data according to ECMA-404, 1st edition October 2013. Any errors will result in a throw.
     ///
     /// - Parameter data: A data object with ASCII or UTF8 formatted data to be parsed.
     ///
@@ -558,12 +559,7 @@ internal extension VJson {
         
         // Remove consumed bytes
         
-        if offset > 0 {
-            let range = Range(uncheckedBounds: (lower: 0, upper: offset))
-            var dummy: UInt8 = 0
-            let empty = UnsafeBufferPointer<UInt8>(start: &dummy, count: 0)
-            data.replaceSubrange(range, with: empty)
-        }
+        data.removeFirst(offset)
         
         return val
     }

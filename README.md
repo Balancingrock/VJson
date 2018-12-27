@@ -38,7 +38,7 @@ To use VJson with a SPM project, make it part of the dependencies in the file Pa
 ~~~~
    dependencies: [
       ...
-      .Package(url: "https://github.com/Balancingrock/VJson", "0.10.0")
+      .Package(url: "https://github.com/Balancingrock/VJson", "0.15.2")
       ...
    ]
 ~~~~
@@ -308,7 +308,13 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.15.1 (Current)
+#### 0.15.2 (Current)
+
+- Added operation items:at
+- Made error closure for parsers optional
+- Updated package dependencies
+
+#### 0.15.1
 
 - Fixed a bug that could cause a crash when parsing files containing only whitespaces.
 

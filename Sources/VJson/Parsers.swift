@@ -3,7 +3,7 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.15.1
+//  Version:    0.15.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.2  - Made the error closures optional with a default of nil
 // 0.15.1  - Improved removal of bytes that have been processed.
 // 0.14.0  - Fixed error when reading top level string value
 //         - Added reading of named top level values
@@ -167,15 +168,15 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy with the contents of the file or nil if the file is empty, consists only of whitespaces, or an error occured.
     
-    public static func parse(file: URL, onError: parseErrorSignature) -> VJson? {
+    public static func parse(file: URL, onError: parseErrorSignature?) -> VJson? {
         do {
             return try parse(file: file)
             
         } catch let .reason(location, code, incomplete, message) as VJson.Exception {
-            onError(location, code, incomplete, message)
+            onError?(location, code, incomplete, message)
             
         } catch let error {
-            onError(0, -1, false, "\(error)")
+            onError?(0, -1, false, "\(error)")
         }
         return nil
     }
@@ -232,16 +233,16 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the buffer or nil if the buffer is empty or consists only of whitespaces.
 
-    public static func parse(buffer: UnsafeBufferPointer<UInt8>, onError: parseErrorSignature) -> VJson? {
+    public static func parse(buffer: UnsafeBufferPointer<UInt8>, onError: parseErrorSignature?) -> VJson? {
         
         do {
             return try VJson.vJsonParser(buffer: buffer)
             
         } catch let .reason(location, code, incomplete, message) as VJson.Exception {
-            onError(location, code, incomplete, message)
+            onError?(location, code, incomplete, message)
             
         } catch let error {
-            onError(0, -1, false, "\(error)")
+            onError?(0, -1, false, "\(error)")
         }
         return nil
     }
@@ -298,15 +299,15 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the string or nil if the string is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(string: String, onError: parseErrorSignature) -> VJson? {
+    public static func parse(string: String, onError: parseErrorSignature?) -> VJson? {
         do {
             return try VJson.parse(string: string)
             
         } catch let .reason(location, code, incomplete, message) as VJson.Exception {
-            onError(location, code, incomplete, message)
+            onError?(location, code, incomplete, message)
             
         } catch let error {
-            onError(0, -1, false, "\(error)")
+            onError?(0, -1, false, "\(error)")
         }
         return nil
     }
@@ -366,15 +367,15 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the data or nil if the data is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(data: inout Data, onError: parseErrorSignature) -> VJson? {
+    public static func parse(data: inout Data, onError: parseErrorSignature?) -> VJson? {
         do {
             return try VJson.vJsonParser(data: &data)
             
         } catch let .reason(location, code, incomplete, message) as VJson.Exception {
-            onError(location, code, incomplete, message)
+            onError?(location, code, incomplete, message)
             
         } catch let error {
-            onError(0, -1, false, "\(error)")
+            onError?(0, -1, false, "\(error)")
         }
         return nil
     }

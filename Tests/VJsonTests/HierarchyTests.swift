@@ -120,4 +120,32 @@ class HierarchyTests: XCTestCase {
         XCTAssertNil(json.item(of: VJson.JType.object, at: "array", "0"))
         XCTAssertNil(json.item(of: VJson.JType.array, at: "first", "2"))
     }
+    
+    func testItems() {
+        
+        let str = """
+        {
+            "one" : [
+                {},{},{"two":12}
+            ],
+            "two" : 2,
+            "one" : [
+                1, 2, 3
+            ],
+            "two" : 22,
+            "one" : [
+                {}, {}, {"two":21}
+            ]
+        }
+        """
+        
+        guard let json = VJson.parse(string: str, onError: nil) else { XCTFail(); return }
+        
+        let oneTwo = json.items(at: ["one","2","two"])
+        
+        XCTAssertEqual(oneTwo.count, 2)
+        
+        if oneTwo[0].intValue != 12 && oneTwo[0].intValue != 21 { XCTFail() }
+        if oneTwo[1].intValue != 12 && oneTwo[1].intValue != 21 { XCTFail() }
+    }
 }

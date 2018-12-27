@@ -3,7 +3,7 @@
 //  File:       Hierarchy.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.15.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.2  - Added items:at function
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -59,7 +60,7 @@ import Foundation
 public extension VJson {
     
     
-    /// Looks for an item in the hierachy.
+    /// Looks for an item in the hierachy. If multiple items can be reached at the given path, it is unspecified which item will be returned.
     ///
     /// - Parameters:
     ///   - at: An array of strings describing the path at which the item should exist. Note that integer indexing will convert the string into an index before using. Hence a path of ["12"] can refer to the item at index 12 as well as the item for name "12".
@@ -146,5 +147,109 @@ public extension VJson {
     
     public func item(of: JType, at path: String ...) -> VJson? {
         return item(of: of, at: path)
+    }
+    
+    
+    /// Returns all items at the given path.
+    ///
+    /// - Parameters:
+    ///   - at: The path for the tems to return.
+    ///
+    /// - Returns: An array with items that can be reached at the given path.
+    
+    public func items(at path: [String]) -> [VJson] {
+        
+        func items(path: [String], collection: [VJson]) -> [VJson] {
+            
+            var col: Array<VJson> = []
+            
+            for j in collection {
+                col.append(contentsOf: j.items(at: path))
+            }
+            
+            return col
+        }
+
+        
+        // If the path is empty, return an empty array
+        
+        if path.count == 0 { return [] }
+        
+        
+        // Create a new path that may be updated
+        
+        var path = path
+        
+        
+        // Action depends on type of self
+        
+        switch type {
+        
+        case .object:
+        
+            
+            // Create a collection of items that have the name of the first path part
+            
+            let id = path.removeFirst()
+            var col: Array<VJson> = []
+            
+            for c in children!.items {
+                if let n = c.nameValue, n == id {
+                    col.append(c)
+                }
+            }
+
+            
+            // If no items were found, return an empty array
+            
+            if col.count == 0 { return [] }
+
+            
+            // If the path is empty, return the collection
+            
+            if path.count == 0 { return col }
+            
+            
+            // Repeat the search for the next path part
+            
+            return items(path: path, collection: col)
+            
+            
+        case .array:
+        
+            
+            // Get the index of the child item
+            
+            let str = path.removeFirst()
+            guard let index = Int(str) else { return [] }
+            
+            
+            // Test validity of the index
+            
+            if index < 0 || index >= children!.count { return [] }
+            
+            
+            // Get the item for the index
+            
+            let j = children!.items[index]
+            
+            
+            // If the path is empty, return the item in an array
+            
+            if path.count == 0 { return [j] }
+            
+            
+            // Repeat the search for the next part of the path
+            
+            return items(path: path, collection: [j])
+            
+            
+        default:
+            
+            
+            // There is no possible path
+            
+            return []
+        }
     }
 }

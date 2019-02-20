@@ -23,6 +23,47 @@ class HierarchyTests: XCTestCase {
     }
 
     
+    func testRoot() {
+        
+        let json = VJson()
+        json["one"][1]["two"][3] &= true
+        
+        let leaf: VJson! = json.item(at: ["one", "1", "two", "3"])
+
+        if leaf == nil {
+            XCTFail("Leaf should not be nil")
+            return
+        }
+        
+        XCTAssertTrue(json === leaf.root)
+    }
+    
+    
+    func testLocation() {
+        
+        let json = VJson()
+        json["one"][1]["two"][3] &= true
+        
+        let leaf: VJson! = json.item(at: ["one", "1", "two", "3"])
+        let partial: VJson! = json.item(at: ["one", "1"])
+        
+        if leaf == nil {
+            XCTFail("Leaf should not be nil")
+            return
+        }
+        
+        var (source, path) = leaf.location()!
+
+        XCTAssertTrue(source === json)
+        XCTAssertTrue(path == ["one", "1", "two", "3"])
+        
+        (source, path) = leaf.location(from: partial)!
+        
+        XCTAssertTrue(source === partial)
+        XCTAssertTrue(path == ["two", "3"])
+    }
+    
+    
     // Testing: public func item(ofType: JType, atPath path: String ...) -> VJson?
     //
     // This implicitly also tests the other function sin Hierarchy.swift

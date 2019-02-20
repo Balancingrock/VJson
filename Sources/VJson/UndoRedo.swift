@@ -3,7 +3,7 @@
 //  File:       UndoRedo.swift
 //  Project:    VJson
 //
-//  Version:    0.13.3
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.3 - Moved the 'location' operation to Hierarchy.swift
 // 0.13.3 - Fixed problem with undo support for name changes of a child
 // 0.13.0 - Added escape sequences support
 // 0.12.5 - Made location public
@@ -67,86 +68,6 @@ import Cocoa
 
 extension VJson {
     
-    
-    /// Returns the root of the hierarchy and the path from there to this item.
-    
-    public func location() -> (root: VJson, path: Array<String>)? {
-        
-        
-        // If there is no parent, this this is the top level and the path is empty.
-        
-        guard let _ = parent else { return (self, []) }
-        
-        
-        // The path that will be returned.
-        
-        var path: Array<String> = []
-        
-        
-        // The root that will be returned.
-        
-        var root: VJson
-        
-        
-        // The itteration variables
-        
-        var item: VJson? = self // Start at the 'bottom'
-        var nextUp: VJson? = self.parent
-        
-        repeat {
-            
-            root = item! // Only the last assignment will 'stick'
-            
-            
-            // Check if the path part is an array index or a name
-            
-            if (nextUp?.type ?? .object) == .array {
-                
-                
-                // Determine the array index
-                
-                if let index = nextUp?.index(of: item) {
-                    path.insert(index.description, at: 0)
-                } else {
-                    // Impossible
-                    assert(false, "Child not contained in parent.\nChild = \(String(describing: item))\n\nParent = \(String(describing: nextUp))")
-                }
-                
-            } else {
-                
-                
-                // There must be a name if the parent is non-nil
-                
-                if nextUp != nil {
-                    
-                    if let pathPart = item?.name {
-                        path.insert(pathPart, at: 0)
-                    } else {
-                        // Impossible
-                        assert(false, "The child from an object should always have a name.\nChild = \(String(describing: item))\n\nParent = \(String(describing: nextUp))")
-                    }
-                    
-                } else {
-                    
-                    // The parent is nil. For the top level object an empty path element should be returned. Hence nothing should be done here.
-                }
-            }
-            
-            
-            // Prepare for the next itteration
-            
-            item = nextUp
-            nextUp = nextUp?.parent
-            
-            
-            // Stop itterating if there are no more items
-            
-        } while item != nil
-        
-        
-        return (root, path)
-    }
-
     
     /// Returns a clone of this JSON object for undo/redo purposes.
     

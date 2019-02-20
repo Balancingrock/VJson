@@ -3,7 +3,7 @@
 //  File:       Name.swift
 //  Project:    VJson
 //
-//  Version:    0.13.3
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.3  - Improved documentation
 // 0.13.3  - Fixed problem with undo support for name changes of a child
 // 0.13.0  - Improved unicode character support.
 // 0.10.8  - Split off from VJson.swift
@@ -63,6 +64,8 @@ public extension VJson {
     
     
     /// The name of this item as a Swift string with the escape sequences replaced by their proper characters.
+    ///
+    /// This accessor will not generate illegal names and should be the preffered method when changing the name.
     ///
     /// - Note: When writing to this variable the string will be scanned for characters that need an escape sequence, when found, such characters will be replaced by their escape sequence.
     
@@ -88,6 +91,8 @@ public extension VJson {
     
     /// The name of this item as a string if there is any, the escape sequences are replaced by printables.
     ///
+    /// This accessor is intended as read-only. While it can be used to set a new name value this is discouraged due to possible changes to the lookup tables that are used for the conversion.
+    ///
     /// - Note: When writing to this variable the string will be scanned for characters that need an escape sequence, when found, such characters will be replaced by their escape sequence. Printables will also be converted (back) into their escape sequence.
 
     public var nameValuePrintable: String? {
@@ -111,6 +116,10 @@ public extension VJson {
     
     
     /// The raw name of this object as a sequence of single byte UTF8 characters.
+    ///
+    /// __Warning__
+    ///
+    /// When this accessor is used for writing no error's will be flagged for illegal JSON strings!
     ///
     /// - Note: This is the raw data as received/read or stored/transmitted. Complete with escape sequences.
     

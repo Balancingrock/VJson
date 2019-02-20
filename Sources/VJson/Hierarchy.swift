@@ -3,7 +3,7 @@
 //  File:       Hierarchy.swift
 //  Project:    VJson
 //
-//  Version:    0.15.2
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,10 @@
 //
 // History
 //
+// 0.15.3  - Moved the 'location' operation from UndoRedo.swift to here
+//         - Added 'from' parameter to the 'location' function
+//         - Renamed the return location 'root' to 'source'
+//         - Added 'root' property.
 // 0.15.2  - Added items:at function
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
@@ -59,6 +63,100 @@ import Foundation
 
 public extension VJson {
     
+    
+    /// Returns the root of this JSON hierarchy.
+    
+    public var root: VJson {
+        
+        if let parent = parent {
+            return parent.root
+        } else {
+            return self
+        }
+    }
+    
+    
+    /// Returns the root of the hierarchy and the path from there to this item.
+    ///
+    /// - Parameter from: The item at which to start the path in the return tuple.
+    ///
+    /// - Returns: A tuple with the path and the source for that path
+    
+    public func location(from source: VJson? = nil) -> (source: VJson, path: Array<String>)? {
+            
+            
+        // The path that will be returned.
+        
+        var path: Array<String> = []
+        
+        
+        // The itteration variables
+        
+        var item: VJson = self
+        var next: VJson! = self.parent
+        
+        
+        while true {
+            
+            
+            // Stop when the source item has been reached
+            
+            if let source = source, item === source { return (source, path) }
+            
+            
+            // Stop when there is no parent
+            
+            if next == nil {
+                if source == nil { return (item, path) }
+                return nil
+            }
+            
+            
+            // Check if the path part is an array index or a name
+            
+            if next.isArray {
+                
+                
+                // Determine the array index
+                
+                let index: Int! = next.index(of: item)
+                
+                
+                // Catch programming error
+                
+                guard index != nil  else {
+                    let message = "Child not contained in parent.\nChild = \(item.code))\n\nParent = \(next.code))"
+                    assertionFailure(message)
+                    return nil
+                }
+                
+                path.insert(index.description, at: 0)
+                
+                
+            } else {
+                
+                
+                // Determine the path component
+                
+                let pathPart: String! = item.name
+                guard pathPart != nil else {
+                    let message = "The child from an object should always have a name.\nChild = \(item.code))\n\nParent = \(next.code))"
+                    assertionFailure(message)
+                    return nil
+                }
+                
+                path.insert(pathPart, at: 0)
+            }
+            
+            
+            // Prepare for the next itteration
+            
+            item = next
+            next = next.parent
+        }
+    }
+
+
     
     /// Looks for an item in the hierachy. If multiple items can be reached at the given path, it is unspecified which item will be returned.
     ///

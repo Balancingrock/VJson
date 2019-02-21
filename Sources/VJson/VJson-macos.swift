@@ -3,7 +3,7 @@
 //  File:       VJson-macos.swift
 //  Project:    VJson
 //
-//  Version:    0.15.0
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
 //          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
 //          OBJECTs or ARRAYs.
@@ -69,9 +70,13 @@ import Foundation
 public final class VJson: NSObject {
     
     
-    /// The undo manager
+    /// The undo manager.
     ///
-    /// - Note: VJson will support the assignment of an undo manager at the top level only.
+    /// VJson supports a single undo manager that is always written to the root item (top level) of a JSON hierarchy.
+    ///
+    /// When the undo manager is set, VJson will automatically use it. (From OSX 10.11 onward)
+    ///
+    /// - Note: VJson supports the assignment of an undo manager at the top level only.
     
     public var undoManager: UndoManager? {
         get {
@@ -82,7 +87,9 @@ public final class VJson: NSObject {
             }
         }
         set {
-            if parent == nil {
+            if let parent = parent {
+                parent._undoManager = newValue
+            } else {
                 _undoManager = newValue
             }
         }
@@ -93,32 +100,79 @@ public final class VJson: NSObject {
     
     /// The JSON type of this object.
     
-    public internal(set) var type: JType
+    public internal(set) var type: JType {
+        didSet {
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.type = oldValue
+                }
+            }
+        }
+    }
     
     
     /// The name of this object if it is part of a name/value pair.
     
-    public internal(set) var name: String?
+    public internal(set) var name: String? {
+        didSet {
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.name = oldValue
+                }
+            }
+        }
+    }
     
     
     /// The value if this is a JSON BOOL.
     
-    public internal(set) var bool: Bool?
+    public internal(set) var bool: Bool? {
+        didSet {
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.bool = oldValue
+                }
+            }
+        }
+    }
     
     
     /// The value if this is a JSON NUMBER.
     
-    public internal(set) var number: NSNumber?
+    public internal(set) var number: NSNumber? {
+        didSet {
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.number = oldValue
+                }
+            }
+        }
+    }
     
     
     /// The value if this is a JSON STRING.
     
-    public internal(set) var string: String?
+    public internal(set) var string: String? {
+        didSet {
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.string = oldValue
+                }
+            }
+        }
+    }
     
     
     /// Custom data associated with this VJson object.
     ///
-    /// - Note: VJson does not do anything with this object. As far as VJson is concerned, this member does not exist. It is not used when copying, duplication, comparing, undo/redo etc.
+    /// VJson does not support inheritance, this member may be used to provide similar functionalty. It is for the API user only. VJson itself never accesses this member.
+    ///
+    /// - Note: The API user must implement undo/redo operations if necessary!
     
     public var customData: AnyObject?
     
@@ -141,7 +195,16 @@ public final class VJson: NSObject {
     
     /// If this object was created to fullfill a subscript access, this property is set to 'true'. It is false for all other objects.
     
-    internal var createdBySubscript: Bool = false
+    internal var createdBySubscript: Bool = false {
+        didSet {
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.createdBySubscript = oldValue
+                }
+            }
+        }
+    }
     
     
     /// Default initializer

@@ -3,7 +3,7 @@
 //  File:       Array.swift
 //  Project:    VJson
 //
-//  Version:    0.15.0
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -46,6 +46,7 @@
 //
 // History
 //
+// 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Moved the insert:at operation from ArrayObject to this file and made it array specific.
 //          Removed remove:
 //          Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
@@ -140,22 +141,7 @@ public extension VJson {
         return children?.index(of: item)
     }
     
-    
-    /*
-    /// The indicies of the children with identical contents as the given child. An empty array if no comparable child is found. Self must be a JSON ARRAY item.
-    ///
-    /// - Parameters:
-    ///   - ofChildEqualTo: The child to compare the content with.
-    ///
-    /// - Returns: The indicies of the child items with the same content. An empty array if none was found.
-
-    public func index(ofChildrenEqualTo item: VJson?) -> [Int] {
-        guard let item = item else { return [] }
-        guard type == .array else { return [] }
-        return children?.index(ofChildrenEqualTo: item) ?? []
-    }
-    */
-    
+        
     /// Inserts the given item at the given index. Self must contain a JSON ARRAY. Is Undoable.
     ///
     /// - Parameters:
@@ -168,7 +154,6 @@ public extension VJson {
     public func insert(_ item: VJson?, at index: Int) -> Bool {
         guard let item = item else { return false }
         guard isArray else { return false }
-        recordUndoRedoAction()
         return children?.insert(item, at: index) ?? false
     }
 
@@ -183,7 +168,6 @@ public extension VJson {
     @discardableResult
     public func remove(at index: Int) -> VJson? {
         guard isArray else { return nil }
-        recordUndoRedoAction()
         return children?.remove(at: index)
     }
 
@@ -200,7 +184,6 @@ public extension VJson {
     public func replace(at index: Int, with item: VJson?) -> VJson? {
         guard isArray else { return nil }
         guard let item = item else { return nil }
-        recordUndoRedoAction()
         return children?.replace(at: index, with: item)
     }
     
@@ -241,7 +224,6 @@ public extension VJson {
         guard let item = item else { return }
         if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
         guard type == .array else { return }
-        recordUndoRedoAction()
         children?.append(item)
     }
     
@@ -255,7 +237,6 @@ public extension VJson {
         guard let item = item else { return }
         if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
         guard type == .array else { return }
-        recordUndoRedoAction()
         children?.append(item.json)
     }
     
@@ -270,7 +251,6 @@ public extension VJson {
         guard let items = items else { return }
         if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
         guard type == .array else { return }
-        recordUndoRedoAction()
         items.forEach() {
             if $0 == nil {
                 if includeNil { _ = children?.append(VJson.null()) }

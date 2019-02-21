@@ -51,6 +51,8 @@
 // History
 //
 // 0.15.3  - Improved documentation
+//           Reimplemented undo/redo
+//           Harmonized value accessors
 // 0.13.3  - Fixed problem with undo support for name changes of a child
 // 0.13.0  - Improved unicode character support.
 // 0.10.8  - Split off from VJson.swift
@@ -71,21 +73,7 @@ public extension VJson {
     
     public var nameValue: String? {
         get { return name?.jsonStringToString() }
-        set {
-            if let newName = newValue?.stringToJsonString() {
-                if newName != name {
-                    recordUndoRedoAction(newName)
-                    name = newName
-                }
-            } else {
-                if let parent = parent, parent.isObject {
-                    // Cannot remove name
-                } else {
-                    recordUndoRedoAction()
-                    name = nil
-                }
-            }
-        }
+        set { nameValueRaw = newValue?.stringToJsonString()}
     }
     
     
@@ -97,29 +85,13 @@ public extension VJson {
 
     public var nameValuePrintable: String? {
         get { return name?.jsonStringToString(lut: printableJsonStringSequenceLUT) }
-        set {
-            if let newName = newValue?.stringToJsonString(lut: printableJsonStringSequenceLUT) {
-                if newName != name {
-                    recordUndoRedoAction(newName)
-                    name = newName
-                }
-            } else {
-                if let parent = parent, parent.isObject {
-                    // Cannot remove name
-                } else {
-                    recordUndoRedoAction()
-                    name = nil
-                }
-            }
-        }
+        set { nameValueRaw = newValue?.stringToJsonString(lut: printableJsonStringSequenceLUT) }
     }
     
     
     /// The raw name of this object as a sequence of single byte UTF8 characters.
     ///
-    /// __Warning__
-    ///
-    /// When this accessor is used for writing no error's will be flagged for illegal JSON strings!
+    /// - Warning: When this accessor is used for writing no error's will be flagged for illegal JSON strings!
     ///
     /// - Note: This is the raw data as received/read or stored/transmitted. Complete with escape sequences.
     
@@ -128,14 +100,12 @@ public extension VJson {
         set {
             if let newName = newValue {
                 if newName != name {
-                    recordUndoRedoAction(newName)
                     name = newName
                 }
             } else {
                 if let parent = parent, parent.isObject {
                     // Cannot remove name
                 } else {
-                    recordUndoRedoAction()
                     name = nil
                 }
             }

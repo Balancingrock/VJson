@@ -38,7 +38,7 @@ To use VJson with a SPM project, make it part of the dependencies in the file Pa
 ~~~~
    dependencies: [
       ...
-      .Package(url: "https://github.com/Balancingrock/VJson", "0.15.2")
+      .package(url: "https://github.com/Balancingrock/VJson", from: "0.15.3")
       ...
    ]
 ~~~~
@@ -308,7 +308,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.15.2 (Current)
+#### 0.15.3 (Current)
+
+- Reimplemented undo/redo mechanism (removed UndoRedo.swift)
+- Added 'source' parameter to 'location' operation
+
+#### 0.15.2
 
 - Added operation items:at
 - Made error closure for parsers optional

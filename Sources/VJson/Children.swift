@@ -3,7 +3,7 @@
 //  File:       Children.swift
 //  Project:    VJson
 //
-//  Version:    0.13.0
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.3  - Re-implemented undo/redo, cleaned up the Children class accessors rights
 // 0.13.0  - Fixed bug that would insert at too high an index.
 // 0.12.6  - Made some index functions public (were internal)
 // 0.10.8  - Split off from VJson.swift
@@ -74,12 +75,12 @@ public extension VJson {
         
         // The parent of the children (which will always be the enclosing VJson item)
         
-        private unowned let parent: VJson
+        fileprivate unowned let parent: VJson
         
         
         // A chache that is used to speed up access to OBJECT items
         
-        private var objectMemberCache: Dictionary<String, VJson>?
+        fileprivate var objectMemberCache: Dictionary<String, VJson>?
         
         
         // Enables or disables the cache
@@ -91,7 +92,7 @@ public extension VJson {
         
         /// The child items under management
         
-        public internal(set) var items: Array<VJson> = [] {
+        public fileprivate(set) var items: Array<VJson> = [] {
             didSet { objectMemberCache = nil }
         }
         
@@ -120,9 +121,24 @@ public extension VJson {
                 items[index].parent = nil
                 
                 
+                // Retain the child to be removed (for undo)
+                
+                let childToBeRemoved = items[index]
+                
+                
                 // Replace the child
                 
                 items[index] = child
+                
+                
+                // Undo support
+                
+                if #available(OSX 10.11, *) {
+                    parent.undoManager?.registerUndo(withTarget: self) {
+                        [childToBeRemoved, index] (children) -> Void in
+                        children.items[index] = childToBeRemoved // This will also set the parent
+                    }
+                }
             }
         }
         
@@ -174,6 +190,13 @@ public extension VJson {
             
             child.parent = parent // Ensures the child's parent is always set
             items.append(child)
+            
+            if #available(OSX 10.11, *) {
+                parent.undoManager?.registerUndo(withTarget: self) {
+                    (children) -> Void in
+                    children.remove(at: children.count - 1)
+                }
+            }
         }
         
         
@@ -201,6 +224,15 @@ public extension VJson {
             guard index < items.count else { return false }
             child.parent = parent // Ensures the child's parent is always set
             items.insert(child, at: index)
+            
+            if #available(OSX 10.11, *) {
+                
+                parent.undoManager?.registerUndo(withTarget: self) {
+                    [index] (children) -> Void in
+                    children.remove(at: index)
+                }
+            }
+
             return true
         }
         
@@ -225,6 +257,14 @@ public extension VJson {
             child.parent = parent // Ensures the new child's parent is set correctly
             items[index] = child
             
+            if #available(OSX 10.11, *) {
+                
+                parent.undoManager?.registerUndo(withTarget: self) {
+                    [removed, index] (children) -> Void in
+                    children.replace(at: index, with: removed)
+                }
+            }
+
             return removed
         }
         
@@ -241,7 +281,21 @@ public extension VJson {
             guard index >= 0 else { return nil }
             
             items[index].parent = nil // Make sure it is decoupled from the parent
-            return items.remove(at: index)
+            let removed = items.remove(at: index)
+            
+            if #available(OSX 10.11, *) {
+                
+                parent.undoManager?.registerUndo(withTarget: self) {
+                    [removed, index] (children) -> Void in
+                    if index < children.count {
+                        children.insert(removed, at: index)
+                    } else {
+                        children.append(removed)
+                    }
+                }
+            }
+
+            return removed
         }
         
         
@@ -256,8 +310,7 @@ public extension VJson {
             guard let child = child else { return false }
             
             if let index = index(of: child) {
-                items[index].parent = nil // Make sure it is decoupled from the parent
-                items.remove(at: index)
+                remove(at: index)
                 return true
             } else {
                 return false
@@ -289,8 +342,7 @@ public extension VJson {
         /// Removes all children.
         
         internal func removeAll() {
-            items.forEach(){ $0.parent = nil }
-            items.removeAll()
+            while count > 0 { remove(at: 0) }
         }
         
         

@@ -497,15 +497,15 @@ public func &= (lhs: VJson?, rhs: VJson?) -> VJson? {
     
     // Assign rhs to lhs and again preserve the parent and name of lhs.
     
-    if llhs.parent != nil {
+    //if llhs.parent != nil {
         // This is a child object, replace it in the parent
-        llhs.replaceSelfInParent(with: rhs)
-        return rhs
-    } else {
+        //llhs.replaceSelfInParent(with: rhs)
+        //return rhs
+    //} else {
         // This is a top level object, change the lhs object into the rhs
         llhs.replaceContent(with: rhs)
         return llhs
-    }
+    //}
 }
 
 
@@ -589,7 +589,6 @@ extension VJson {
     @discardableResult
     public func replaceContent(with other: VJson?) -> Bool {
         guard let other = other else { return false }
-        recordUndoRedoAction()
         VJson.fatalIfTypeChangeNotAllowed(from: self.type, to: other.type)
         self.type = other.type
         self.bool = other.bool
@@ -609,25 +608,24 @@ extension VJson {
     /// - Parameter with other: The VJson object which to replace self with.
     ///
     /// - Returns: True if the operation was sucessful, false otherwise.
-    
+    /*
     @discardableResult
     public func replaceSelfInParent(with other: VJson?) -> Bool {
         guard let other = other else { return false }
         guard let parent = self.parent else { return false }
         guard other.parent == nil else { return false }
-        recordUndoRedoAction()
         VJson.fatalIfTypeChangeNotAllowed(from: self.type, to: other.type)
         var success = false
         for (index, child) in (parent.children?.items ?? []).enumerated() {
             if child === self {
-                other.name = self.name
-                _ = parent.children?.replace(at: index, with: other)
+                // other.name = self.name
+                //_ = parent.children?.replace(at: index, with: other)
                 success = true
                 break
             }
         }
         return success
-    }
+    }*/
 }
 
 

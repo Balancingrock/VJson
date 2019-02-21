@@ -3,7 +3,7 @@
 //  File:       ArrayObject.swift
 //  Project:    VJson
 //
-//  Version:    0.15.0
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Moved insert:at to the file Array, changed insert:at into insertChild:at
 //          Added appendChild:
 //          Renamed remove: to removeChild:
@@ -108,7 +109,6 @@ public extension VJson {
     /// Removes all children from either ARRAY or OBJECT. Is undoable.
     
     public func removeAllChildren() {
-        recordUndoRedoAction()
         children?.removeAll()
     }
     
@@ -125,7 +125,6 @@ public extension VJson {
     public func insertChild(_ child: VJson?, at index: Int) -> Bool {
         guard let child = child else { return false }
         guard isArray || (isObject && child.hasName) else { return false }
-        recordUndoRedoAction()
         return children?.insert(child, at: index) ?? false
     }
     
@@ -142,7 +141,6 @@ public extension VJson {
     public func appendChild(_ child: VJson?) -> Bool {
         guard let child = child else { return false }
         guard isArray || (isObject && child.hasName) else { return false }
-        recordUndoRedoAction()
         children?.append(child)
         return children != nil
     }
@@ -156,7 +154,6 @@ public extension VJson {
     
     public func removeChild(_ child: VJson) -> Bool {
         guard let i = children?.index(of: child) else { return false }
-        recordUndoRedoAction()
         children?.remove(at: i)
         return true
     }
@@ -175,7 +172,6 @@ public extension VJson {
         guard type == .array || type == .object else { return 0 }
         var count = 0
         if let indicies = children?.index(ofChildrenEqualTo: item) {
-            recordUndoRedoAction()
             for index in indicies.reversed() {
                 _ = children?.remove(at: index)
                 count += 1

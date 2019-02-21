@@ -3,7 +3,7 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.15.0
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,15 +50,16 @@
 //
 // History
 //
-// 0.15.0  - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
-//           or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
-//           OBJECTs or ARRAYs.
-// 0.13.0  - Added escape sequence support
-// 0.12.2  - Bugfix, uniqueName no longer appends numbers but updates the number.
-// 0.12.1  - Added public to uniqueName:startsWith
-// 0.12.0  - Added uniqueName:startsWith
-// 0.10.8  - Split off from VJson.swift
-//         - The add operations no longer return a value.
+// 0.15.3 - Reimplemented undo/redo
+// 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
+//          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
+//          OBJECTs or ARRAYs.
+// 0.13.0 - Added escape sequence support
+// 0.12.2 - Bugfix, uniqueName no longer appends numbers but updates the number.
+// 0.12.1 - Added public to uniqueName:startsWith
+// 0.12.0 - Added uniqueName:startsWith
+// 0.10.8 - Split off from VJson.swift
+//        - The add operations no longer return a value.
 // =====================================================================================================================
 
 import Foundation
@@ -148,7 +149,6 @@ public extension VJson {
     @discardableResult
     public func removeItems(forName name: String) -> Int {
         guard type == .object else { return 0 }
-        recordUndoRedoAction()
         return children?.remove(childrenWith: name.stringToJsonString()) ?? 0
     }
     

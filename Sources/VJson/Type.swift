@@ -3,7 +3,7 @@
 //  File:       Type.swift
 //  Project:    VJson
 //
-//  Version:    0.11.2
+//  Version:    0.15.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.3 - Reimplemented undo/redo
 // 0.11.2 - Added changeType:to
 // 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
@@ -164,19 +165,12 @@ public extension VJson {
         
         if (type == targetType) {
             
-            if inequalityTest() {
-            
-                recordUndoRedoAction()
-                
-                assignment()
-            }
+            if inequalityTest() { assignment() }
             
         } else {
             
             if VJson.typeChangeIsAllowed(from: self.type, to: targetType) {
                 
-                recordUndoRedoAction()
-
                 self.createdBySubscript = false
                 
                 switch self.type {

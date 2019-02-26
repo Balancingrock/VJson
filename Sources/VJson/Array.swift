@@ -3,7 +3,7 @@
 //  File:       Array.swift
 //  Project:    VJson
 //
-//  Version:    0.15.3
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -46,6 +46,7 @@
 //
 // History
 //
+// 0.15.4 - Improved code clarity of undo/redo
 // 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Moved the insert:at operation from ArrayObject to this file and made it array specific.
 //          Removed remove:
@@ -222,7 +223,7 @@ public extension VJson {
     
     public func append(_ item: VJson?) {
         guard let item = item else { return }
-        if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
+        if type != .array { type = .array }
         guard type == .array else { return }
         children?.append(item)
     }
@@ -235,7 +236,7 @@ public extension VJson {
     
     public func append(_ item: VJsonSerializable?) {
         guard let item = item else { return }
-        if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
+        if type != .array { type = .array }
         guard type == .array else { return }
         children?.append(item.json)
     }
@@ -249,7 +250,7 @@ public extension VJson {
     
     public func append(_ items: [VJson?]?, includeNil: Bool = false) {
         guard let items = items else { return }
-        if VJson.typeChangeIsAllowed(from: type, to: .array) { undoableUpdate(to: .array) }
+        if type != .array { type = .array }
         guard type == .array else { return }
         items.forEach() {
             if $0 == nil {

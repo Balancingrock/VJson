@@ -3,7 +3,7 @@
 //  File:       VJson-macos.swift
 //  Project:    VJson
 //
-//  Version:    0.15.3
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.4 - Improved code clarity of undo/redo, fixed undo/redo problem for type changes
 // 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
 //          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
@@ -101,11 +102,56 @@ public final class VJson: NSObject {
     /// The JSON type of this object.
     
     public internal(set) var type: JType {
+        willSet {
+            if !VJson.typeChangeIsAllowed(from: type, to: newValue) {
+                assert(false, "Type conversion from \(type) to \(newValue) is not allowed")
+                fatalError("Type conversion from \(type) to \(newValue) is not allowed")
+            }
+        }
         didSet {
+            self.createdBySubscript = false
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.type = oldValue
+                }
+            }
+            switch oldValue {
+            case .null:
+                switch type {
+                case .null: break
+                case .bool, .number, .string: break
+                case .array, .object: children = Children(parent: self)
+                }
+            case .bool:
+                switch type {
+                case .null, .number, .string: bool = nil
+                case .bool: break
+                case .array, .object: bool = nil; children = Children(parent: self)
+                }
+            case .number:
+                switch type {
+                case .null, .bool, .string: number = nil
+                case .number: break
+                case .array, .object: number = nil; children = Children(parent: self)
+                }
+            case .string:
+                switch type {
+                case .null, .bool, .number: string = nil
+                case .string: break
+                case .array, .object: string = nil; children = Children(parent: self)
+                }
+            case .array:
+                switch type {
+                case .null, .bool, .number, .string: children = nil
+                case .array: break
+                case .object: for c in self { c.name = nil }
+                }
+            case .object:
+                switch type {
+                case .null, .bool, .number, .string: children = nil
+                case .array: for (i, c) in self.enumerated() { if c.name == nil { c.name = "Child \(i)" } }
+                case .object: break
                 }
             }
         }
@@ -179,7 +225,16 @@ public final class VJson: NSObject {
     
     /// The container for all subitems if self is .array or .object.
     
-    public internal(set) var children: Children?
+    public internal(set) var children: Children? {
+        didSet {
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.children = oldValue
+                }
+            }
+        }
+    }
     
     
     /// The parent of a child

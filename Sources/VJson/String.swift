@@ -3,7 +3,7 @@
 //  File:       String.swift
 //  Project:    VJson
 //
-//  Version:    0.13.0
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.4 - Improved code clarity of undo/redo
 // 0.13.0  - Improved support for unicode and escape sequences.
 // 0.12.7  - Fixed bug on asString assignment for Bool.
 // 0.10.8  - Split off from VJson.swift
@@ -73,15 +74,12 @@ public extension VJson {
             return self.string?.jsonStringToString()
         }
         set {
-            if newValue == nil {
-                undoableUpdate(to: .null)
+            if let newValue = newValue {
+                if type != .string { type = .string }
+                let jstr = newValue.stringToJsonString()
+                string = jstr
             } else {
-                let jstr = newValue!.stringToJsonString()
-                undoableUpdate(
-                    to: .string,
-                    inequalityTest: string != jstr,
-                    assignment: string = jstr
-                )
+                type = .null
             }
         }
     }
@@ -98,15 +96,12 @@ public extension VJson {
             return self.string?.jsonStringToString(lut: printableJsonStringSequenceLUT)
         }
         set {
-            if newValue == nil {
-                undoableUpdate(to: .null)
+            if let newValue = newValue {
+                if type != .string { type = .string }
+                let jstr = newValue.stringToJsonString(lut: printableJsonStringSequenceLUT)
+                string = jstr
             } else {
-                let jstr = newValue!.stringToJsonString(lut: printableJsonStringSequenceLUT)
-                undoableUpdate(
-                    to: .string,
-                    inequalityTest: string != jstr,
-                    assignment: string = jstr
-                )
+                type = .null
             }
         }
     }
@@ -117,14 +112,11 @@ public extension VJson {
     public var stringValueRaw: String? {
         get { return string }
         set {
-            if newValue == nil {
-                undoableUpdate(to: .null)
+            if let newValue = newValue {
+                if type != .string { type = .string }
+                string = newValue
             } else {
-                undoableUpdate(
-                    to: .string,
-                    inequalityTest: string != newValue!,
-                    assignment: string = newValue!
-                )
+                type = .null
             }
         }
     }

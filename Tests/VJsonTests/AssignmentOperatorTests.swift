@@ -84,7 +84,7 @@ class AssignmentOperatorTests: XCTestCase {
     
     func testAssignJsonInt() {
         
-        // Execute the assignment to on a VJson object that is nil
+        // Execute the assignment to a VJson object that is nil
         var json: VJson?
         json &= 1
         XCTAssertNil(json)

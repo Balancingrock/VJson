@@ -3,7 +3,7 @@
 //  File:       Merge.swift
 //  Project:    VJson
 //
-//  Version:    0.15.0
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,8 @@
 //
 // History
 //
+// 0.15.4 - Improved code clarity of undo/redo
+//        - Fixed problem where no duplicates were made in a merging operation
 // 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
 //          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
 //          OBJECTs or ARRAYs.
@@ -79,9 +81,9 @@ public extension VJson {
     public func merge(with other: VJson) {
         
         
-        // Copy the name (use the nameValue to ensure undo registration
+        // Copy the name
         
-        self.nameValue = other.name
+        self.name = other.name
         
         
         // The other type drives the merge, for the simple types (non-array non-object) the other is simply copied.
@@ -89,19 +91,22 @@ public extension VJson {
         switch other.type {
             
         case .null:
-            undoableUpdate(to: .null)
+            type = .null
             return
             
         case .bool:
-            undoableUpdate(to: .bool, assignment: bool = other.bool)
+            type = .bool
+            bool = other.bool
             return
             
         case .string:
-            undoableUpdate(to: .string, assignment: string = other.string)
+            type = .string
+            string = other.string
             return
             
         case .number:
-            undoableUpdate(to: .number, assignment: number = other.numberValue)
+            type = .number
+            number = other.numberValue
             return
             
         case .object:
@@ -111,9 +116,10 @@ public extension VJson {
             switch self.type {
                 
             case .null, .bool, .number, .string, .array:
-                undoableUpdate(to: .object)
-                self.children = Children(parent: self)
-                self.children?.append(other.children?.items ?? [])
+                type = .object
+                for c in other {
+                    self.children!.append(c.duplicate)
+                }
                 return
                 
             case .object:
@@ -143,7 +149,7 @@ public extension VJson {
                 
                 // Merge self children with same name as other children
                 
-                for oc in other.children?.items ?? [] {
+                for oc in other {
                     var sc: VJson?
                     for index in 0 ..< selfChildren.count {
                         if !selfChildren[index].checked && (selfChildren[index].value.name == oc.name) {
@@ -153,9 +159,9 @@ public extension VJson {
                         }
                     }
                     if sc == nil {
-                        newChildren.append(oc)
+                        newChildren.append(oc.duplicate)
                     } else {
-                        sc?.merge(with: oc)
+                        sc?.merge(with: oc.duplicate)
                     }
                 }
                 
@@ -170,8 +176,7 @@ public extension VJson {
             
             switch self.type {
             case .null, .bool, .number, .string, .object:
-                undoableUpdate(to: .array)
-                self.children = Children(parent: self)
+                type = .array
                 self.children?.append(other.arrayValue)
                 return
                 
@@ -179,9 +184,9 @@ public extension VJson {
                 
                 for index in 0 ..< (other.children?.count ?? 0) {
                     if index < (self.children?.count ?? 0) {
-                        self.children?.items[index].merge(with: other.children!.items[index])  // Force unwrap tested before use
+                        self.children?.items[index].merge(with: other.children!.items[index].duplicate)  // Force unwrap tested before use
                     } else {
-                        _ = self.children?.append(other.children!.items[index])  // Force unwrap tested before use
+                        _ = self.children?.append(other.children!.items[index].duplicate)  // Force unwrap tested before use
                     }
                 }
             }

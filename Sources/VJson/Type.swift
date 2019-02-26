@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.4 - Removed operations 'changeType and undoableUpdate
 // 0.15.3 - Reimplemented undo/redo
 // 0.11.2 - Added changeType:to
 // 0.10.8 - Split off from VJson.swift
@@ -149,77 +150,5 @@ public extension VJson {
         if new == .null { return true }
         if old == new { return true }
         return !VJson.fatalErrorOnTypeConversion
-    }
-    
-    
-    /// Executes the assignment closure if the inequality test returns true (default). Changes the JType of self when necessary and allowed. Registers an undo operation when necessary.
-    ///
-    /// - Parameters:
-    ///   - to: The type to convert to
-    ///   - inequalityTest: The undo registration will only be performed if this test results in 'true'
-    ///   - assignment: Can be used to update the value itself to a new value.
-    
-    internal func undoableUpdate(to: JType? = nil, inequalityTest: @autoclosure () -> Bool = { return true }(), assignment: @autoclosure () -> Void = {}()) {
-                
-        let targetType = to ?? self.type
-        
-        if (type == targetType) {
-            
-            if inequalityTest() { assignment() }
-            
-        } else {
-            
-            if VJson.typeChangeIsAllowed(from: self.type, to: targetType) {
-                
-                self.createdBySubscript = false
-                
-                switch self.type {
-                case .null: break
-                case .bool: self.bool = nil
-                case .number: self.number = nil
-                case .string: self.string = nil
-                case .array, .object:
-                    
-                    switch targetType {
-                    case .null, .bool, .number, .string: self.children = nil
-                    case .array: break
-                    case .object:
-                        for (i, c) in self.enumerated() {
-                            if !c.hasName {
-                                c.nameValue = "Child \(i)"
-                            }
-                        }
-                    }
-                }
-                
-                self.type = targetType
-                if (self.type == .array) || (self.type == .object) {
-                    if children == nil {
-                        children = Children(parent: self)
-                    }
-                }
-                assignment()
-                
-            } else {
-                assert(false, "Type conversion from \(self.type) to \(targetType) is not allowed")
-                fatalError("Type conversion from \(self.type) to \(targetType) is not allowed")
-            }
-        }
-    }
-    
-    
-    /// Changes the JSON type of self if allowed.
-    ///
-    /// - Parameter to: The required JSON type.
-    ///
-    /// - Returns: False if the change is not allowed. True if changed (or stayed the same).
-    
-    public func changeType(to newType: JType) -> Bool {
-        if VJson.typeChangeIsAllowed(from: type, to: newType) {
-            undoableUpdate(to: newType)
-            return true
-        } else {
-            return false
-        }
     }
 }

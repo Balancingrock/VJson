@@ -3,7 +3,7 @@
 //  File:       Number.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,7 +50,8 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
+// 0.15.4 - Improved code clarity of undo/redo
+// 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
 
 import Foundation
@@ -123,14 +124,11 @@ public extension VJson {
     public var numberValue: NSNumber? {
         get { return number?.copy() as? NSNumber }
         set {
-            if newValue == nil {
-                undoableUpdate(to: .null)
+            if let newValue = newValue {
+                if type != .number { type = .number }
+                number = newValue.copy() as? NSNumber
             } else {
-                undoableUpdate(
-                    to: .number,
-                    inequalityTest: number?.compare(newValue!) != .orderedSame,
-                    assignment: number = newValue!.copy() as? NSNumber
-                )
+                type = .null
             }
         }
     }

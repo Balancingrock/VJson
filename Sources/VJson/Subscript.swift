@@ -3,7 +3,7 @@
 //  File:       Subscript.swift
 //  Project:    VJson
 //
-//  Version:    0.15.0
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.4 - Improved code clarity of undo/redo
 // 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
 //          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
 //          OBJECTs or ARRAYs.
@@ -75,7 +76,7 @@ public extension VJson {
             
             // If this is an ARRAY object, then make sure there are enough elements and create the requested element
             
-            if type != .array { undoableUpdate(to: .array) }
+            if type != .array { type = .array }
             
             
             // Ensure that enough elements are present in the array
@@ -97,8 +98,8 @@ public extension VJson {
             
             // If this is an ARRAY object, then make sure there are enough elements and return the requested element
             
-            if type != .array { undoableUpdate(to: .array) }
-            
+            if type != .array { type = .array }
+
             
             // Ensure that enough elements are present in the array
             
@@ -128,7 +129,7 @@ public extension VJson {
             
             // If this is not an object type, change it into an object
             
-            if type != .object { undoableUpdate(to: .object) }
+            if type != .object { type = .object }
             
             add(newValue, for: key)
         }
@@ -138,7 +139,7 @@ public extension VJson {
             
             // If this is not an object type, change it into an object
             
-            if type != .object { undoableUpdate(to: .object) }
+            if type != .object { type = .object }
             
             
             // If the requested object exist, return it

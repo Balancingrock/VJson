@@ -3,7 +3,7 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.15.3
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.4 - Improved code clarity of undo/redo
 // 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
 //          or 'children'. The name 'child' or 'children' is now used exclusively for operations transcending
@@ -120,7 +121,7 @@ public extension VJson {
     public func add(_ item: VJson?, for name: String? = nil, replace: Bool = true) {
         guard let item = item else { return }
         if name == nil && !item.hasName { return }
-        undoableUpdate(to: .object)
+        if type != .object { type = .object }
         if name != nil { item.name = name?.stringToJsonString() }
         if replace { children?.remove(childrenWith: item.name) }
         children?.append(item)

@@ -3,7 +3,7 @@
 //  File:       Null.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,8 +50,9 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
-//         - Removed 'asNull' definition.
+// 0.15.4 - Improved code clarity of undo/redo
+// 0.10.8 - Split off from VJson.swift
+//        - Removed 'asNull' definition.
 // =====================================================================================================================
 
 import Foundation
@@ -80,6 +81,6 @@ public extension VJson {
     
     public var nullValue: Bool? {
         get { return type == .null ? true : nil }
-        set { undoableUpdate(to: .null) }
+        set { type = .null }
     }
 }

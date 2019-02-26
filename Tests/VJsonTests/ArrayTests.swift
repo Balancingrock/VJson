@@ -461,15 +461,7 @@ class ArrayTests: XCTestCase {
         XCTAssertEqual(json.arrayValue[1].intValue!, 2)
         XCTAssertEqual(json.arrayValue[2].intValue!, 3)
         XCTAssertEqual(json.arrayValue[3].intValue!, 4)
-        
-        // Test append with non-nil to an object
-        // Expected: No change
-        json = VJson.object()
-        XCTAssertNotNil(json.add(VJson(1), for: "one"))
-        json.append(VJson(2))
-        XCTAssertEqual(json.nofChildren, 1)
-        XCTAssertEqual(json.items(with: "one")[0].intValue, 1)
-        
+                
         // Test: Append to a NULL
         // Expected: NULL is transformed into an ARRAY automatically
         json = VJson.null()

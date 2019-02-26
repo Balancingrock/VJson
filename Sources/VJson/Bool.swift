@@ -3,7 +3,7 @@
 //  File:       Bool.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.15.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.4 - Improved code clarity of undo/redo
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
 
@@ -66,10 +67,11 @@ public extension VJson {
     public var boolValue: Bool? {
         get { return bool }
         set {
-            if newValue == nil {
-                undoableUpdate(to: .null)
+            if let newValue = newValue {
+                if type != .bool { type = .bool }
+                bool = newValue
             } else {
-                undoableUpdate(to: .bool, inequalityTest: bool != newValue!, assignment: bool = newValue!)
+                type = .null
             }
         }
     }
@@ -79,7 +81,7 @@ public extension VJson {
     ///
     /// - Note: If the Apple Parser was used, all JSON BOOLs will have been converted into a NUMBER. In that case use 'asBool' instead.
     
-    public var isBool: Bool { return self.type == JType.bool }
+    public var isBool: Bool { return type == .bool }
 
     
     /// The value of this object interpreted as a bool.

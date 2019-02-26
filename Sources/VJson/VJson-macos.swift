@@ -101,7 +101,7 @@ public final class VJson: NSObject {
     
     /// The JSON type of this object.
     
-    public internal(set) var type: JType {
+    public var type: JType {
         willSet {
             if !VJson.typeChangeIsAllowed(from: type, to: newValue) {
                 assert(false, "Type conversion from \(type) to \(newValue) is not allowed")

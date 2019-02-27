@@ -3,7 +3,7 @@
 //  File:       VJson-macos.swift
 //  Project:    VJson
 //
-//  Version:    0.15.4
+//  Version:    0.15.5
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.5 - Fixed problem of undo/redo with child items for ARRAY and OBJECT items
 // 0.15.4 - Improved code clarity of undo/redo, fixed undo/redo problem for type changes
 // 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
@@ -110,12 +111,6 @@ public final class VJson: NSObject {
         }
         didSet {
             self.createdBySubscript = false
-            if #available(OSX 10.11, *) {
-                undoManager?.registerUndo(withTarget: self) {
-                    [oldValue] (json) -> Void in
-                    json.type = oldValue
-                }
-            }
             switch oldValue {
             case .null:
                 switch type {
@@ -152,6 +147,12 @@ public final class VJson: NSObject {
                 case .null, .bool, .number, .string: children = nil
                 case .array: for (i, c) in self.enumerated() { if c.name == nil { c.name = "Child \(i)" } }
                 case .object: break
+                }
+            }
+            if #available(OSX 10.11, *) {
+                undoManager?.registerUndo(withTarget: self) {
+                    [oldValue] (json) -> Void in
+                    json.type = oldValue
                 }
             }
         }

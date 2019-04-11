@@ -3,7 +3,7 @@
 //  File:       Hierarchy.swift
 //  Project:    VJson
 //
-//  Version:    0.15.3
+//  Version:    0.15.6
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.6  - Now returns [self] for an empty path in "items:at path"
 // 0.15.3  - Moved the 'location' operation from UndoRedo.swift to here
 //         - Added 'from' parameter to the 'location' function
 //         - Renamed the return location 'root' to 'source'
@@ -269,9 +270,9 @@ public extension VJson {
         }
 
         
-        // If the path is empty, return an empty array
+        // If the path is empty, return self
         
-        if path.count == 0 { return [] }
+        if path.count == 0 { return [self] }
         
         
         // Create a new path that may be updated

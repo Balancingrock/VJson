@@ -3,7 +3,7 @@
 //  File:       Code.swift
 //  Project:    VJson
 //
-//  Version:    0.14.0
+//  Version:    0.15.6
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -50,6 +50,7 @@
 //
 // History
 //
+// 0.15.6  - Improved handling of top level named tems, now supports fragments at all levels.
 // 0.14.0  - Added name to top level item (if the top level item has a name)
 // 0.10.8  - Split off from VJson.swift
 // =====================================================================================================================
@@ -60,9 +61,21 @@ import Foundation
 public extension VJson {
     
     
-    /// Returns the JSON code that represents the hierarchy of this item.
+    /// Returns the JSON code that represents the hierarchy of this item. Will return a fragment if self has a name.
     
     public var code: String {
+        
+        if let name = name {
+            return "\"\(name)\":\(_code)"
+        } else {
+            return _code
+        }
+    }
+    
+    
+    /// Returns the JSON code that represents the hierarchy of this item without a leading name.
+
+    fileprivate var _code: String {
         
         // Get rid of subscript generated objects that no longer serve a purpose
         
@@ -111,9 +124,9 @@ public extension VJson {
             for i in 0 ..< (children?.count ?? 0) {
                 if let child = children?.items[i], let name = child.name {
                     if i != (children?.count ?? 0) - 1 {
-                        str += "\"\(name)\":\(child),"
+                        str += "\"\(name)\":\(child._code),"
                     } else {
-                        str += "\"\(name)\":\(child)"
+                        str += "\"\(name)\":\(child._code)"
                     }
                 } else {
                     str += "*** ERROR ***"
@@ -130,9 +143,9 @@ public extension VJson {
             for i in 0 ..< (children?.count ?? 0) {
                 if let child = children?.items[i] {
                     if i != children!.count - 1 {
-                        str += "\(child),"
+                        str += "\(child._code),"
                     } else {
-                        str += "\(child)"
+                        str += "\(child._code)"
                     }
                 } else {
                     str += "*** ERROR ***"
@@ -140,13 +153,6 @@ public extension VJson {
             }
             
             str += "]"
-        }
-        
-        
-        // Add the name if the top level item has a name
-        
-        if parent == nil, let name = name {
-            str = "\"\(name)\":\(str)"
         }
         
         return str

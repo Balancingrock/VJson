@@ -38,7 +38,7 @@ To use VJson with a SPM project, make it part of the dependencies in the file Pa
 ~~~~
    dependencies: [
       ...
-      .package(url: "https://github.com/Balancingrock/VJson", from: "0.15.5")
+      .package(url: "https://github.com/Balancingrock/VJson", from: "0.15.6")
       ...
    ]
 ~~~~
@@ -308,7 +308,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.15.5 (Current)
+#### 0.15.6 (Current)
+
+- item:at path now returns [self] for an empty path.
+- code now returns correct fragment for named items.
+
+#### 0.15.5
 
 - Added undo/redo tests
 - Fixed problem for undo/redo on ARRAY and OBJECT types with children

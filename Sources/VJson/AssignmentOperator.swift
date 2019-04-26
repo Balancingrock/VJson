@@ -3,14 +3,14 @@
 //  File:       AssignmentOperator.swift
 //  Project:    VJson
 //
-//  Version:    0.10.8
+//  Version:    0.16.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,9 +21,8 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
-//  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
-//  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
+//  I strongly believe that voluntarism is the way for societies to function optimally. So you can pay whatever you
+//  think our code is worth to you.
 //
 //   - You can send payment via paypal to: sales@balancingrock.nl
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -35,11 +34,6 @@
 //
 //  (It is always a good idea to check the website http://www.balancingrock.nl before payment)
 //
-//  For private and non-profit use the suggested price is the price of 1 good cup of coffee, say $4.
-//  For commercial use the suggested price is the price of 1 good meal, say $20.
-//
-//  You are however encouraged to pay more ;-)
-//
 //  Prices/Quotes for support, modifications or enhancements can be obtained from: rien@balancingrock.nl
 //
 // =====================================================================================================================
@@ -50,7 +44,8 @@
 //
 // History
 //
-// 0.10.8  - Split off from VJson.swift
+// 0.16.0 - Cleanup and header update
+// 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
 
 import Foundation
@@ -599,33 +594,6 @@ extension VJson {
         for child in other.children?.items ?? [] { _ = self.children?.append(child) }
         return true
     }
-    
-    
-    /// Replaces the content of self with other in the parent of self. The name of self remains unchanged. The parent of other must be nil.
-    ///
-    /// - Note: A fatalError is raised if a type change is attempeted but not supported.
-    ///
-    /// - Parameter with other: The VJson object which to replace self with.
-    ///
-    /// - Returns: True if the operation was sucessful, false otherwise.
-    /*
-    @discardableResult
-    public func replaceSelfInParent(with other: VJson?) -> Bool {
-        guard let other = other else { return false }
-        guard let parent = self.parent else { return false }
-        guard other.parent == nil else { return false }
-        VJson.fatalIfTypeChangeNotAllowed(from: self.type, to: other.type)
-        var success = false
-        for (index, child) in (parent.children?.items ?? []).enumerated() {
-            if child === self {
-                // other.name = self.name
-                //_ = parent.children?.replace(at: index, with: other)
-                success = true
-                break
-            }
-        }
-        return success
-    }*/
 }
 
 

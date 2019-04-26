@@ -3,14 +3,14 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.15.2
+//  Version:    0.16.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,9 +21,8 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
-//  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
-//  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
+//  I strongly believe that voluntarism is the way for societies to function optimally. So you can pay whatever you
+//  think our code is worth to you.
 //
 //   - You can send payment via paypal to: sales@balancingrock.nl
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -35,11 +34,6 @@
 //
 //  (It is always a good idea to check the website http://www.balancingrock.nl before payment)
 //
-//  For private and non-profit use the suggested price is the price of 1 good cup of coffee, say $4.
-//  For commercial use the suggested price is the price of 1 good meal, say $20.
-//
-//  You are however encouraged to pay more ;-)
-//
 //  Prices/Quotes for support, modifications or enhancements can be obtained from: rien@balancingrock.nl
 //
 // =====================================================================================================================
@@ -50,17 +44,18 @@
 //
 // History
 //
-// 0.15.2  - Made the error closures optional with a default of nil
-// 0.15.1  - Improved removal of bytes that have been processed.
-// 0.14.0  - Fixed error when reading top level string value
-//         - Added reading of named top level values
-//         - Added return of nil when parsing empty data or only whitespace data
-//         - Updated several documentation texts
-// 0.13.4  - Fixed error message on 'null' parsing
-// 0.13.2  - Fixed another bug introduced in 0.13.0 due to support for escape sequences
-// 0.13.1  - Fixed a bug introduced in 0.13.0 due to support for escape sequences
-// 0.12.8  - Added location to the exception info
-// 0.10.8  - Split off from VJson.swift
+// 0.16.0 - Removed warnings for Swift 5
+// 0.15.2 - Made the error closures optional with a default of nil
+// 0.15.1 - Improved removal of bytes that have been processed.
+// 0.14.0 - Fixed error when reading top level string value
+//        - Added reading of named top level values
+//        - Added return of nil when parsing empty data or only whitespace data
+//        - Updated several documentation texts
+// 0.13.4 - Fixed error message on 'null' parsing
+// 0.13.2 - Fixed another bug introduced in 0.13.0 due to support for escape sequences
+// 0.13.1 - Fixed a bug introduced in 0.13.0 due to support for escape sequences
+// 0.12.8 - Added location to the exception info
+// 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
 
 import Foundation
@@ -76,12 +71,12 @@ public extension VJson {
     ///
     /// Recommended use: let json = VJson.parse(data(from: myJsonCode)){ ... error handler ... }
     
-    public typealias parseErrorSignature = (_ location: Int, _ code: Int, _ incomplete: Bool, _ message: String) -> Void
+    typealias parseErrorSignature = (_ location: Int, _ code: Int, _ incomplete: Bool, _ message: String) -> Void
     
     
     /// This error type gets thrown if errors are found during parsing.
     
-    public enum Exception: Error, CustomStringConvertible {
+    enum Exception: Error, CustomStringConvertible {
         
         
         /// The details of the error
@@ -106,7 +101,7 @@ public extension VJson {
     
     /// Error info from the parser for the parse operations that do not throw.
     
-    public struct ParseError {
+    struct ParseError {
         
         
         /// An integer number that references the index of the character that caused the error
@@ -168,7 +163,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy with the contents of the file or nil if the file is empty, consists only of whitespaces, or an error occured.
     
-    public static func parse(file: URL, onError: parseErrorSignature?) -> VJson? {
+    static func parse(file: URL, onError: parseErrorSignature?) -> VJson? {
         do {
             return try parse(file: file)
             
@@ -190,7 +185,7 @@ public extension VJson {
     ///
     /// - Throws: Either an VJson.Error.reason or an NSError if the VJson hierarchy could not be created or the file not be read.
     
-    public static func parse(file: URL) throws -> VJson? {
+    static func parse(file: URL) throws -> VJson? {
         var data = try Data(contentsOf: URL(fileURLWithPath: file.path), options: Data.ReadingOptions.uncached)
         return try vJsonParser(data: &data)
     }
@@ -204,7 +199,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy with the contents of the file or nil if the file is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(file: URL, errorInfo: inout ParseError?) -> VJson? {
+    static func parse(file: URL, errorInfo: inout ParseError?) -> VJson? {
         
         do {
             return try parse(file: file)
@@ -233,7 +228,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the buffer or nil if the buffer is empty or consists only of whitespaces.
 
-    public static func parse(buffer: UnsafeBufferPointer<UInt8>, onError: parseErrorSignature?) -> VJson? {
+    static func parse(buffer: UnsafeBufferPointer<UInt8>, onError: parseErrorSignature?) -> VJson? {
         
         do {
             return try VJson.vJsonParser(buffer: buffer)
@@ -257,7 +252,7 @@ public extension VJson {
     ///
     /// - Throws: A VJson.Error.reason if the parsing failed.
     
-    public static func parse(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson? {
+    static func parse(buffer: UnsafeBufferPointer<UInt8>) throws -> VJson? {
         return try VJson.vJsonParser(buffer: buffer)
     }
     
@@ -270,7 +265,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the buffer or nil if the buffer is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(buffer: UnsafeBufferPointer<UInt8>, errorInfo: inout ParseError?) -> VJson? {
+    static func parse(buffer: UnsafeBufferPointer<UInt8>, errorInfo: inout ParseError?) -> VJson? {
         
         do {
             return try parse(buffer: buffer)
@@ -299,7 +294,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the string or nil if the string is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(string: String, onError: parseErrorSignature?) -> VJson? {
+    static func parse(string: String, onError: parseErrorSignature?) -> VJson? {
         do {
             return try VJson.parse(string: string)
             
@@ -322,7 +317,7 @@ public extension VJson {
     ///
     /// - Throws: A VJson.Error.reason if the parsing failed.
     
-    public static func parse(string: String) throws -> VJson? {
+    static func parse(string: String) throws -> VJson? {
         guard var data = string.data(using: String.Encoding.utf8) else {
             throw VJson.Exception.reason(location: 0, code: 59, incomplete: false, message: "Could not convert string to UTF8")
         }
@@ -338,7 +333,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the string or nil if the string is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(string: String, errorInfo: inout ParseError?) -> VJson? {
+    static func parse(string: String, errorInfo: inout ParseError?) -> VJson? {
         
         do {
             return try parse(string: string)
@@ -367,7 +362,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the data or nil if the data is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(data: inout Data, onError: parseErrorSignature?) -> VJson? {
+    static func parse(data: inout Data, onError: parseErrorSignature?) -> VJson? {
         do {
             return try VJson.vJsonParser(data: &data)
             
@@ -390,7 +385,7 @@ public extension VJson {
     ///
     /// - Throws: A VJson.Error.reason if the parsing failed.
     
-    public static func parse(data: inout Data) throws -> VJson? {
+    static func parse(data: inout Data) throws -> VJson? {
         return try VJson.vJsonParser(data: &data)
     }
     
@@ -403,7 +398,7 @@ public extension VJson {
     ///
     /// - Returns: The VJson hierarchy from the contents of the data or nil if the data is empty, consists only of whitespaces, or an error occured.
 
-    public static func parse(data: inout Data, errorInfo: inout ParseError?) -> VJson? {
+    static func parse(data: inout Data, errorInfo: inout ParseError?) -> VJson? {
         do {
             return try VJson.vJsonParser(data: &data)
             
@@ -437,7 +432,7 @@ public extension VJson {
     ///
     /// - Throws: The error thrown by NSJSONSerialization. Error code 100 should be impossible.
     
-    public static func parseUsingAppleParser(_ data: Data) throws -> VJson {
+    static func parseUsingAppleParser(_ data: Data) throws -> VJson {
         
         let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
         
@@ -550,12 +545,16 @@ internal extension VJson {
         
         // Top level, a value is expected
         
-        let val = try data.withUnsafeBytes() {
+        let val = try data.withUnsafeBytes({ (bp: UnsafeRawBufferPointer) -> VJson? in
+            try readValue(bp.baseAddress!.bindMemory(to: UInt8.self, capacity: bp.count), numberOfBytes: bp.count, offset: &offset)
+        })
+        
+        /*let val = try data.withUnsafeBytes() {
             
-            (ptr: UnsafePointer<UInt8>) -> VJson? in
+            (bufPtr: UnsafeRawBufferPointer) -> VJson? in
             
-            try readValue(ptr, numberOfBytes: data.count, offset: &offset)
-        }
+            try readValue(bufPtr.baseAddress, numberOfBytes: bufPtr.count, offset: &offset)
+        }*/
         
         
         // Remove consumed bytes

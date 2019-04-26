@@ -308,7 +308,11 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.15.6 (Current)
+#### 0.16.0 (Current)
+
+- Update for Swift 5
+
+#### 0.15.6
 
 - item:at path now returns [self] for an empty path.
 - code now returns correct fragment for named items.

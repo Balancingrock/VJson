@@ -3,14 +3,14 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    0.15.4
+//  Version:    0.16.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,9 +21,8 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that voluntarism is the way for societies to function optimally. I thus reject
-//  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
-//  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
+//  I strongly believe that voluntarism is the way for societies to function optimally. So you can pay whatever you
+//  think our code is worth to you.
 //
 //   - You can send payment via paypal to: sales@balancingrock.nl
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -35,11 +34,6 @@
 //
 //  (It is always a good idea to check the website http://www.balancingrock.nl before payment)
 //
-//  For private and non-profit use the suggested price is the price of 1 good cup of coffee, say $4.
-//  For commercial use the suggested price is the price of 1 good meal, say $20.
-//
-//  You are however encouraged to pay more ;-)
-//
 //  Prices/Quotes for support, modifications or enhancements can be obtained from: rien@balancingrock.nl
 //
 // =====================================================================================================================
@@ -50,6 +44,7 @@
 //
 // History
 //
+// 0.16.0 - Removed warnings for Swift 5
 // 0.15.4 - Improved code clarity of undo/redo
 // 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Harmonized names, now uses 'item' or 'items' for items contained in OBJECTs instead of 'child'
@@ -75,14 +70,14 @@ public extension VJson {
     ///
     /// - Returns: The new VJson item containing a JSON OBJECT.
     
-    public static func object(_ name: String? = nil) -> VJson {
+    static func object(_ name: String? = nil) -> VJson {
         return VJson(type: .object, name: name)
     }
     
     
     /// True if this object contains a JSON OBJECT object.
     
-    public var isObject: Bool { return self.type == JType.object }
+    var isObject: Bool { return self.type == JType.object }
 
     
     /// Returns the item with the requested name, if any.
@@ -92,7 +87,7 @@ public extension VJson {
     ///
     /// - Returns: The requested item if it is present, nil otherwise.
     
-    public func item(with name: String) -> VJson? {
+    func item(with name: String) -> VJson? {
         guard type == .object else { return nil }
         return self|name
     }
@@ -104,7 +99,7 @@ public extension VJson {
     ///
     /// - Returns: An array with the found items, may be empty.
     
-    public func items(with name: String) -> [VJson] {
+    func items(with name: String) -> [VJson] {
         guard type == .object else { return [] }
         let jname = name.stringToJsonString()
         return self.children?.items.filter(){ $0.name == jname } ?? []
@@ -118,7 +113,7 @@ public extension VJson {
     ///   - name: If nil, the item must already have a name. If non-nil, then this name will be used and the name of the item (if present) will be overwritten.
     ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the item will be added and no check on duplicate names will be performed.
     
-    public func add(_ item: VJson?, for name: String? = nil, replace: Bool = true) {
+    func add(_ item: VJson?, for name: String? = nil, replace: Bool = true) {
         guard let item = item else { return }
         if name == nil && !item.hasName { return }
         if type != .object { type = .object }
@@ -135,7 +130,7 @@ public extension VJson {
     ///   - name: If nil, the item must already have a name. If non-nil, then this name will be used and the name of the item (if present) will be overwritten.
     ///   - replace: If 'true' (default) it will replace all existing items with the same name. If 'false', then the item will be added and no check on duplicate names will be performed.
     
-    public func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) {
+    func add(_ item: VJsonSerializable?, for name: String? = nil, replace: Bool = true) {
         return add(item?.json, for: name, replace: replace)
     }
     
@@ -148,7 +143,7 @@ public extension VJson {
     /// - Returns: The number of items removed.
     
     @discardableResult
-    public func removeItems(forName name: String) -> Int {
+    func removeItems(forName name: String) -> Int {
         guard type == .object else { return 0 }
         return children?.remove(childrenWith: name.stringToJsonString()) ?? 0
     }
@@ -162,7 +157,7 @@ public extension VJson {
     ///
     /// - Returns: A unique name or nil when self is not an OBJECT.
     
-    public func uniqueName(startsWith str: String, joiner: String = "-") -> String? {
+    func uniqueName(startsWith str: String, joiner: String = "-") -> String? {
         guard isObject else { return nil }
         var uniqueName = str
         var count = 1
@@ -180,7 +175,7 @@ public extension VJson {
     ///   - items: A dictionary with the name/value pairs to be included as children.
     ///   - name: The name for the contained item (optional).
     
-    public convenience init(items: [String:VJson], name: String? = nil) {
+    convenience init(items: [String:VJson], name: String? = nil) {
         self.init(type: .object, name: name)
         var newItems: Array<VJson> = []
         let parentIsNilItems = items.filter(){ return $0.value.parent == nil }
@@ -198,7 +193,7 @@ public extension VJson {
     ///   - items: A dictionary with the name/value pairs to be included as children.
     ///   - name: The name for the contained item (optional).
     
-    public convenience init(_ items: [String:VJsonSerializable], name: String? = nil) {
+    convenience init(_ items: [String:VJsonSerializable], name: String? = nil) {
         self.init(type: VJson.JType.object, name: name)
         var newItems: [VJson] = []
         for (name, item) in items {

@@ -3,14 +3,14 @@
 //  File:       Array.swift
 //  Project:    VJson
 //
-//  Version:    0.15.4
+//  Version:    0.16.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,9 +21,8 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that voluntarism is the way for societies to function optimally. I thus reject
-//  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
-//  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
+//  I strongly believe that voluntarism is the way for societies to function optimally. So you can pay whatever you
+//  think our code is worth to you.
 //
 //   - You can send payment via paypal to: sales@balancingrock.nl
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -35,17 +34,13 @@
 //
 //  (It is always a good idea to check the website http://www.balancingrock.nl before payment)
 //
-//  For private and non-profit use the suggested price is the price of 1 good cup of coffee, say $4.
-//  For commercial use the suggested price is the price of 1 good meal, say $20.
-//
-//  You are however encouraged to pay more ;-)
-//
 //  Prices/Quotes for support, modifications or enhancements can be obtained from: rien@balancingrock.nl
 //
 // =====================================================================================================================
 //
 // History
 //
+// 0.16.0 - Removed warnings for Swift 5
 // 0.15.4 - Improved code clarity of undo/redo
 // 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Moved the insert:at operation from ArrayObject to this file and made it array specific.
@@ -76,7 +71,7 @@ public extension VJson {
     ///
     /// - Returns: An empty VJson ARRAY.
     
-    public static func array(_ name: String? = nil) -> VJson {
+    static func array(_ name: String? = nil) -> VJson {
         return VJson(type: .array, name: name)
     }
 
@@ -88,7 +83,7 @@ public extension VJson {
     ///   - name: The name for the VJson ARRAY.
     ///   - includeNil: If true (default = false) then nil items in the array will be included as VJson NULL items.
     
-    public convenience init(_ items: [VJson?], name: String? = nil, includeNil: Bool = false) {
+    convenience init(_ items: [VJson?], name: String? = nil, includeNil: Bool = false) {
         self.init(type: .array, name: name)
         let parentIsNilItems = items.filter(){ return $0?.parent == nil }
         if includeNil {
@@ -106,14 +101,14 @@ public extension VJson {
     ///   - name: The name for the VJson ARRAY (optional).
     ///   - includeNil: If true (default = false) then nil items in the array will be included as VJson NULL items.
     
-    public convenience init(_ items: [VJsonSerializable?], name: String? = nil, includeNil: Bool = false) {
+    convenience init(_ items: [VJsonSerializable?], name: String? = nil, includeNil: Bool = false) {
         self.init(items.map({$0?.json}), name: name, includeNil: includeNil)
     }
 
     
     /// True if this VJson object contains a JSON ARRAY.
     
-    public var isArray: Bool { return self.type == JType.array }
+    var isArray: Bool { return self.type == JType.array }
 
     
     /// Returns the item at the given index if it exists. Self must contain a JSON ARRAY item.
@@ -123,7 +118,7 @@ public extension VJson {
     ///
     /// - Returns: A VJson object with the requested item or nil if no item exists at the given index. Also returns nil if self does not contain a JSON ARRAY.
     
-    public func item(at index: Int) -> VJson? {
+    func item(at index: Int) -> VJson? {
         guard isArray else { return nil }
         return self|index
     }
@@ -136,7 +131,7 @@ public extension VJson {
     ///
     /// - Returns: The index of the item if it is present. Nil if none was found or self does not contain a JSON ARRAY.
     
-    public func index(of item: VJson?) -> Int? {
+    func index(of item: VJson?) -> Int? {
         guard isArray else { return nil }
         guard let item = item else { return nil }
         return children?.index(of: item)
@@ -152,7 +147,7 @@ public extension VJson {
     /// - Returns: True if the insertion was succesful. False if not.
     
     @discardableResult
-    public func insert(_ item: VJson?, at index: Int) -> Bool {
+    func insert(_ item: VJson?, at index: Int) -> Bool {
         guard let item = item else { return false }
         guard isArray else { return false }
         return children?.insert(item, at: index) ?? false
@@ -167,7 +162,7 @@ public extension VJson {
     /// - Returns: The item that was removed. Nil if the index is out of range.
     
     @discardableResult
-    public func remove(at index: Int) -> VJson? {
+    func remove(at index: Int) -> VJson? {
         guard isArray else { return nil }
         return children?.remove(at: index)
     }
@@ -182,7 +177,7 @@ public extension VJson {
     /// - Returns: The replaced item, or nil if an error occured.
     
     @discardableResult
-    public func replace(at index: Int, with item: VJson?) -> VJson? {
+    func replace(at index: Int, with item: VJson?) -> VJson? {
         guard isArray else { return nil }
         guard let item = item else { return nil }
         return children?.replace(at: index, with: item)
@@ -198,7 +193,7 @@ public extension VJson {
     /// - Returns: True when successful, false when not.
     
     @discardableResult
-    public func move(from source: Int, to destination: Int) -> Bool {
+    func move(from source: Int, to destination: Int) -> Bool {
         guard type == .array else { return false }
         guard (source >= 0) && (source < nofChildren) else { return false }
         guard (destination >= 0) && (destination < nofChildren) else { return false }
@@ -221,7 +216,7 @@ public extension VJson {
     /// - Parameters:
     ///   - item: The item to be appended.
     
-    public func append(_ item: VJson?) {
+    func append(_ item: VJson?) {
         guard let item = item else { return }
         if type != .array { type = .array }
         guard type == .array else { return }
@@ -234,7 +229,7 @@ public extension VJson {
     /// - Parameters:
     ///   - item: The item to be appended.
     
-    public func append(_ item: VJsonSerializable?) {
+    func append(_ item: VJsonSerializable?) {
         guard let item = item else { return }
         if type != .array { type = .array }
         guard type == .array else { return }
@@ -248,7 +243,7 @@ public extension VJson {
     ///   - items: The items to add.
     ///   - includeNil: If true, a VJson NULL will be added for each 'nil' in the array.
     
-    public func append(_ items: [VJson?]?, includeNil: Bool = false) {
+    func append(_ items: [VJson?]?, includeNil: Bool = false) {
         guard let items = items else { return }
         if type != .array { type = .array }
         guard type == .array else { return }
@@ -268,7 +263,7 @@ public extension VJson {
     ///   - items: The items to add.
     ///   - includeNil: If true, a VJson NULL will be added for each 'nil' in the array.
     
-    public func append(_ items: [VJsonSerializable?]?, includeNil: Bool = false) {
+    func append(_ items: [VJsonSerializable?]?, includeNil: Bool = false) {
         guard let items = items else { return }
         let newItems = items.map() { $0?.json }
         append(newItems, includeNil: includeNil)

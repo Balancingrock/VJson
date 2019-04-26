@@ -3,14 +3,14 @@
 //  File:       ArrayObject.swift
 //  Project:    VJson
 //
-//  Version:    0.15.3
+//  Version:    0.16.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2018 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,9 +21,8 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that voluntarism is the way for societies to function optimally. I thus reject
-//  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
-//  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
+//  I strongly believe that voluntarism is the way for societies to function optimally. So you can pay whatever you
+//  think our code is worth to you.
 //
 //   - You can send payment via paypal to: sales@balancingrock.nl
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -35,11 +34,6 @@
 //
 //  (It is always a good idea to check the website http://www.balancingrock.nl before payment)
 //
-//  For private and non-profit use the suggested price is the price of 1 good cup of coffee, say $4.
-//  For commercial use the suggested price is the price of 1 good meal, say $20.
-//
-//  You are however encouraged to pay more ;-)
-//
 //  Prices/Quotes for support, modifications or enhancements can be obtained from: rien@balancingrock.nl
 //
 // =====================================================================================================================
@@ -50,6 +44,7 @@
 //
 // History
 //
+// 0.16.0 - Removed warnings for Swift 5
 // 0.15.3 - Reimplemented undo/redo
 // 0.15.0 - Moved insert:at to the file Array, changed insert:at into insertChild:at
 //          Added appendChild:
@@ -70,7 +65,7 @@ public extension VJson {
 
     /// Returns a copy of the child items in this object if this object contains a JSON ARRAY or JSON OBJECT. An empty array for all other JSON types.
     
-    public var arrayValue: Array<VJson> {
+    var arrayValue: Array<VJson> {
         if nofChildren == 0 { return [] }
         var arr: Array<VJson> = []
         children?.items.forEach(){ arr.append($0.duplicate) }
@@ -80,7 +75,7 @@ public extension VJson {
     
     /// Returns a copy of the children that have their name property set in a dictionary if this object contains a JSON OBJECT or JSON ARRAY. An empty dictionary for all other JSON types.
     
-    public var dictionaryValue: Dictionary<String, VJson> {
+    var dictionaryValue: Dictionary<String, VJson> {
         if nofChildren == 0 { return [:] }
         var dict: Dictionary<String, VJson> = [:]
         children?.items.forEach(){
@@ -94,21 +89,21 @@ public extension VJson {
     
     /// True if this item contains any childeren. False if this item does not have any children.
     
-    public var hasChildren: Bool {
+    var hasChildren: Bool {
         return (children?.count ?? 0) > 0
     }
     
     
     /// The number of child items this object contains.
     
-    public var nofChildren: Int {
+    var nofChildren: Int {
         return children?.count ?? 0
     }
     
     
     /// Removes all children from either ARRAY or OBJECT. Is undoable.
     
-    public func removeAllChildren() {
+    func removeAllChildren() {
         children?.removeAll()
     }
     
@@ -122,7 +117,7 @@ public extension VJson {
     /// - Returns: True if the insertion was succesful. False if not.
     
     @discardableResult
-    public func insertChild(_ child: VJson?, at index: Int) -> Bool {
+    func insertChild(_ child: VJson?, at index: Int) -> Bool {
         guard let child = child else { return false }
         guard isArray || (isObject && child.hasName) else { return false }
         return children?.insert(child, at: index) ?? false
@@ -138,7 +133,7 @@ public extension VJson {
     /// - Returns: True if the insertion was succesful. False if not.
     
     @discardableResult
-    public func appendChild(_ child: VJson?) -> Bool {
+    func appendChild(_ child: VJson?) -> Bool {
         guard let child = child else { return false }
         guard isArray || (isObject && child.hasName) else { return false }
         children?.append(child)
@@ -152,7 +147,7 @@ public extension VJson {
     ///
     /// - Returns: True if the child was removed.
     
-    public func removeChild(_ child: VJson) -> Bool {
+    func removeChild(_ child: VJson) -> Bool {
         guard let i = children?.index(of: child) else { return false }
         children?.remove(at: i)
         return true
@@ -168,7 +163,7 @@ public extension VJson {
     ///
     /// - Returns: The number of child items removed.
     
-    public func removeChildren(equalTo item: VJson?) -> Int {
+    func removeChildren(equalTo item: VJson?) -> Int {
         guard type == .array || type == .object else { return 0 }
         var count = 0
         if let indicies = children?.index(ofChildrenEqualTo: item) {
@@ -187,7 +182,7 @@ public extension VJson {
     ///
     /// - Note: The cache will be reset on every write access.
     
-    public var enableCacheForObjects: Bool {
+    var enableCacheForObjects: Bool {
         set { children?.cacheEnabled = newValue }
         get { return children?.cacheEnabled ?? false}
     }

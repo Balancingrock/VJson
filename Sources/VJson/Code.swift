@@ -3,14 +3,14 @@
 //  File:       Code.swift
 //  Project:    VJson
 //
-//  Version:    0.15.6
+//  Version:    0.16.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2017 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -21,9 +21,8 @@
 //
 //  I also ask you to please leave this header with the source code.
 //
-//  I strongly believe that the Non Agression Principle is the way for societies to function optimally. I thus reject
-//  the implicit use of force to extract payment. Since I cannot negotiate with you about the price of this code, I
-//  have choosen to leave it up to you to determine its price. You pay me whatever you think this code is worth to you.
+//  I strongly believe that voluntarism is the way for societies to function optimally. So you can pay whatever you
+//  think our code is worth to you.
 //
 //   - You can send payment via paypal to: sales@balancingrock.nl
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -50,9 +49,10 @@
 //
 // History
 //
-// 0.15.6  - Improved handling of top level named tems, now supports fragments at all levels.
-// 0.14.0  - Added name to top level item (if the top level item has a name)
-// 0.10.8  - Split off from VJson.swift
+// 0.16.0 - Removed warnings for Swift 5
+// 0.15.6 - Improved handling of top level named tems, now supports fragments at all levels.
+// 0.14.0 - Added name to top level item (if the top level item has a name)
+// 0.10.8 - Split off from VJson.swift
 // =====================================================================================================================
 
 import Foundation
@@ -63,7 +63,7 @@ public extension VJson {
     
     /// Returns the JSON code that represents the hierarchy of this item. Will return a fragment if self has a name.
     
-    public var code: String {
+    var code: String {
         
         if let name = name {
             return "\"\(name)\":\(_code)"

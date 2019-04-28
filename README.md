@@ -308,7 +308,12 @@ Note: Planned releases are for information only and subject to change without no
 
 - Bugfixes or features as necessary for Swiftfire 1.0
 
-#### 0.16.0 (Current)
+#### 0.17.0 (Current)
+
+- Fixed bug with missing end-of-string parsing
+- Improved error detection of parsing strings including unicode specifications
+
+#### 0.16.0
 
 - Update for Swift 5
 

@@ -351,7 +351,7 @@ class ParseTests: XCTestCase {
 
     func testStringTopLevel() {
         
-        let str = "\"Some\""
+        var str = "\"Some\""
         
         do {
             if let json = try VJson.parse(string: str) {
@@ -365,6 +365,214 @@ class ParseTests: XCTestCase {
         } catch {
             XCTFail("Test fail: \(error)")
         }
+        
+        
+        str = "\"So\\u0123me\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch let error as VJson.ParseError {
+            XCTFail("Parser test failed: \(error)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+
+        
+        str = "\"So\\me\""
+        
+        do {
+            if (try VJson.parse(string: str)) != nil {
+                XCTFail("Should not be able to parse string successfully")
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTAssertEqual("\(error)", "[Location: 4, Code: 29, Incomplete:false] Illegal character after \\ in string")
+        }
+
+        
+        str = "\"So\\\"me\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+
+        
+        str = "\"So\\\\me\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+
+        
+        str = "\"So\\/me\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+
+        
+        str = "\"So\\bme\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+        
+        
+        str = "\"So\\fme\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+        
+        
+        str = "\"So\\nme\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+        
+        
+        str = "\"So\\rme\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+        
+        
+        str = "\"So\\tme\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+        
+        
+        str = "\"So\\ume\""
+        
+        do {
+            if (try VJson.parse(string: str)) != nil {
+                XCTFail("Should not be able to parse string successfully")
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTAssertEqual("\(error)", "[Location: 5, Code: 63, Incomplete:false] First character after \\u not a hexadecimal")
+        }
+
+        
+        str = "\"So\\u0me\""
+        
+        do {
+            if (try VJson.parse(string: str)) != nil {
+                XCTFail("Should not be able to parse string successfully")
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTAssertEqual("\(error)", "[Location: 6, Code: 64, Incomplete:false] Second character after \\u not a hexadecimal")
+        }
+
+        
+        str = "\"So\\u01me\""
+        
+        do {
+            if (try VJson.parse(string: str)) != nil {
+                XCTFail("Should not be able to parse string successfully")
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTAssertEqual("\(error)", "[Location: 7, Code: 65, Incomplete:false] Third character after \\u not a hexadecimal")
+        }
+
+        
+        str = "\"So\\u012me\""
+        
+        do {
+            if (try VJson.parse(string: str)) != nil {
+                XCTFail("Should not be able to parse string successfully")
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTAssertEqual("\(error)", "[Location: 8, Code: 66, Incomplete:false] Fourth character after \\u not a hexadecimal")
+        }
+
+        
+        str = "\"So\\u0123me\""
+        
+        do {
+            if let json = try VJson.parse(string: str) {
+                XCTAssertTrue(json.isString)
+                XCTAssertEqual(str, json.code)
+            } else {
+                XCTFail("Unexpected nil returned")
+            }
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+
     }
 
     func testNamedNullTopLevelItem() {

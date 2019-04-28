@@ -3,7 +3,7 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    0.16.0
+//  Version:    0.17.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -44,6 +44,7 @@
 //
 // History
 //
+// 0.17.0 - Fixed error when a string was not terminated
 // 0.16.0 - Removed warnings for Swift 5
 // 0.15.2 - Made the error closures optional with a default of nil
 // 0.15.1 - Improved removal of bytes that have been processed.
@@ -549,13 +550,6 @@ internal extension VJson {
             try readValue(bp.baseAddress!.bindMemory(to: UInt8.self, capacity: bp.count), numberOfBytes: bp.count, offset: &offset)
         })
         
-        /*let val = try data.withUnsafeBytes() {
-            
-            (bufPtr: UnsafeRawBufferPointer) -> VJson? in
-            
-            try readValue(bufPtr.baseAddress, numberOfBytes: bufPtr.count, offset: &offset)
-        }*/
-        
         
         // Remove consumed bytes
         
@@ -658,34 +652,70 @@ internal extension VJson {
         while !stringEnd {
             
             if buffer[offset] == Ascii._DOUBLE_QUOTES {
+                
                 stringEnd = true
+                
+                offset += 1 // Consume the double quotes
+                
             } else {
                 
                 if buffer[offset] == Ascii._BACKSLASH {
+                    
                     strbuf.append(Ascii._BACKSLASH)
                     
-                    offset += 1
+                    offset += 1 // Consume the backslash
                     
-                    if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 25, incomplete: true, message: "Missing end of string at end of buffer") }
+                    guard offset < numberOfBytes else { throw Exception.reason(location: offset, code: 25, incomplete: true, message: "Missing end of string at end of buffer") }
                     
                     switch buffer[offset] {
+                        
                     case Ascii._DOUBLE_QUOTES, Ascii._BACKWARD_SLASH, Ascii._FOREWARD_SLASH, Ascii._b, Ascii._f, Ascii._n, Ascii._r, Ascii._t: strbuf.append(buffer[offset])
-                    //case Ascii._b: strbuf.append(Ascii._BACKSPACE)
-                    //case Ascii._f: strbuf.append(Ascii._FORMFEED)
-                    //case Ascii._n: strbuf.append(Ascii._NEWLINE)
-                    //case Ascii._r: strbuf.append(Ascii._CARRIAGE_RETURN)
-                    //case Ascii._t: strbuf.append(Ascii._TAB)
+                        offset += 1 // Consume the character
+
                     case Ascii._u:
                         strbuf.append(buffer[offset])
-                        offset += 1
-                        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 26, incomplete: true, message: "Missing second byte after \\u in string") }
-                        strbuf.append(buffer[offset])
-                        offset += 1
-                        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 27, incomplete: true, message: "Missing third byte after \\u in string") }
-                        strbuf.append(buffer[offset])
-                        offset += 1
-                        if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 28, incomplete: true, message: "Missing fourth byte after \\u in string") }
-                        strbuf.append(buffer[offset])
+                        offset += 1 // Consume the 'u'
+                        
+                        
+                        // First character
+                        
+                        guard offset < numberOfBytes else { throw Exception.reason(location: offset, code: 26, incomplete: true, message: "Missing first byte after \\u in string") }
+
+                        let hex1 = buffer[offset]
+                        guard hex1.isAsciiHexadecimalDigit else { throw Exception.reason(location: offset, code: 63, incomplete: false, message: "First character after \\u not a hexadecimal") }
+                        strbuf.append(hex1)
+                        offset += 1 // Consume first byte
+
+                        
+                        // Second character
+                        
+                        guard offset < numberOfBytes else { throw Exception.reason(location: offset, code: 26, incomplete: true, message: "Missing second byte after \\u in string") }
+                        
+                        let hex2 = buffer[offset]
+                        guard hex2.isAsciiHexadecimalDigit else { throw Exception.reason(location: offset, code: 64, incomplete: false, message: "Second character after \\u not a hexadecimal") }
+                        strbuf.append(hex2)
+                        offset += 1 // Consume second byte
+                        
+                        
+                        // Third character
+                        
+                        guard offset < numberOfBytes else { throw Exception.reason(location: offset, code: 27, incomplete: true, message: "Missing third byte after \\u in string") }
+                        
+                        let hex3 = buffer[offset]
+                        guard hex3.isAsciiHexadecimalDigit else { throw Exception.reason(location: offset, code: 65, incomplete: false, message: "Third character after \\u not a hexadecimal") }
+                        strbuf.append(hex3)
+                        offset += 1 // Consume third byte
+                        
+                        
+                        // Fourth character
+                        
+                        guard offset < numberOfBytes else { throw Exception.reason(location: offset, code: 28, incomplete: true, message: "Missing fourth byte after \\u in string") }
+                        
+                        let hex4 = buffer[offset]
+                        guard hex4.isAsciiHexadecimalDigit else { throw Exception.reason(location: offset, code: 66, incomplete: false, message: "Fourth character after \\u not a hexadecimal") }
+                        strbuf.append(hex4)
+                        offset += 1 // Consume fourth byte
+
                     default:
                         throw Exception.reason(location: offset, code: 29, incomplete: false, message: "Illegal character after \\ in string")
                     }
@@ -693,11 +723,15 @@ internal extension VJson {
                 } else {
                     
                     strbuf.append(buffer[offset])
+                    
+                    offset += 1 // Consume the character
+                    
+                    // There have to be more characters because we are not at the end of the string yet
+                    
+                    guard offset < numberOfBytes else { throw Exception.reason(location: offset, code: 30, incomplete: true, message: "Missing end of string at end of buffer") }
                 }
             }
             
-            offset += 1
-            //if offset >= numberOfBytes { throw Exception.reason(location: offset, code: 30, incomplete: true, message: "Missing end of string at end of buffer") }
         }
         
         if let str: String = String(bytes: strbuf, encoding: String.Encoding.ascii) {

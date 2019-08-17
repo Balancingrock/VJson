@@ -511,7 +511,7 @@ class MergeTests: XCTestCase {
     
     func testMergeObjectObject() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         var n = VJson.parse(string: "{\"1\":1}", errorInfo: &error)
         var o = VJson.parse(string: "{\"1\":2}", errorInfo: &error)
         

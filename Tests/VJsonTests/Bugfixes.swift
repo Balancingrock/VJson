@@ -26,7 +26,7 @@ class Bugfixes: XCTestCase {
         
         // This test will fail with 0.13.0
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"th\\free\":3}", errorInfo: &error)
         
         XCTAssertEqual(json?.children?.items[0].nameValueRaw, "th\\free")
@@ -36,7 +36,7 @@ class Bugfixes: XCTestCase {
         
         // This test will fail with 0.13.0 and 0.13.1
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"th\\uD83D\\uDE00ree\":3}", errorInfo: &error)
         
         XCTAssertEqual(json?.children?.items[0].nameValueRaw, "th\\uD83D\\uDE00ree")

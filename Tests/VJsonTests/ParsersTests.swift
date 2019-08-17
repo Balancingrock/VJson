@@ -147,7 +147,7 @@ class ParseTests: XCTestCase {
 
     func testCachingDisabledPerformance1() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3}", errorInfo: &error)
         json?.enableCacheForObjects = false
         
@@ -162,7 +162,7 @@ class ParseTests: XCTestCase {
     
     func testCachingDisabledPerformance2() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"oneone\":1,\"twotwo\":2,\"three\":3}", errorInfo: &error)
         json?.enableCacheForObjects = false
         
@@ -175,7 +175,7 @@ class ParseTests: XCTestCase {
     
     func testCachingDisabledPerformance3() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"three\":3}", errorInfo: &error)
         json?.enableCacheForObjects = false
         
@@ -188,7 +188,7 @@ class ParseTests: XCTestCase {
     
     func testCachingDisabledPerformance4() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3,\"four\":1,\"five\":2,\"six\":3}", errorInfo: &error)
         json?.enableCacheForObjects = false
         
@@ -202,7 +202,7 @@ class ParseTests: XCTestCase {
 
     func testCachingEnabledPerformance1() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3}", errorInfo: &error)
         
         self.measure {
@@ -217,7 +217,7 @@ class ParseTests: XCTestCase {
     
     func testCachingEnabledPerformance2() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"oneone\":1,\"twotwo\":2,\"three\":3}", errorInfo: &error)
         
         self.measure {
@@ -229,7 +229,7 @@ class ParseTests: XCTestCase {
     
     func testCachingEnabledPerformance3() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"three\":3}", errorInfo: &error)
         
         self.measure {
@@ -241,7 +241,7 @@ class ParseTests: XCTestCase {
 
     func testCachingEnabledPerformance4() {
         
-        var error: VJson.ParseError?
+        var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"one\":1,\"two\":2,\"three\":3,\"four\":1,\"five\":2,\"six\":3}", errorInfo: &error)
         
         self.measure {

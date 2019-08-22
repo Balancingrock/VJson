@@ -151,20 +151,20 @@ is equivalent to:
 Adding an item to an array:
 
 	let a = VJson.array()
-	a.append(VJson(8))						// [8]
+	a.append(VJson(8))				// [8]
 
 Create an item in the hierarchy:
 
-	let json = VJson()						// {}
+	let json = VJson()				// {}
 	var i: Int?
-	json["first"].intValue = i		  		// {"first":null}
+	json["first"].intValue = i		  	// {"first":null}
 
 or
 
-	let json = VJson()						// {}
+	let json = VJson()				// {}
 	var i: Int?
 	i = 12
-	json["first"].intValue = i				// {"first":12}
+	json["first"].intValue = i			// {"first":12}
 
 Or using the defined operator "&=":
 

@@ -1,11 +1,11 @@
 # VJson document generator jazzy settings
 
-copyright: Copyright 2016-2017 Rien van der Lugt
-author: Rien van der Lugt
+copyright: Copyright 2016-2017 rien@balancingrock.nl
+author: Balancingrock
 module: VJson
 hide_documentation_coverage: true
 xcodebuild_arguments: [-target, VJson]
 github_url: https://github.com/Balancingrock/VJson
-output: ~/Documents/Websites/sf/projects/vjson/reference
+output: ~/Documents/Websites/swiftfire.nl/projects/vjson/reference
 clean: true
 theme: fullwidth

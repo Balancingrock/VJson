@@ -1,10 +1,17 @@
 # VJson
 
-A single class framework in Swift to read, write & parse the JSON Format.
+A framework in Swift to read, write & parse the JSON Format.
 
-VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver framework.
+VJson is part of the Swiftfire webserver project.
+
+The [Swiftfire website](http://swiftfire.nl)
+
+The [reference manual](http://swiftfire.nl/projects/vjson/reference/index.html)
+
+VJson is also used as the core of our proJSON application in the [App Store](https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=1444778157)
 
 # Features
+
 - Creates a fully featured JSON hierarchy from file (Data, Buffer or String).
 - Intuitive subscript accessors (for creation).
 - Intuitive pipe accessors (for interrogation).
@@ -30,27 +37,11 @@ VJson is part of the [Swiftfire](http://swiftfire.nl), the HTTP(S) webserver fra
 
 # Installation
 
-## With SPM
+VJson can be used by the Swift Package Manager. Just add it to your package manifest as a dependency.
 
-To use VJson with a SPM project, make it part of the dependencies in the file Package.swift:
+Alternatively you can clone the project and generate a Xcode framework in the following way:
 
-~~~~
-   dependencies: [
-      ...
-      .package(url: "https://github.com/Balancingrock/VJson", from: "1.0.0")
-      ...
-   ]
-~~~~
-
-Building the project will then automatically install VJson as needed.
-
-## Xcode (Framework)
-
-To use VJson in a macOS application using Xcode it is necessary to create a framework.
-
-These are the steps to create a framework:
-
-In a terminal window type on the console line:
+1. Clone the repository and create a Xcode project:
 
 ~~~~
 $ git clone https://github.com/Balancingrock/VJson
@@ -58,29 +49,13 @@ $ cd VJson
 $ swift package generate-xcodeproj
 ~~~~
 
-Then navigate to the VJson folder using the Finder and double click the xcode project file.
+1. Double click that project to open it. Once open set the `Defines Module` to 'yes' in the `Build Settings -> Packaging` before creating the framework. (Otherwise the import of the framework in another project won't work)
 
-In Xcode select the target frameworks and make sure that under the `Build settings` in the `Packaging` options the `Defines Module` is set to 'yes'.
+1. In the project that will use VJson, add the VJson.framework by opening the `General` settings of the target and add the VJson.framework to the `Embedded Binaries`.
 
-Then build the target.
+1. In the Swift source code where you want to use it, import VJson at the top of the file.
 
-In the project that should use VJson add the generated framework's (Ascii & VJson) under the target's `general` settings, to the `Embedded binaries`.
-
-(Note: to find out where the frameworks are located, select the framework and show the file inspector, that will show the path)
-
-Then import the framework where you need it by:
-
-"import VJson"
-
-at the top of the source code files.
-
-# Documentation
-
-The project itself: [VJson](http://swiftfire.nl/projects/vjson/vjson.html)
-
-The reference manual: [reference manual](http://swiftfire.nl/projects/vjson/reference/index.html)
-
-## Full Example
+# Examples
 
 This code can be used as is:
 
@@ -150,16 +125,18 @@ Creating a named item:
 Preferred way of creating a VJson hierarchy:
 
 	let json = VJson()
-	json["description"] @= "Book price list"
-	json["books"][0]["title"] @= "Book Title"
-	json["books"][0]["price"] @= 12.34
-	json["books"][1]["title"] @= "Second Book Title"
+	json["description"] &= "Book price list"
+	json["books"][0]["title"] &= "Book Title"
+	json["books"][0]["price"] &= 12.34
+	json["books"][1]["title"] &= "Second Book Title"
 
 	
 Preferred way of inspecting/retrieving from an hierarchy:
 
 	guard let title = (json|"books"|0|"title")?.stringValue else {...}
 	guard let price = (json|"books"|0|"price")?.doubleValue else {...}
+	
+It is possible to use `guard let title = json["books"][0]["title"].stringValue else {...}` but this can have side effects that can be avoided by using the pipe operator. See 'notes' section below.
 
 Adding a (named) item to an object:
 
@@ -176,23 +153,18 @@ Adding an item to an array:
 	let a = VJson.array()
 	a.append(VJson(8))						// [8]
 
-is equivalent to:
-
-	let a = VJson.array()
-	a.append(VJson(8, name: "AnyName"))	// [8]
-
 Create an item in the hierarchy:
 
 	let json = VJson()						// {}
 	var i: Int?
-	json["first"].intValue = i			// {"first":null}
+	json["first"].intValue = i		  		// {"first":null}
 
 or
 
 	let json = VJson()						// {}
 	var i: Int?
 	i = 12
-	json["first"].intValue = i			// {"first":12}
+	json["first"].intValue = i				// {"first":12}
 
 Or using the defined operator "&=":
 
@@ -230,7 +202,7 @@ Itterating over all children of an object (or array):
 
 	for child in json { ... }
 
-The above examples all used 'let' variables. If 'var's are used there is another option is available to retrieve values from a VJson object
+The above examples all used 'let' variables. If 'var's are used there is another option available to retrieve values from a VJson object
 
 	let json = try! VJson.parse(string: "{\"title\":\"A Good Read\"}")
 	var title: String?
@@ -264,7 +236,7 @@ It is possible to use the pipe opertors to assign values to the JSON hierarchy, 
 
 ## Values with names in an array
 
-Every object in a VJson hierarchy is a VJson object. This is very convenient, but also poses somewhat of a challenge: The JSON specification treats values differently depending on whether they are contained in an ARRAY or OBJECT. In an OBJECT the values have names (or key's in NS parlour). In an ARRAY values are simply values without a name. However since VJson provides only one type of object for everything, this object must have a name component. The optionality of this name thus depends on where the VJson object is used.
+Every object in a VJson hierarchy is a VJson object. This is very convenient, but also poses somewhat of a challenge: The JSON specification treats values differently depending on whether they are contained in an ARRAY or OBJECT. In an OBJECT the values have names. In an ARRAY values are simply values without a name. However since VJson provides only one type of object for everything, this object must have a name component. The optionality of this name thus depends on where the VJson object is used.
 What if a VJson VALUE with a specified name is inserted into an array? Well, the name will be ignored. This leads (possibly) to information loss, but the alternative would be to create an extra object in the hierarchy. If this is the preferred behaviour, it is up to the application to create that object explicitly.
 In an example:
 
@@ -280,9 +252,9 @@ Allowing the use of subscript accessors without optionality necessitates a lenie
 
 Type changes to or from the JSON NULL type are always considered legal.
 
-All other type changes -for example- a BOOL to an ARRAY or from STRING to a NUMBER will result in a fatal error when the static option "fatalErrorOnTypeConversion" is set to 'true' (which is the default). Such type changes can only be made by transistioning explicitly through a JSON NULL type.
+All other type changes -for example- a BOOL to an ARRAY or from STRING to a NUMBER will result in a fatal error when the static option `fatalErrorOnTypeConversion` is set to 'true' (which is the default). Such type changes can only be made by transistioning explicitly through a JSON NULL type.
 
-To allow leniency for type changes not involving NULL, set "fatalErrorOnTypeConversion" to 'false'.
+To allow leniency for type changes not involving NULL, set `fatalErrorOnTypeConversion` to 'false'.
 
 Do note however that the operations "add" and "append" are not lenient. I.e. it is not possible to "add" to an ARRAY or "append" to an OBJECT as that could result in data loss. However there are operations to change an ARRAY into an OBJECT and vice versa.
 
@@ -294,15 +266,10 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 
 - Apple's parser handles JSON BOOL items as NSNumber's and hence must be interrogated as a JSON NUMBER item. This results in a symmetry break when json code with a bool in it is converted into a VJson hierarchy and that hierachy is then translated back into code. (The in- and output code will not be the same)
 
-# History:
+# Version history:
 
-Note: Planned releases are for information only and subject to change without notice.
+No new features planned. Updates are made on an ad-hoc basis as needed to support Swiftfire development.
 
-#### 1.1.0 (Open)
-
-- No new features planned. Features and bugfixes will be made on an ad-hoc basis as needed to support Swiftfire development.
-- To request features or bug fixes please contact rien@balancingrock.nl
-
-#### 1.0.0 (Current)
+#### 1.0.0
 
 - Finalized for use with Swiftfire 1.0.0

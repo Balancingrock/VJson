@@ -221,4 +221,369 @@ class ObjectTests: XCTestCase {
         XCTAssertEqual(json.nofChildren, 3)
     }
 
+    func testFlatten_nop() {
+        
+        let txt =
+            """
+            {
+                "one": 1,
+                "two": 2
+            }
+            """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+        
+        let exp = json!.code
+        
+        json!.flatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+    
+    func testFlatten_object() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":{"deep":5}
+        }
+        """
+        
+        let exp = """
+        {"one":1,"two.deep":5}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+    
+    func testFlatten_array() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":["deep",5]}
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two[0]":"deep","two[1]":5}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testFlatten_arrayKeepNo() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":["deep",{"three":6}]}
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two[0]":"deep","two[1].three":6}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten(VJson.FlattenOptions.keepPrimitiveArray)
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testFlatten_arrayKeepYes() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":["deep",5]}
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two":["deep",5]}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten(VJson.FlattenOptions.keepPrimitiveArray)
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testFlatten_arrayArrayKeepYes() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":[[1, 2], 3]}
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two[0]":[1,2],"two[1]":3}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten(VJson.FlattenOptions.keepPrimitiveArray)
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testFlatten_arrayArray() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":[[1, 2], 3]}
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two[0][0]":1,"two[0][1]":2,"two[1]":3}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testFlatten_arrayArrayReplace() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":[[1, 2], 3]}
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two*0)*0)":1,"two*0)*1)":2,"two*1)":3}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten(.leftArray("*"), .rightArray(")"))
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testFlatten_arrayArrayDot() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":[[1, 2], 3]}
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two.0.0":1,"two.0.1":2,"two.1":3}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+                
+        json!.flatten(.useDotArray, .separator("-"))
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testUnflattenNop() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two":2,
+            "arr":[1,2,3]
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"two":2,"arr":[1,2,3]}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+
+        json!.unflatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+    
+    func testUnflattenObj() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two.three":2,
+            "arr":[1,2,3]
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"arr":[1,2,3],"two":{"three":2}}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+
+        json!.unflatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    
+    func testUnflattenObjObj() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two.three.four":2,
+            "arr":[1,2,3]
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"arr":[1,2,3],"two":{"three":{"four":2}}}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+
+        json!.unflatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    
+    func testUnflattenArr() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two[2]":2,
+            "arr":[1,2,3]
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"arr":[1,2,3],"two":[null,null,2]}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+
+        json!.unflatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    
+    func testUnflattenArrArr() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two[1][1]":2,
+            "arr":[1,2,3]
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"arr":[1,2,3],"two":[null,[null,2]]}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+
+        json!.unflatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
+    func testUnflattenArrObjArr() {
+        
+        let txt =
+        """
+        {
+            "one":1,
+            "two[1].obj[1]":2,
+            "arr":[1,2,3]
+        }
+        """
+        
+        let exp =
+        """
+        {"one":1,"arr":[1,2,3],"two":[null,{"obj":[null,2]}]}
+        """
+        
+        let json = try? VJson.parse(string: txt)
+        
+        XCTAssertNotNil(json)
+
+        json!.unflatten()
+        
+        XCTAssertEqual(json!.code, exp)
+    }
+
 }

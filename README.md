@@ -34,6 +34,7 @@ VJson is also used as the core of our proJSON application in the [App Store](htt
 - Undo/redo support for macOS
 - customData member allows for association of external data with a VJson object
 - Caching of named members for higher performance (usable in most cases)
+- Includes flattening & unflattening
 
 # Installation
 
@@ -269,6 +270,10 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 # Version history:
 
 No new features planned. Updates are made on an ad-hoc basis as needed to support Swiftfire development.
+
+#### 1.1.0
+
+- Added flattening and unflattening
 
 #### 1.0.0
 

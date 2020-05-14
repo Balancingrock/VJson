@@ -273,7 +273,7 @@ No new features planned. Updates are made on an ad-hoc basis as needed to suppor
 
 #### 1.2.0
 
-- Upgraded BRUtils due to swift 5.2
+- Upgraded BRUtils due to Swift 5.2
 
 #### 1.1.0
 

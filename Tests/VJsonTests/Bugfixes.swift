@@ -29,7 +29,7 @@ class Bugfixes: XCTestCase {
         var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"th\\free\":3}", errorInfo: &error)
         
-        XCTAssertEqual(json?.children?.items[0].nameValueRaw, "th\\free")
+        XCTAssertEqual(json?.children?.items[0].name, "th\\free")
     }
 
     func testBugfix_0_13_2() {
@@ -39,7 +39,7 @@ class Bugfixes: XCTestCase {
         var error = VJson.ParseError()
         let json = VJson.parse(string: "{\"th\\uD83D\\uDE00ree\":3}", errorInfo: &error)
         
-        XCTAssertEqual(json?.children?.items[0].nameValueRaw, "th\\uD83D\\uDE00ree")
+        XCTAssertEqual(json?.children?.items[0].name, "th\\uD83D\\uDE00ree")
     }
     
     func testBugfix_0_13_3() {

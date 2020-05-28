@@ -271,6 +271,11 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 
 No new features planned. Updates are made on an ad-hoc basis as needed to support Swiftfire development.
 
+#### 1.2.1
+
+- Bugfix: support function stringToJsonString failed for extended ascii.
+- Removed nameValueRaw from API (made fileprivate)
+
 #### 1.2.0
 
 - Upgraded BRUtils due to Swift 5.2

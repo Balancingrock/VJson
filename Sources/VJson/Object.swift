@@ -574,7 +574,7 @@ fileprivate func flattenObject(object: VJson, addTo root: VJson, flattenedParent
     
     object.forEach { (item: VJson) in
         
-        let flattenedName = flattenedParentName + String(settings.separator) + item.nameValueRaw!
+        let flattenedName = flattenedParentName + String(settings.separator) + item.nameValue!
 
         switch item.type {
             

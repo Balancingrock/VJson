@@ -119,4 +119,11 @@ class UnicodeSupportTests: XCTestCase {
         exp = "ab\\tcd"
         XCTAssertEqual(jstr, exp)
     }
+    
+    func testUtf8Bug() {
+        let str = "abécd"
+        let jstr = str.stringToJsonString()
+        let exp = "ab\\u00E9cd"
+        XCTAssertEqual(jstr, exp)
+    }
 }

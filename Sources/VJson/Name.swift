@@ -3,7 +3,7 @@
 //  File:       Name.swift
 //  Project:    VJson
 //
-//  Version:    1.0.0
+//  Version:    1.2.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.2.1 - Made nameValueRaw internal
 // 1.0.0 - Removed older history
 // =====================================================================================================================
 
@@ -76,7 +77,7 @@ public extension VJson {
     ///
     /// - Note: This is the raw data as received/read or stored/transmitted. Complete with escape sequences.
     
-    var nameValueRaw: String? {
+    fileprivate var nameValueRaw: String? {
         get { return name }
         set {
             if let newName = newValue {

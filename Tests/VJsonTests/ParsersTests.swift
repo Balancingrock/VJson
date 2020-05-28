@@ -48,7 +48,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexcpeted nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -77,7 +77,7 @@ class ParseTests: XCTestCase {
                 let json = try VJson.parseUsingAppleParser(tcd)
                 XCTAssertEqual(tc, json.description)
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -105,7 +105,7 @@ class ParseTests: XCTestCase {
                 for _ in 1 ... 100 {
                     json = try VJson.parse(string: jcode)
                 }
-            } catch let error as VJson.ParseError {
+            } catch let error as VJson.Exception {
                 XCTFail("Parser test failed: \(error)")
             } catch {
                 XCTFail("Test fail: \(error)")
@@ -136,7 +136,7 @@ class ParseTests: XCTestCase {
                 for _ in 1 ... 100 {
                     json = try VJson.parseUsingAppleParser(jcode)
                 }
-            } catch let error as VJson.ParseError {
+            } catch let error as VJson.Exception {
                 XCTFail("Parser test failed: \(error)")
             } catch {
                 XCTFail("Test fail: \(error)")
@@ -276,7 +276,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexpected nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -294,7 +294,7 @@ class ParseTests: XCTestCase {
             } else {
                 XCTFail("Unexpected nil returned")
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -317,7 +317,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexpected nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -342,7 +342,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexpected nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -360,7 +360,7 @@ class ParseTests: XCTestCase {
             } else {
                 XCTFail("Unexpected nil returned")
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -376,7 +376,7 @@ class ParseTests: XCTestCase {
             } else {
                 XCTFail("Unexpected nil returned")
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -587,7 +587,7 @@ class ParseTests: XCTestCase {
             } else {
                 XCTFail("Unexpected nil returned")
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -611,7 +611,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexpected nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -637,7 +637,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexpected nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -695,7 +695,7 @@ class ParseTests: XCTestCase {
                 XCTFail("Unexpected nil returned")
             }
 
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -719,7 +719,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexpected nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -745,7 +745,7 @@ class ParseTests: XCTestCase {
                     XCTFail("Unexpected nil returned")
                 }
             }
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")
@@ -765,7 +765,7 @@ class ParseTests: XCTestCase {
             json = try VJson.parse(string: str2)
             XCTAssertNil(json)
 
-        } catch let error as VJson.ParseError {
+        } catch let error as VJson.Exception {
             XCTFail("Parser test failed: \(error)")
         } catch {
             XCTFail("Test fail: \(error)")

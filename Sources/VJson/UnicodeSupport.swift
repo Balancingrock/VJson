@@ -3,14 +3,14 @@
 //  File:       UnicodeSupport.swift
 //  Project:    VJson
 //
-//  Version:    1.0.0
+//  Version:    1.2.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2020 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.2.1 - Fixed bug for extended ASCII conversion to UTF8
 // 1.0.0 - Removed older history
 // =====================================================================================================================
 
@@ -238,11 +239,11 @@ public extension String {
                 // Handle extended ascii set characters first (1 byte)
                 if utf16s.count == 1 {
                     let c = utf16s.first!
-                    if c < 256 {
+                    if c < 128 {
                         res.append(char)
                     } else {
                     
-                        // All > 255 must be added as an escaped sequence
+                        // All > 128 must be added as an escaped sequence
                         res.append(Character._BACKSLASH)
                         res.append(Character._u)
                         res.append(contentsOf: c.hexString)

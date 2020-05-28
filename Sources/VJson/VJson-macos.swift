@@ -3,7 +3,7 @@
 //  File:       VJson-macos.swift
 //  Project:    VJson
 //
-//  Version:    1.0.0
+//  Version:    1.2.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.2.1 - Added warnings to name and string variables.
 // 1.0.0 - Removed older history
 // =====================================================================================================================
 
@@ -135,7 +136,9 @@ public final class VJson: NSObject {
     
     
     /// The name of this object if it is part of a name/value pair.
-    
+    ///
+    /// - Warning: If the name contains an escape sequence, that sequence will be returned as is. Use nameValue if the escape sequence should be converted to normal Character representations, use stringValuePrintable to also change invisibles to printable characters.
+
     public internal(set) var name: String? {
         didSet {
             if #available(OSX 10.11, *) {
@@ -177,6 +180,8 @@ public final class VJson: NSObject {
     
     
     /// The value if this is a JSON STRING.
+    ///
+    /// - Warning: If the string contains an escape sequence, that sequence will be returned as is. Use stringValue if the escape sequence should be converted to normal Character representations, use stringValuePrintable to also change invisibles to printable characters.
     
     public internal(set) var string: String? {
         didSet {

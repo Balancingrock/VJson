@@ -154,17 +154,12 @@ class StringTests: XCTestCase {
         
         let json = VJson("01234😀56789")
         XCTAssertEqual(json.stringValue, "01234😀56789")
-        XCTAssertEqual(json.stringValueRaw, "01234\\uD83D\\uDE0056789")
+        XCTAssertEqual(json.string, "01234\\uD83D\\uDE0056789")
         XCTAssertEqual(json.stringValuePrintable, "01234😀56789")
         
         json.stringValuePrintable = "0␈1␉2␊3␌4␍5"
         XCTAssertEqual(json.stringValuePrintable, "0␈1␉2␊3␌4␍5")
-        XCTAssertEqual(json.stringValueRaw, "0\\b1\\t2\\n3\\f4\\r5")
+        XCTAssertEqual(json.string, "0\\b1\\t2\\n3\\f4\\r5")
         XCTAssertEqual(json.stringValue, "0\u{08}1\u{09}2\u{0A}3\u{0c}4\u{0d}5")
-        
-        json.stringValueRaw = "0\\\"\\\\/"
-        XCTAssertEqual(json.stringValueRaw, "0\\\"\\\\/")
-        XCTAssertEqual(json.stringValuePrintable, "0\"\\/")
-        XCTAssertEqual(json.stringValue, "0\"\\/")
     }
 }

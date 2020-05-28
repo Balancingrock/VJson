@@ -3,14 +3,14 @@
 //  File:       String.swift
 //  Project:    VJson
 //
-//  Version:    1.0.0
+//  Version:    1.2.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2020 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.2.2 - Made stringValueRaw fileprivate
 // 1.0.0 - Removed older history
 // =====================================================================================================================
 
@@ -92,7 +93,7 @@ public extension VJson {
     
     /// The raw string value as read/received or written/transferred. A sequence of single byte UTF8 characters. Escape sequences are not replaced by their escaped characters on neither read nor write.
     
-    var stringValueRaw: String? {
+    fileprivate var stringValueRaw: String? {
         get { return string }
         set {
             if let newValue = newValue {

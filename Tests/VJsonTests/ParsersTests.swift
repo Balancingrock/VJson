@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import Ascii
 @testable import VJson
 
 
@@ -770,6 +771,44 @@ class ParseTests: XCTestCase {
         } catch {
             XCTFail("Test fail: \(error)")
         }
-
     }
+    
+    func testExtendedAsciiFail() {
+        
+        let extasc: Array<UInt8> = [Ascii._DOUBLE_QUOTES, Ascii._A, UInt8(0xCC), Ascii._DOUBLE_QUOTES]
+        var data = Data(extasc)
+        
+        VJson.autoConvertExtendedAscii = false
+        
+        do {
+            if (try VJson.parse(data: &data)) != nil {
+                XCTFail("Should have failed")
+            }
+        } catch let error as VJson.Exception {
+            XCTAssertEqual(error.description, "[Location: 2, Code: 67, Incomplete:true] Non-UTF8 character in string")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
+    func testExtendedAsciiConversion() {
+        
+        let extasc: Array<UInt8> = [Ascii._DOUBLE_QUOTES, Ascii._A, UInt8(0xCC), Ascii._DOUBLE_QUOTES]
+        var data = Data(extasc)
+        
+        VJson.autoConvertExtendedAscii = true
+        
+        do {
+            if let json = try VJson.parse(data: &data) {
+                XCTAssertEqual(json.isString, true)
+                XCTAssertEqual(json.string, "A\\u00CC")
+                XCTAssertEqual(json.stringValue, "AÌ")
+            }
+        } catch let error as VJson.Exception {
+            XCTFail("Parser test failed: \(error.description)")
+        } catch {
+            XCTFail("Test fail: \(error)")
+        }
+    }
+
 }

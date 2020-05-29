@@ -35,6 +35,7 @@ VJson is also used as the core of our proJSON application in the [App Store](htt
 - customData member allows for association of external data with a VJson object
 - Caching of named members for higher performance (usable in most cases)
 - Includes flattening & unflattening
+- Will automatically convert extened ASCII to a JSON sequence (can be disabled)
 
 # Installation
 
@@ -270,6 +271,11 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 # Version history:
 
 No new features planned. Updates are made on an ad-hoc basis as needed to support Swiftfire development.
+
+#### 1.3.0
+
+- Fixed a parsing bug for extended ASCII
+- Introduced a global flag: autoCorrectExtendedAscii that is set to true by default which can be used to control parsing behaviour for extended ASCII (0x80-0xFF)
 
 #### 1.2.2
 

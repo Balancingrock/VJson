@@ -3,7 +3,7 @@
 //  File:       Parsers.swift
 //  Project:    VJson
 //
-//  Version:    1.2.2
+//  Version:    1.3.0
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.3.0 - Added autoConvertExtendedAscii and the corresponding processing.
 // 1.2.2 - Switched to assigning to string instead of stringValueRaw in readString
 // 1.0.0 - Removed older history
 // =====================================================================================================================
@@ -44,9 +45,150 @@ import Foundation
 import Ascii
 
 
+/// The conversion strings to replace extended ASCII with JSON (utf8) sequences
+/// Extended ASCII according to Windows-1252 (CP-1252) which is a superset of ISO 8859-1, also called ISO Latin-1.
+/// CP-1252 uses printable characters instead of control characters in the range 128-159
+
+public let extendedAsciiToJsonSequenceLUT: Array<String> = [
+    "\\u20AC", // €
+    "",
+    "\\u201A", // ‚
+    "\\u0192", // ƒ
+    "\\u201E", // „
+    "\\u2026", // …
+    "\\u2020", // †
+    "\\u2021", // ‡
+    "\\u02C6", // ˆ
+    "\\u2030", // ‰
+    "\\u0160", // Š
+    "\\u2039", // ‹
+    "\\u0152", // Œ
+    "",
+    "\\u017D", // Ž
+    "",
+    "",
+    "\\u2018", // ‘
+    "\\u2019", // ’
+    "\\u201C", // “
+    "\\u201D", // ”
+    "\\u2022", // •
+    "\\u2013", // –
+    "\\u2014", // —
+    "\\u02DC", // ˜
+    "\\u2122", // ™
+    "\\u0161", // š
+    "\\u203A", // ›
+    "\\u0153", // œ
+    "",
+    "\\u017E", // ž
+    "\\u0178", // Ÿ
+    "\\u00A0",
+    "\\u00A1", // ¡
+    "\\u00A2", // ¢
+    "\\u00A3", // £
+    "\\u00A4", // ¤
+    "\\u00A5", // ¥
+    "\\u00A6", // ¦
+    "\\u00A7", // §
+    "\\u00A8", // ¨
+    "\\u00A9", // ©
+    "\\u00AA", // ª
+    "\\u00AB", // «
+    "\\u00AC", // ¬
+    "\\u00AD",
+    "\\u00AE", // ®
+    "\\u00AF", // ¯
+    "\\u00B0", // °
+    "\\u00B1", // ±
+    "\\u00B2", // ²
+    "\\u00B3", // ³
+    "\\u00B4", // ´
+    "\\u00B5", // µ
+    "\\u00B6", // ¶
+    "\\u00B7", // ·
+    "\\u00B8", // ¸
+    "\\u00B9", // ¹
+    "\\u00BA", // º
+    "\\u00BB", // »
+    "\\u00BC", // ¼
+    "\\u00BD", // ½
+    "\\u00BE", // ¾
+    "\\u00BF", // ¿
+    "\\u00C0", // À
+    "\\u00C1", // Á
+    "\\u00C2", // Â
+    "\\u00C3", // Ã
+    "\\u00C4", // Ä
+    "\\u00C5", // Å
+    "\\u00C6", // Æ
+    "\\u00C7", // Ç
+    "\\u00C8", // È
+    "\\u00C9", // É
+    "\\u00CA", // Ê
+    "\\u00CB", // Ë
+    "\\u00CC", // Ì
+    "\\u00CD", // Í
+    "\\u00CE", // Î
+    "\\u00CF", // Ï
+    "\\u00D0", // Ð
+    "\\u00D1", // Ñ
+    "\\u00D2", // Ò
+    "\\u00D3", // Ó
+    "\\u00D4", // Ô
+    "\\u00D5", // Õ
+    "\\u00D6", // Ö
+    "\\u00D7", // ×
+    "\\u00D8", // Ø
+    "\\u00D9", // Ù
+    "\\u00DA", // Ú
+    "\\u00DB", // Û
+    "\\u00DC", // Ü
+    "\\u00DD", // Ý
+    "\\u00DE", // Þ
+    "\\u00DF", // ß
+    "\\u00E0", // à
+    "\\u00E1", // á
+    "\\u00E2", // â
+    "\\u00E3", // ã
+    "\\u00E4", // ä
+    "\\u00E5", // å
+    "\\u00E6", // æ
+    "\\u00E7", // ç
+    "\\u00E8", // è
+    "\\u00E9", // é
+    "\\u00EA", // ê
+    "\\u00EB", // ë
+    "\\u00EC", // ì
+    "\\u00ED", // í
+    "\\u00EE", // î
+    "\\u00EF", // ï
+    "\\u00F0", // ð
+    "\\u00F1", // ñ
+    "\\u00F2", // ò
+    "\\u00F3", // ó
+    "\\u00F4", // ô
+    "\\u00F5", // õ
+    "\\u00F6", // ö
+    "\\u00F7", // ÷
+    "\\u00F8", // ø
+    "\\u00F9", // ù
+    "\\u00FA", // ú
+    "\\u00FB", // û
+    "\\u00FC", // ü
+    "\\u00FD", // ý
+    "\\u00FE", // þ
+    "\\u00FF"  // ÿ
+]
+
+
 // MARK: - Creating a VJson hierarchy from json code
 
 public extension VJson {
+    
+    
+    /// When true, JSON Strings and names will automatically be converted to escaped sequences when encountered during parsing. When set to false an extended ascii character in the source data will raise an error.
+    
+    static var autoConvertExtendedAscii: Bool = true
     
     
     /// A general purpose wrapper for function results that return ParseFunctionResult's
@@ -703,7 +845,15 @@ internal extension VJson {
                     
                 } else {
                     
-                    strbuf.append(buffer[offset])
+                    if buffer[offset].isExtendedAscii {
+                        if VJson.autoConvertExtendedAscii {
+                            strbuf.append(contentsOf: extendedAsciiToJsonSequenceLUT[Int(buffer[offset]) - 128].utf8)
+                        } else {
+                            throw Exception.reason(location: offset, code: 67, incomplete: true, message: "Non-UTF8 character in string")
+                        }
+                    } else {
+                        strbuf.append(buffer[offset])
+                    }
                     
                     offset += 1 // Consume the character
                     
@@ -715,7 +865,7 @@ internal extension VJson {
             
         }
         
-        if let str: String = String(bytes: strbuf, encoding: String.Encoding.ascii) {
+        if let str: String = String(bytes: strbuf, encoding: String.Encoding.utf8) {
             let v = VJson("")
             v.string = str
             return v
@@ -893,7 +1043,7 @@ internal extension VJson {
                 skipWhitespaces(buffer, numberOfBytes: numberOfBytes, offset: &offset)
                 if offset < numberOfBytes, buffer[offset] == Ascii._COLON {
                     // It should be a name, if not ... its an error
-                    let name = val!.stringValue
+                    let name = val!.string
                     offset += 1 // consume the semicolon
                     val = try readValue(buffer, numberOfBytes: numberOfBytes, offset: &offset)
                     if val == nil { throw Exception.reason(location: offset, code: 61, incomplete: true, message: "Missing value at end of buffer") }

@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "VJson", targets: ["VJson"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Balancingrock/Ascii", from: "1.4.0"),
+        .package(url: "https://github.com/Balancingrock/Ascii", from: "1.5.0"),
         .package(url: "https://github.com/Balancingrock/BRUtils", from: "1.1.0")
     ],
     targets: [

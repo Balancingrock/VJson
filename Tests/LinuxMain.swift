@@ -1,6 +1,4 @@
 import XCTest
 @testable import SwifterJSONTests
 
-XCTMain([
-     testCase(SwifterJSONTests.allTests),
-])
+fatalError("Run the tests with `swift test --enable-test-discovery`.")

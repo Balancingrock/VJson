@@ -272,11 +272,7 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 
 No new features planned. Updates are made on an ad-hoc basis as needed to support Swiftfire development.
 
-#### 1.3.2
-
-- Improved linux compatibility
-
-#### 1.3.1
+#### 1.3.1 - 1.3.3
 
 - Added linux compatibility
 

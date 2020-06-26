@@ -273,8 +273,7 @@ class ArrayTests: XCTestCase {
         XCTAssertNotNil(rem)
         XCTAssertEqual(json.nofChildren, 3)
         
-        #if os(Linux)
-        #else
+        #if !os(Linux)
 
         json.undoManager!.undo()
         
@@ -303,8 +302,7 @@ class ArrayTests: XCTestCase {
             XCTFail("Unable to remove item")
         }
         
-        #if os(Linux)
-        #else
+        #if !os(Linux)
 
         json.undoManager!.undo()
         
@@ -428,8 +426,7 @@ class ArrayTests: XCTestCase {
         t2.undoManager = UndoManager()
         XCTAssertTrue(t2.insert(child, at: 0))
         XCTAssertEqual(t2, comp2)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         t2.undoManager!.undo()
         XCTAssertEqual(t2, json)
         #endif
@@ -438,15 +435,13 @@ class ArrayTests: XCTestCase {
         t3.undoManager = UndoManager()
         XCTAssertTrue(t3.insert(child, at: 1))
         XCTAssertEqual(t3, comp3)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         t3.undoManager!.undo()
         XCTAssertEqual(t3, json)
         #endif
         
         XCTAssertFalse(t3.insert(child, at: -1))
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         t3.undoManager!.undo()
         XCTAssertEqual(t3, json)
         #endif
@@ -490,8 +485,7 @@ class ArrayTests: XCTestCase {
         XCTAssertEqual(json.nofChildren, 1)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
         
-        #if os(Linux)
-        #else
+        #if !os(Linux)
 
         // Undo test
         json = VJson.array()
@@ -517,8 +511,7 @@ class ArrayTests: XCTestCase {
         json.append(arr, includeNil: true)
         XCTAssertEqual(exp1, json)
         
-        #if os(Linux)
-        #else
+        #if !os(Linux)
 
         json.undoManager?.undo()
         
@@ -546,8 +539,7 @@ class ArrayTests: XCTestCase {
         
         XCTAssertEqual(json, comp1)
         
-        #if os(Linux)
-        #else
+        #if !os(Linux)
 
         json.undoManager?.undo()
         
@@ -569,8 +561,7 @@ class ArrayTests: XCTestCase {
         json.append(arr, includeNil: true)
         XCTAssertEqual(exp1, json)
         
-        #if os(Linux)
-        #else
+        #if !os(Linux)
 
         json.undoManager?.undo()
         

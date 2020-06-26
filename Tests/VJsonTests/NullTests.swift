@@ -42,15 +42,13 @@ class NullTests: XCTestCase {
         json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.removeAllActions()
         #endif
         json.nullValue = true
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
@@ -61,15 +59,13 @@ class NullTests: XCTestCase {
         json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.removeAllActions()
         #endif
         json.nullValue = false
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
@@ -80,15 +76,13 @@ class NullTests: XCTestCase {
         json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.removeAllActions()
         #endif
         json.nullValue = false
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
@@ -99,15 +93,13 @@ class NullTests: XCTestCase {
         json.undoManager = UndoManager()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.removeAllActions()
         #endif
         json.nullValue = false
         XCTAssertTrue(json.isNull)
         XCTAssertTrue(json.nullValue!)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager?.undo()
         XCTAssertFalse(json.isNull)
         XCTAssertNil(json.nullValue)

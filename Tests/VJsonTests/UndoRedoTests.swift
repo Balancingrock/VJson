@@ -5,8 +5,7 @@
 //  Created by Marinus van der Lugt on 27/02/2019.
 //
 
-#if os(Linux)
-#else
+#if !os(Linux)
 
 import XCTest
 import VJson

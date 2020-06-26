@@ -214,8 +214,7 @@ class ArrayObjectTests: XCTestCase {
         json.undoManager = UndoManager()
         json.removeAllChildren()
         XCTAssertEqual(json.nofChildren, 0)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager!.undo()
         XCTAssertEqual(json.nofChildren, 2)
         #endif
@@ -225,8 +224,7 @@ class ArrayObjectTests: XCTestCase {
         json.undoManager = UndoManager()
         json.removeAllChildren()
         XCTAssertEqual(json.nofChildren, 0)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager!.undo()
         XCTAssertEqual(json.nofChildren, 0)
         #endif
@@ -235,8 +233,7 @@ class ArrayObjectTests: XCTestCase {
         json = VJson.object()
         json.undoManager = UndoManager()
         json.add(VJson(0), for: "qwerty")
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager!.removeAllActions()
         json.removeAllChildren()
         XCTAssertEqual(json.nofChildren, 0)
@@ -270,8 +267,7 @@ class ArrayObjectTests: XCTestCase {
         // Test with non-nil, not existing value
         // Expected: Return nil
         e = VJson(4)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager!.removeAllActions()
         #endif
         XCTAssertEqual(json.removeChildren(equalTo: e), 0)
@@ -284,8 +280,7 @@ class ArrayObjectTests: XCTestCase {
         // Test with non-nil, existing value
         // Expected: Return nil
         e = VJson(2)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager!.removeAllActions()
         #endif
         XCTAssertNotNil(json.removeChildren(equalTo: e))
@@ -303,8 +298,7 @@ class ArrayObjectTests: XCTestCase {
         json.add(VJson(3), for: "three", replace: false)
         json.add(VJson(2), for: "two", replace: false)
         e = VJson(4)
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager!.removeAllActions()
         #endif
         XCTAssertEqual(json.removeChildren(equalTo: e), 0)
@@ -323,8 +317,7 @@ class ArrayObjectTests: XCTestCase {
         json.add(VJson(3), for: "three", replace: false)
         json.add(VJson(2), for: "two", replace: false)
         e = VJson(2, name: "two")
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         json.undoManager!.removeAllActions()
         #endif
         XCTAssertEqual(json.removeChildren(equalTo: e), 2)

@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    VJson
 //
-//  Version:    1.3.1
+//  Version:    1.3.2
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.3.2 - Improved linux compatibility
 // 1.3.1 - Renamed from VJson-macos to VJson
 //       - Added linux compatibility
 // 1.2.1 - Added warnings to name and string variables.
@@ -132,8 +133,7 @@ public final class VJson: NSObject {
                 case .object: break
                 }
             }
-            #if os(Linux)
-            #else
+            #if !os(Linux)
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
@@ -151,8 +151,7 @@ public final class VJson: NSObject {
 
     public internal(set) var name: String? {
         didSet {
-            #if os(Linux)
-            #else
+            #if !os(Linux)
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
@@ -168,8 +167,7 @@ public final class VJson: NSObject {
     
     public internal(set) var bool: Bool? {
         didSet {
-            #if os(Linux)
-            #else
+            #if !os(Linux)
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
@@ -185,8 +183,7 @@ public final class VJson: NSObject {
     
     public internal(set) var number: NSNumber? {
         didSet {
-            #if os(Linux)
-            #else
+            #if !os(Linux)
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
@@ -204,8 +201,7 @@ public final class VJson: NSObject {
     
     public internal(set) var string: String? {
         didSet {
-            #if os(Linux)
-            #else
+            #if !os(Linux)
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
@@ -230,8 +226,7 @@ public final class VJson: NSObject {
     
     public internal(set) var children: Children? {
         didSet {
-            #if os(Linux)
-            #else
+            #if !os(Linux)
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
@@ -258,8 +253,7 @@ public final class VJson: NSObject {
     
     internal var createdBySubscript: Bool = false {
         didSet {
-            #if os(Linux)
-            #else
+            #if !os(Linux)
             if #available(OSX 10.11, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in

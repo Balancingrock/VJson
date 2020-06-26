@@ -3,7 +3,7 @@
 //  File:       VJson.swift
 //  Project:    VJson
 //
-//  Version:    1.3.2
+//  Version:    1.3.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.3.3 - Improved linux compatibility
 // 1.3.2 - Improved linux compatibility
 // 1.3.1 - Renamed from VJson-macos to VJson
 //       - Added linux compatibility
@@ -48,7 +49,9 @@ import Foundation
 
 #if os(Linux)
 
-public class UndoManager {}
+public class UndoManager {
+    public init() {}
+}
 
 #endif
 

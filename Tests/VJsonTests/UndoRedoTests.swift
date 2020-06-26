@@ -5,6 +5,9 @@
 //  Created by Marinus van der Lugt on 27/02/2019.
 //
 
+#if os(Linux)
+#else
+
 import XCTest
 import VJson
 
@@ -230,3 +233,5 @@ class UndoRedoTests: XCTestCase {
     }
 
 }
+
+#endif

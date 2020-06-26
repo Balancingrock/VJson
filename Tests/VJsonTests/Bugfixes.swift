@@ -56,9 +56,14 @@ class Bugfixes: XCTestCase {
         child.nameValue = "new"
         XCTAssertEqual(child.nameValue, "new")
         
+        #if os(Linux)
+        #else
+        
         json.undoManager?.undo()
         
         XCTAssertEqual(child.nameValue, "name")
+        
+        #endif
         
         
         // Extra test on removing a name from root object
@@ -71,9 +76,14 @@ class Bugfixes: XCTestCase {
         root.nameValue = nil
         XCTAssertNil(root.nameValue)
         
+        #if os(Linux)
+        #else
+
         root.undoManager?.undo()
         
         XCTAssertEqual(root.nameValue, "name")
+
+        #endif
         
         
         // Extra test on removing a name from a child object
@@ -87,7 +97,12 @@ class Bugfixes: XCTestCase {
         array[0].nameValue = nil
         XCTAssertNil(array[0].nameValue)
         
+        #if os(Linux)
+        #else
+
         array.undoManager?.undo()
         XCTAssertEqual(array[0].nameValue, "name")
+        
+        #endif
     }
 }

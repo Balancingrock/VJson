@@ -70,7 +70,10 @@ class KeyValueCodingTests: XCTestCase {
         json["one"][2]["b"] &= 1
         json["one"][3]["😀"] &= true
         
+        #if os(Linux)
+        #else
         json.undoManager?.removeAllActions()
+        #endif
         
         json.setValue("qwerty", forKey: "one.1.a")
         json.setValue("3", forKey: "one.2.b")
@@ -80,10 +83,15 @@ class KeyValueCodingTests: XCTestCase {
         XCTAssertEqual((json|"one"|2|"b")!.intValue!, 3)
         XCTAssertEqual((json|"one"|3|"😀")!.boolValue!, false)
         
+        #if os(Linux)
+        #else
+
         json.undoManager?.undo()
         
         XCTAssertEqual((json|"one"|1|"a")!.stringValue!, "test")
         XCTAssertEqual((json|"one"|2|"b")!.intValue!, 1)
         XCTAssertEqual((json|"one"|3|"😀")!.boolValue!, true)
+        
+        #endif
     }
 }

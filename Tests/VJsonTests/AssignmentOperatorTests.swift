@@ -36,15 +36,21 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.boolValue)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isBool {
             XCTAssertTrue(json!.boolValue!)
         } else {
             XCTFail("Expected a JSON BOOL")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -52,8 +58,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = false
         json &= i
         XCTAssertEqual(json!.boolValue!, false)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -94,16 +103,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.intValue)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.intValue!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -111,8 +126,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -153,25 +171,34 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.int8Value)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.int8Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
-
+        #endif
+        
         // Execute the assignment with a non-nil argument
         json = VJson.null()
         json!.undoManager = UndoManager()
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -212,15 +239,21 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.intValue)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.uint8Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
 
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -228,8 +261,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -270,16 +306,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.int16Value)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.int16Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -287,8 +329,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -329,16 +374,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.uint16Value)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.uint16Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -346,8 +397,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -388,16 +442,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.int32Value)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.int32Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -405,8 +465,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -447,16 +510,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.uint32Value)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.uint32Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -464,8 +533,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -506,16 +578,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.int64Value)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.int64Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -523,8 +601,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -565,16 +646,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.uint64Value)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.uint64Value!, 1)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -582,8 +669,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.intValue!, 3)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -624,16 +714,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.doubleValue)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.doubleValue!, 1.0)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -641,8 +737,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.doubleValue!, 3.0)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -684,16 +783,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.doubleValue)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isNumber {
             XCTAssertEqual(json!.doubleValue!, 1.0)
         } else {
             XCTFail("Expected a JSON NUMBER")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -701,8 +806,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = 3
         json &= i
         XCTAssertEqual(json!.doubleValue!, 3.0)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -743,16 +851,22 @@ class AssignmentOperatorTests: XCTestCase {
         json = VJson(i!)
         json!.undoManager = UndoManager()
         i = nil
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= i
         XCTAssertNil(json!.stringValue)
         XCTAssertTrue(json!.isNull)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         if json!.isString {
             XCTAssertEqual(json!.stringValue!, "test")
         } else {
             XCTFail("Expected a JSON STRING")
         }
+        #endif
         
         // Execute the assignment with a non-nil argument
         json = VJson.null()
@@ -760,8 +874,11 @@ class AssignmentOperatorTests: XCTestCase {
         i = "test"
         json &= i
         XCTAssertEqual(json!.stringValue!, "test")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
     }
     
     
@@ -807,15 +924,21 @@ class AssignmentOperatorTests: XCTestCase {
         json!.undoManager = UndoManager()
         json &= v
         XCTAssertTrue(json!.nofChildren == 0)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isArray)
+        #endif
         
         json = VJson.object()
         json!.undoManager = UndoManager()
         json &= v
         XCTAssertTrue(json!.nofChildren == 0)
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isObject)
+        #endif
         
         // Implicit change of named null to named object with name of null
         json = VJson()
@@ -824,11 +947,17 @@ class AssignmentOperatorTests: XCTestCase {
         XCTAssertTrue((json!|"top")!.isNull)
         XCTAssertEqual(json!.code, "{\"top\":null}")
         v = VJson(3, name: "one")
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json!["top"] &= v
         XCTAssertEqual(json!.code, "{\"top\":3}")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertEqual(json!.code, "{\"top\":null}")
+        #endif
         
         // Implicit change of unnamed null to named object
         json = VJson.null() // was VJson()
@@ -836,8 +965,11 @@ class AssignmentOperatorTests: XCTestCase {
         v = VJson(3, name: "one")
         json!["top"] &= v
         XCTAssertEqual(json!.code, "{\"top\":3}")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
         
         // Implicit change of null to given object
         json = VJson.null()
@@ -845,49 +977,70 @@ class AssignmentOperatorTests: XCTestCase {
         v = VJson(3)
         json &= v
         XCTAssertEqual(json!.description, "3")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
-
+        #endif
+        
         json = VJson.null()
         json!.undoManager = UndoManager()
         v = VJson(true)
         json &= v
         XCTAssertEqual(json!.description, "true")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
         
         json = VJson.null()
         json!.undoManager = UndoManager()
         v = VJson.null()
         json &= v
         XCTAssertEqual(json!.description, "null")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
         
         json = VJson.null()
         json!.undoManager = UndoManager()
         v = VJson("test")
         json &= v
         XCTAssertEqual(json!.description, "\"test\"")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
         
         json = VJson.null()
         json!.undoManager = UndoManager()
         v = VJson(items: ["first" : VJson(3)])
+        #if os(Linux)
+        #else
         json!.undoManager!.removeAllActions()
+        #endif
         json &= v
         XCTAssertEqual(json!.description, "{\"first\":3}")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
         
         json = VJson.null()
         json!.undoManager = UndoManager()
         v = VJson([VJson(3)])
         json &= v
         XCTAssertEqual(json!.description, "[3]")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isNull)
+        #endif
         
         // Array always accepts
         json = VJson.array()
@@ -895,8 +1048,11 @@ class AssignmentOperatorTests: XCTestCase {
         v = VJson(3, name: "one")
         json &= v
         XCTAssertEqual(json!.description, "[3]")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertTrue(json!.isArray)
+        #endif
         
         // Object ignores nameless
         json = VJson.object()
@@ -904,8 +1060,11 @@ class AssignmentOperatorTests: XCTestCase {
         v = VJson(3)
         json &= v
         XCTAssertEqual(json!.description, "{}")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertEqual(json!.description, "{}")
+        #endif
         
         // Object accepts named items
         json = VJson.object()
@@ -913,7 +1072,10 @@ class AssignmentOperatorTests: XCTestCase {
         v = VJson(3, name: "one")
         json &= v
         XCTAssertEqual(json!.description, "{\"one\":3}")
+        #if os(Linux)
+        #else
         json!.undoManager!.undo()
         XCTAssertEqual(json!.description, "{}")
+        #endif
     }
 }

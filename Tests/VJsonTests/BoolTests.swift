@@ -208,10 +208,13 @@ class BoolTests: XCTestCase {
         XCTAssertTrue(json.boolValue!)
         json.boolValue = false
         XCTAssertFalse(json.boolValue!)
+        #if os(Linux)
+        #else
         json.undoManager!.undo()
         XCTAssertTrue(json.boolValue!)
         json.undoManager!.redo()
         XCTAssertFalse(json.boolValue!)
+        #endif
     }
 
 }

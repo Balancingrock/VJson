@@ -3,14 +3,14 @@
 //  File:       Children.swift
 //  Project:    VJson
 //
-//  Version:    1.0.0
+//  Version:    1.3.1
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2020 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.3.1 - Added linux compatibility
 // 1.0.0 - Removed older history
 // =====================================================================================================================
 
@@ -115,12 +116,15 @@ public extension VJson {
                 
                 // Undo support
                 
+                #if os(Linux)
+                #else
                 if #available(OSX 10.11, *) {
                     parent.undoManager?.registerUndo(withTarget: self) {
                         [childToBeRemoved, index] (children) -> Void in
                         children.items[index] = childToBeRemoved // This will also set the parent
                     }
                 }
+                #endif
             }
         }
         
@@ -173,12 +177,15 @@ public extension VJson {
             child.parent = parent // Ensures the child's parent is always set
             items.append(child)
             
+            #if os(Linux)
+            #else
             if #available(OSX 10.11, *) {
                 parent.undoManager?.registerUndo(withTarget: self) {
                     (children) -> Void in
                     children.remove(at: children.count - 1)
                 }
             }
+            #endif
         }
         
         
@@ -207,6 +214,8 @@ public extension VJson {
             child.parent = parent // Ensures the child's parent is always set
             items.insert(child, at: index)
             
+            #if os(Linux)
+            #else
             if #available(OSX 10.11, *) {
                 
                 parent.undoManager?.registerUndo(withTarget: self) {
@@ -214,6 +223,7 @@ public extension VJson {
                     children.remove(at: index)
                 }
             }
+            #endif
 
             return true
         }
@@ -239,6 +249,8 @@ public extension VJson {
             child.parent = parent // Ensures the new child's parent is set correctly
             items[index] = child
             
+            #if os(Linux)
+            #else
             if #available(OSX 10.11, *) {
                 
                 parent.undoManager?.registerUndo(withTarget: self) {
@@ -246,6 +258,7 @@ public extension VJson {
                     children.replace(at: index, with: removed)
                 }
             }
+            #endif
 
             return removed
         }
@@ -265,6 +278,8 @@ public extension VJson {
             items[index].parent = nil // Make sure it is decoupled from the parent
             let removed = items.remove(at: index)
             
+            #if os(Linux)
+            #else
             if #available(OSX 10.11, *) {
                 
                 parent.undoManager?.registerUndo(withTarget: self) {
@@ -276,6 +291,7 @@ public extension VJson {
                     }
                 }
             }
+            #endif
 
             return removed
         }

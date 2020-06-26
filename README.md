@@ -31,7 +31,7 @@ VJson is also used as the core of our proJSON application in the [App Store](htt
 - Merge function is NSOutlineView compatible
 - Limited KVO support to provide easier integration with -for example- an NSOutlineView
 - Notifications are isued for KVO updates.
-- Undo/redo support for macOS
+- Undo/redo support for macOS (not for Linux)
 - customData member allows for association of external data with a VJson object
 - Caching of named members for higher performance (usable in most cases)
 - Includes flattening & unflattening
@@ -271,6 +271,10 @@ The advantage of Apple's parser is that it is faster, about twice as fast as the
 # Version history:
 
 No new features planned. Updates are made on an ad-hoc basis as needed to support Swiftfire development.
+
+#### 1.3.1
+
+- Added linux compatibility
 
 #### 1.3.0
 

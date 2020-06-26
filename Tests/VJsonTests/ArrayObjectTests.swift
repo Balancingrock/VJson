@@ -214,26 +214,34 @@ class ArrayObjectTests: XCTestCase {
         json.undoManager = UndoManager()
         json.removeAllChildren()
         XCTAssertEqual(json.nofChildren, 0)
+        #if os(Linux)
+        #else
         json.undoManager!.undo()
         XCTAssertEqual(json.nofChildren, 2)
-        
+        #endif
         
         // Test for empty OBJECT
         json = VJson.object()
         json.undoManager = UndoManager()
         json.removeAllChildren()
         XCTAssertEqual(json.nofChildren, 0)
+        #if os(Linux)
+        #else
         json.undoManager!.undo()
         XCTAssertEqual(json.nofChildren, 0)
+        #endif
         
         // Test for filled OBJECT
         json = VJson.object()
         json.undoManager = UndoManager()
         json.add(VJson(0), for: "qwerty")
+        #if os(Linux)
+        #else
         json.undoManager!.removeAllActions()
         json.removeAllChildren()
         XCTAssertEqual(json.nofChildren, 0)
         json.undoManager!.undo()
+        #endif
         XCTAssertEqual(json.nofChildren, 1)
     }
 
@@ -262,7 +270,10 @@ class ArrayObjectTests: XCTestCase {
         // Test with non-nil, not existing value
         // Expected: Return nil
         e = VJson(4)
+        #if os(Linux)
+        #else
         json.undoManager!.removeAllActions()
+        #endif
         XCTAssertEqual(json.removeChildren(equalTo: e), 0)
         XCTAssertEqual(json.nofChildren, 4)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
@@ -273,7 +284,10 @@ class ArrayObjectTests: XCTestCase {
         // Test with non-nil, existing value
         // Expected: Return nil
         e = VJson(2)
+        #if os(Linux)
+        #else
         json.undoManager!.removeAllActions()
+        #endif
         XCTAssertNotNil(json.removeChildren(equalTo: e))
         XCTAssertEqual(json.nofChildren, 2)
         XCTAssertEqual(json.arrayValue[0].intValue!, 1)
@@ -289,7 +303,10 @@ class ArrayObjectTests: XCTestCase {
         json.add(VJson(3), for: "three", replace: false)
         json.add(VJson(2), for: "two", replace: false)
         e = VJson(4)
+        #if os(Linux)
+        #else
         json.undoManager!.removeAllActions()
+        #endif
         XCTAssertEqual(json.removeChildren(equalTo: e), 0)
         XCTAssertEqual(json.nofChildren, 4)
         XCTAssertEqual(json.items(with: "one")[0].intValue, 1)
@@ -306,7 +323,10 @@ class ArrayObjectTests: XCTestCase {
         json.add(VJson(3), for: "three", replace: false)
         json.add(VJson(2), for: "two", replace: false)
         e = VJson(2, name: "two")
+        #if os(Linux)
+        #else
         json.undoManager!.removeAllActions()
+        #endif
         XCTAssertEqual(json.removeChildren(equalTo: e), 2)
         XCTAssertEqual(json.nofChildren, 2)
         XCTAssertEqual(json.items(with: "one")[0].intValue, 1)

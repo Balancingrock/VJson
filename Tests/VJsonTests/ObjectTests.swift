@@ -267,6 +267,8 @@ class ObjectTests: XCTestCase {
     
     func testFlatten_array() {
         
+        //Setup
+        
         let txt =
         """
         {
@@ -274,19 +276,27 @@ class ObjectTests: XCTestCase {
             "two":["deep",5]}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two[0]":"deep","two[1]":5}
+        {
+            "one":1,
+            "two[0]":"deep",
+            "two[1]":5
+        }
         """
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+
         
-        let json = try? VJson.parse(string: txt)
+        // Action
         
-        XCTAssertNotNil(json)
-                
-        json!.flatten()
+        o.flatten()
         
-        XCTAssertEqual(json!.code, exp)
+        
+        // Verification
+        
+        XCTAssertTrue(o == e)
     }
 
     func testFlatten_arrayKeepNo() {

@@ -230,16 +230,13 @@ class ObjectTests: XCTestCase {
                 "two": 2
             }
             """
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
+        let e = o.duplicate
         
-        let json = try? VJson.parse(string: txt)
+        o.flatten()
         
-        XCTAssertNotNil(json)
-        
-        let exp = json!.code
-        
-        json!.flatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
     
     func testFlatten_object() {
@@ -251,18 +248,19 @@ class ObjectTests: XCTestCase {
             "two":{"deep":5}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp = """
-        {"one":1,"two.deep":5}
+        {
+            "one":1,
+            "two.deep":5
+        }
         """
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+
+        o.flatten()
         
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
-                
-        json!.flatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
     
     func testFlatten_array() {
@@ -287,14 +285,8 @@ class ObjectTests: XCTestCase {
         }
         """
         guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
-
-        
-        // Action
         
         o.flatten()
-        
-        
-        // Verification
         
         XCTAssertTrue(o == e)
     }
@@ -308,19 +300,27 @@ class ObjectTests: XCTestCase {
             "two":["deep",{"three":6}]}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two[0]":"deep","two[1].three":6}
+        {
+            "one":1,
+            "two[0]":"deep",
+            "two[1].three":6
+        }
         """
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+
         
-        let json = try? VJson.parse(string: txt)
+        // Action
         
-        XCTAssertNotNil(json)
-                
-        json!.flatten(VJson.FlattenOptions.keepPrimitiveArray)
+        o.flatten()
         
-        XCTAssertEqual(json!.code, exp)
+        
+        // Verification
+        
+        XCTAssertTrue(o == e)
     }
 
     func testFlatten_arrayKeepYes() {
@@ -332,19 +332,20 @@ class ObjectTests: XCTestCase {
             "two":["deep",5]}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two":["deep",5]}
+        {
+            "one":1,
+            "two":["deep",5]
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
                 
-        json!.flatten(VJson.FlattenOptions.keepPrimitiveArray)
+        o.flatten(VJson.FlattenOptions.keepPrimitiveArray)
         
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
 
     func testFlatten_arrayArrayKeepYes() {
@@ -356,19 +357,21 @@ class ObjectTests: XCTestCase {
             "two":[[1, 2], 3]}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two[0]":[1,2],"two[1]":3}
+        {
+            "one":1,
+            "two[0]":[1,2],
+            "two[1]":3
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
                 
-        json!.flatten(VJson.FlattenOptions.keepPrimitiveArray)
+        o.flatten(VJson.FlattenOptions.keepPrimitiveArray)
         
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
 
     func testFlatten_arrayArray() {
@@ -380,19 +383,22 @@ class ObjectTests: XCTestCase {
             "two":[[1, 2], 3]}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two[0][0]":1,"two[0][1]":2,"two[1]":3}
+        {
+            "one":1,
+            "two[0][0]":1,
+            "two[0][1]":2,
+            "two[1]":3
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
                 
-        json!.flatten()
+        o.flatten()
         
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
 
     func testFlatten_arrayArrayReplace() {
@@ -404,19 +410,22 @@ class ObjectTests: XCTestCase {
             "two":[[1, 2], 3]}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two*0)*0)":1,"two*0)*1)":2,"two*1)":3}
+        {
+            "one":1,
+            "two*0)*0)":1,
+            "two*0)*1)":2,
+            "two*1)":3
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
                 
-        json!.flatten(.leftArray("*"), .rightArray(")"))
-        
-        XCTAssertEqual(json!.code, exp)
+        o.flatten(.leftArray("*"), .rightArray(")"))
+
+        XCTAssertTrue(o == e)
     }
 
     func testFlatten_arrayArrayDot() {
@@ -428,19 +437,22 @@ class ObjectTests: XCTestCase {
             "two":[[1, 2], 3]}
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two.0.0":1,"two.0.1":2,"two.1":3}
+        {
+            "one":1,
+            "two.0.0":1,
+            "two.0.1":2,
+            "two.1":3
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
                 
-        json!.flatten(.useDotArray, .separator("-"))
-        
-        XCTAssertEqual(json!.code, exp)
+        o.flatten(.useDotArray, .separator("-"))
+
+        XCTAssertTrue(o == e)
     }
 
     func testUnflattenNop() {
@@ -453,19 +465,21 @@ class ObjectTests: XCTestCase {
             "arr":[1,2,3]
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"two":2,"arr":[1,2,3]}
+        {
+            "one":1,
+            "two":2,
+            "arr":[1,2,3]
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+                
+        o.unflatten()
 
-        json!.unflatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
     
     func testUnflattenObj() {
@@ -478,22 +492,23 @@ class ObjectTests: XCTestCase {
             "arr":[1,2,3]
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"arr":[1,2,3],"two":{"three":2}}
+        {
+            "one":1,
+            "arr":[1,2,3],
+            "two":{"three":2}
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+                
+        o.unflatten()
 
-        json!.unflatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
 
-    
     func testUnflattenObjObj() {
         
         let txt =
@@ -504,22 +519,27 @@ class ObjectTests: XCTestCase {
             "arr":[1,2,3]
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"arr":[1,2,3],"two":{"three":{"four":2}}}
+        {
+            "one":1,
+            "arr":[1,2,3],
+            "two":{
+                "three":{
+                    "four":2
+                }
+            }
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+                
+        o.unflatten()
 
-        json!.unflatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
 
-    
     func testUnflattenArr() {
         
         let txt =
@@ -530,21 +550,22 @@ class ObjectTests: XCTestCase {
             "arr":[1,2,3]
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"arr":[1,2,3],"two":[null,null,2]}
+        {
+            "one":1,
+            "arr":[1,2,3],
+            "two":[null,null,2]
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+                
+        o.unflatten()
 
-        json!.unflatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
-
     
     func testUnflattenArrArr() {
         
@@ -556,19 +577,21 @@ class ObjectTests: XCTestCase {
             "arr":[1,2,3]
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"arr":[1,2,3],"two":[null,[null,2]]}
+        {
+            "one":1,
+            "arr":[1,2,3],
+            "two":[null,[null,2]]
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+                
+        o.unflatten()
 
-        json!.unflatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
 
     func testUnflattenArrObjArr() {
@@ -581,19 +604,21 @@ class ObjectTests: XCTestCase {
             "arr":[1,2,3]
         }
         """
-        
+        guard let o = try? VJson.parse(string: txt) else { XCTFail("Unexpected nil"); return }
+
         let exp =
         """
-        {"one":1,"arr":[1,2,3],"two":[null,{"obj":[null,2]}]}
+        {
+            "one":1,
+            "arr":[1,2,3],
+            "two":[null,{"obj":[null,2]}]
+        }
         """
-        
-        let json = try? VJson.parse(string: txt)
-        
-        XCTAssertNotNil(json)
+        guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
+                
+        o.unflatten()
 
-        json!.unflatten()
-        
-        XCTAssertEqual(json!.code, exp)
+        XCTAssertTrue(o == e)
     }
 
 }

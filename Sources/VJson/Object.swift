@@ -3,14 +3,14 @@
 //  File:       Object.swift
 //  Project:    VJson
 //
-//  Version:    1.1.0
+//  Version:    1.3.3
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
 //  Website:    http://swiftfire.nl/projects/swifterjson/swifterjson.html
 //  Git:        https://github.com/Balancingrock/VJson
 //
-//  Copyright:  (c) 2014-2019 Marinus van der Lugt, All rights reserved.
+//  Copyright:  (c) 2014-2020 Marinus van der Lugt, All rights reserved.
 //
 //  License:    Use or redistribute this code any way you like with the following two provision:
 //
@@ -36,6 +36,7 @@
 //
 // History
 //
+// 1.3.3 - Fixed a bug in unflatten where the name of a child in an array was not nilled.
 // 1.1.0 - Added flatten and unflatten operations
 // 1.0.0 - Removed older history
 // =====================================================================================================================
@@ -360,6 +361,7 @@ public extension VJson {
                 }
                 add(newItem, for: name, replace: true)
                 newItem.add(child, at: &path)
+                if newItem.isArray { child.name = nil }
             }
             
             
@@ -379,6 +381,7 @@ public extension VJson {
                 }
                 self[index] = newItem
                 newItem.add(child, at: &path)
+                if newItem.isArray { child.name = nil }
             }
         }
     }

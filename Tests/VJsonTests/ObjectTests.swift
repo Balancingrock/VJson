@@ -561,7 +561,7 @@ class ObjectTests: XCTestCase {
         }
         """
         guard let e = try? VJson.parse(string: exp) else { XCTFail("Unexpected nil"); return }
-                
+              
         o.unflatten()
 
         XCTAssertTrue(o == e)

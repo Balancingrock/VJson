@@ -34,7 +34,7 @@
 // 1.0.0 - Removed older history
 // =====================================================================================================================
 
-#if os(macOS) || os(iOS)
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 
 import Foundation
 

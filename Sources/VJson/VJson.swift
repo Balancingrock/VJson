@@ -131,7 +131,7 @@ public final class VJson: NSObject {
                 }
             }
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.type = oldValue
@@ -149,7 +149,7 @@ public final class VJson: NSObject {
     public internal(set) var name: String? {
         didSet {
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.name = oldValue
@@ -165,7 +165,7 @@ public final class VJson: NSObject {
     public internal(set) var bool: Bool? {
         didSet {
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.bool = oldValue
@@ -181,7 +181,7 @@ public final class VJson: NSObject {
     public internal(set) var number: NSNumber? {
         didSet {
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.number = oldValue
@@ -199,7 +199,7 @@ public final class VJson: NSObject {
     public internal(set) var string: String? {
         didSet {
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.string = oldValue
@@ -224,7 +224,7 @@ public final class VJson: NSObject {
     public internal(set) var children: Children? {
         didSet {
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.children = oldValue
@@ -251,7 +251,7 @@ public final class VJson: NSObject {
     internal var createdBySubscript: Bool = false {
         didSet {
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 undoManager?.registerUndo(withTarget: self) {
                     [oldValue] (json) -> Void in
                     json.createdBySubscript = oldValue

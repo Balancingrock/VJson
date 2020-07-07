@@ -112,7 +112,7 @@ public extension VJson {
                 // Undo support
                 
                 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-                if #available(OSX 10.11, *) {
+                if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                     parent.undoManager?.registerUndo(withTarget: self) {
                         [childToBeRemoved, index] (children) -> Void in
                         children.items[index] = childToBeRemoved // This will also set the parent
@@ -172,7 +172,7 @@ public extension VJson {
             items.append(child)
             
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
                 parent.undoManager?.registerUndo(withTarget: self) {
                     (children) -> Void in
                     children.remove(at: children.count - 1)
@@ -208,8 +208,8 @@ public extension VJson {
             items.insert(child, at: index)
             
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
-                
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
+
                 parent.undoManager?.registerUndo(withTarget: self) {
                     [index] (children) -> Void in
                     children.remove(at: index)
@@ -242,8 +242,8 @@ public extension VJson {
             items[index] = child
             
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
-                
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
+
                 parent.undoManager?.registerUndo(withTarget: self) {
                     [removed, index] (children) -> Void in
                     children.replace(at: index, with: removed)
@@ -270,8 +270,8 @@ public extension VJson {
             let removed = items.remove(at: index)
             
             #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            if #available(OSX 10.11, *) {
-                
+            if #available(OSX 10.11, *), #available(iOS 9.0, *) {
+
                 parent.undoManager?.registerUndo(withTarget: self) {
                     [removed, index] (children) -> Void in
                     if index < children.count {

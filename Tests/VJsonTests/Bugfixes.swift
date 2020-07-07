@@ -56,7 +56,7 @@ class Bugfixes: XCTestCase {
         child.nameValue = "new"
         XCTAssertEqual(child.nameValue, "new")
         
-        #if !os(Linux)
+        #if os(macOS)
 
         json.undoManager?.undo()
         
@@ -75,7 +75,7 @@ class Bugfixes: XCTestCase {
         root.nameValue = nil
         XCTAssertNil(root.nameValue)
         
-        #if !os(Linux)
+        #if os(macOS)
 
         root.undoManager?.undo()
         
@@ -95,7 +95,7 @@ class Bugfixes: XCTestCase {
         array[0].nameValue = nil
         XCTAssertNil(array[0].nameValue)
         
-        #if !os(Linux)
+        #if os(macOS)
 
         array.undoManager?.undo()
         XCTAssertEqual(array[0].nameValue, "name")

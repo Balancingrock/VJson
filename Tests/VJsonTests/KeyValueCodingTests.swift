@@ -6,7 +6,7 @@
 //
 //
 
-#if !os(Linux)
+#if os(macOS)
 
 import XCTest
 import VJson

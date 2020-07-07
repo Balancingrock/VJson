@@ -33,7 +33,7 @@ class NameTests: XCTestCase {
         XCTAssertFalse(json.hasName)
         XCTAssertNil(json.nameValue)
         
-        #if !os(Linux)
+        #if os(macOS)
         json.undoManager?.removeAllActions()
         #endif
         
@@ -42,7 +42,7 @@ class NameTests: XCTestCase {
         XCTAssertTrue(json.hasName)
         XCTAssertEqual(json.nameValue, "aName")
         
-        #if !os(Linux)
+        #if os(macOS)
 
         json.undoManager?.undo()
         

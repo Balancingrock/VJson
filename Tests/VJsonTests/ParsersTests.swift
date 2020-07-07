@@ -44,7 +44,7 @@ class ParseTests: XCTestCase {
             for tc in testcases {
                 let json = try VJson.parse(string: tc)
                 if let json = json {
-                    #if !os(Linux)
+                    #if os(macOS)
                     XCTAssertEqual(tc, json.description)
                     #endif
                 } else {
@@ -274,7 +274,7 @@ class ParseTests: XCTestCase {
             for tc in testcases {
                 if let json = try VJson.parse(string: tc) {
                     XCTAssertTrue(json.isArray)
-                    #if !os(Linux)
+                    #if os(macOS)
                     XCTAssertEqual(tc, json.description)
                     #endif
                 } else {
@@ -342,7 +342,7 @@ class ParseTests: XCTestCase {
             for tc in testcases {
                 if let json = try VJson.parse(string: tc) {
                     XCTAssertTrue(json.isNumber)
-                    #if !os(Linux)
+                    #if os(macOS)
                     XCTAssertEqual(tc, json.code)
                     #endif
                 } else {
@@ -639,7 +639,7 @@ class ParseTests: XCTestCase {
                 if let json = try VJson.parse(string: tc) {
                     XCTAssertTrue(json.isNumber)
                     XCTAssertTrue(json.hasName)
-                    #if !os(Linux)
+                    #if os(macOS)
                     XCTAssertEqual(tc, json.code)
                     #endif
                 } else {
@@ -749,7 +749,7 @@ class ParseTests: XCTestCase {
                 if let json = try VJson.parse(string: tc) {
                     XCTAssertTrue(json.isArray)
                     XCTAssertTrue(json.hasName)
-                    #if !os(Linux)
+                    #if os(macOS)
                     XCTAssertEqual(tc, json.description)
                     #endif
                 } else {

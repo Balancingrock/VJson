@@ -3,7 +3,7 @@
 //  File:       Children.swift
 //  Project:    VJson
 //
-//  Version:    1.3.2
+//  Version:    1.3.4
 //
 //  Author:     Marinus van der Lugt
 //  Company:    http://balancingrock.nl
@@ -12,16 +12,9 @@
 //
 //  Copyright:  (c) 2014-2020 Marinus van der Lugt, All rights reserved.
 //
-//  License:    Use or redistribute this code any way you like with the following two provision:
+//  License:    MIT, see LICENSE file
 //
-//  1) You ACCEPT this source code AS IS without any guarantees that it will work as intended. Any liability from its
-//  use is YOURS.
-//
-//  2) You WILL NOT seek damages from the author or balancingrock.nl.
-//
-//  I also ask you to please leave this header with the source code.
-//
-//  Like you, I need to make a living:
+//  And because I need to make a living:
 //
 //   - You can send payment (you choose the amount) via paypal to: sales@balancingrock.nl
 //   - Or wire bitcoins to: 1GacSREBxPy1yskLMc9de2nofNv2SNdwqH
@@ -36,6 +29,7 @@
 //
 // History
 //
+// 1.3.4 - Updated LICENSE
 // 1.3.2 - Improved linux compatibility
 // 1.3.1 - Added linux compatibility
 // 1.0.0 - Removed older history
@@ -117,7 +111,7 @@ public extension VJson {
                 
                 // Undo support
                 
-                #if !os(Linux)
+                #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
                 if #available(OSX 10.11, *) {
                     parent.undoManager?.registerUndo(withTarget: self) {
                         [childToBeRemoved, index] (children) -> Void in
@@ -177,7 +171,7 @@ public extension VJson {
             child.parent = parent // Ensures the child's parent is always set
             items.append(child)
             
-            #if !os(Linux)
+            #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
             if #available(OSX 10.11, *) {
                 parent.undoManager?.registerUndo(withTarget: self) {
                     (children) -> Void in
@@ -213,7 +207,7 @@ public extension VJson {
             child.parent = parent // Ensures the child's parent is always set
             items.insert(child, at: index)
             
-            #if !os(Linux)
+            #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
             if #available(OSX 10.11, *) {
                 
                 parent.undoManager?.registerUndo(withTarget: self) {
@@ -247,7 +241,7 @@ public extension VJson {
             child.parent = parent // Ensures the new child's parent is set correctly
             items[index] = child
             
-            #if !os(Linux)
+            #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
             if #available(OSX 10.11, *) {
                 
                 parent.undoManager?.registerUndo(withTarget: self) {
@@ -275,7 +269,7 @@ public extension VJson {
             items[index].parent = nil // Make sure it is decoupled from the parent
             let removed = items.remove(at: index)
             
-            #if !os(Linux)
+            #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
             if #available(OSX 10.11, *) {
                 
                 parent.undoManager?.registerUndo(withTarget: self) {

@@ -30,13 +30,13 @@
 // History
 //
 // 1.3.4 - Updated LICENSE
+//       - Removed import Cocoa
 // 1.0.0 - Removed older history
 // =====================================================================================================================
 
 #if os(macOS) || os(iOS)
 
 import Foundation
-import Cocoa
 
     
 public extension VJson {

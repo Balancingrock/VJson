@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "VJson",
-    platforms: [.macOS(.10_12), .iOS(8)],
+    platforms: [.macOS(.v10_12), .iOS(.v8)],
     products: [
         .library(name: "VJson", targets: ["VJson"])
     ],
